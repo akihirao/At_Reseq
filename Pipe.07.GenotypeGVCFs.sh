@@ -1,0 +1,37 @@
+#!/bin/bash -i
+#Pipe.07.GenotypeGVCF.sh
+#by HIRAO Akira
+
+set -exuo pipefail
+
+SCRIPT_DIR=$(cd $(dirname $0) && pwd)
+
+CPU=8
+
+module load gatk/4.1.7.0
+
+
+main_folder=/zfs/Arabidopsis/work/At_Reseq
+reference_folder=/zfs/Arabidopsis/Reference_v1.1
+
+
+target_ID=AT48
+output_folder=$main_folder/SNV_call
+mkdir -p $output_folder
+
+genomicsDB_name=genomicsDB.$target_ID
+DB_path=$output_folder/$genomicsDB_name
+
+
+cd $output_folder
+
+
+
+gatk GenotypeGVCFs \
+-R $reference_folder/TAIR10.fa \
+-V gendb://$DB_path \
+-O $output_folder/$target_ID.vcf.gz
+
+	
+module unload gatk/4.1.7.0
+
