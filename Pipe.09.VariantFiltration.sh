@@ -11,7 +11,7 @@ CPU=8
 target_ID=AT48
 
 reference_folder=/zfs/Arabidopsis/Reference_v1.1
-maing_folder=/zfs/Arabidopsis/work/At_Reseq
+main_folder=/zfs/Arabidopsis/work/At_Reseq
 work_folder=$main_folder/vcf_out
 
 module load samtools/1.10
@@ -52,9 +52,9 @@ grep -E '^#|PASS' $target_ID.mendelian.indel.filter.vcf > $target_ID.mendelian.i
 #VariantFiltration for SNP
 #<< COMMENTOUT2
 gatk VariantFiltration \
--R $reference_folder/TAIR10.fa \v
+-R $reference_folder/TAIR10.fa \
 -V $target_ID.snp.vcf.gz \
---filter-expression "QD < 2.0 || FvS > 60.0 || MQ < 40.0 || MQRankSum < -12.5 || ReadPosRankSum < -8.0 || SOR > 4.0" \
+--filter-expression "QD < 2.0 || FS > 60.0 || MQ < 40.0 || MQRankSum < -12.5 || ReadPosRankSum < -8.0 || SOR > 4.0" \
 --filter-name "basic_snp_filter" \
 -O $target_ID.snp.filter.vcf
 

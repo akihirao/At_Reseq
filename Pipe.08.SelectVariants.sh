@@ -11,7 +11,7 @@ CPU=8
 target_ID=AT48
 
 reference_folder=/zfs/Arabidopsis/Reference_v1.1
-maing_folder=/zfs/Arabidopsis/work/At_Reseq
+main_folder=/zfs/Arabidopsis/work/At_Reseq
 work_folder=$main_folder/vcf_out
 
 
