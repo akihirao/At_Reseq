@@ -27,7 +27,7 @@ cd $work_folder
 #VariantFiltration for SNP
 gatk VariantFiltration \
 -R $reference_folder/TAIR10.fa \
--V $target_ID.family.mendelian.snp.vcf.gz \
+-V $target_ID.mendelian.snp.vcf.gz \
 --filter-expression "QD < 2.0 || FS > 60.0 || MQ < 40.0 || MQRankSum < -12.5 || ReadPosRankSum < -8.0 || SOR > 4.0" \
 --filter-name "basic_snp_filter" \
 -O $target_ID.mendelian.snp.filter.vcf
@@ -145,7 +145,7 @@ gatk VariantFiltration \
 #Set filtered sites to no call:SNP
 gatk SelectVariants \
 -R $reference_folder/TAIR10.fa \
--V $target_ID.family.snp.DPfilterPASSED.vcf \
+-V $target_ID.snp.DPfilterPASSED.vcf \
 --set-filtered-gt-to-nocall \
 -O $target_ID.snp.DPfilterNoCall.vcf
 bgzip -c $target_ID.snp.DPfilterNoCall.vcf > $target_ID.snp.DPfilterNoCall.vcf.gz
