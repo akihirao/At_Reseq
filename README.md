@@ -38,6 +38,6 @@ Pipe.10.MutationIdentification.sh
 
 
 ## Note
-The whole-genome sequencing data analyzed were deposited into the DNA Data Bank of Japan Sequence Read Archive (https://ddbj.nig.ac.jp/dra) with the accession numbers DRA009784.　　
+The whole-genome sequencing data analyzed were deposited into the DNA Data Bank of Japan Sequence Read Archive (https://ddbj.nig.ac.jp/dra) with the accession numbers DRA009784.  
 This project is currently under development. Thank you!
 
