@@ -12,7 +12,7 @@ Bioinformatics pipeline for idintifying mutations in whole genome sequences of <
 
 The environment under CentOS 7.5 is tested. The versions of the tools used are documented in a series of shell scripts.
 
-## <i>Arabidopsis thaliana genomic resources<.i>
+## <i>Arabidopsis thaliana</i> genomic resources
 TAIR10 genomic sequences were downloaded from the TAIR FTP site.
 
 
@@ -27,15 +27,16 @@ TAIR10 genomic sequences were downloaded from the TAIR FTP site.
 Run a series of the shell scripts in the order listed after changing paths according to your environemt:
  
 ```bash
-Pipe.01.BWA_mapping.sh
-Pipe.02.eagle_rc.sh
-Pipe.03.BamFiltering.sh
+Pipe.01.Map.sh
+Pipe.02.MarkduplicatesSpark.sh
+Pipe.03.BaseRecalibrator.sh
 ...
-Pipe.10.GenotypeFiltering.sh
+Pipe.10.MutationIdentification.sh
 ```
 
 
 
 ## Note
+The whole-genome sequencing data analyzed were deposited into the DNA Data Bank of Japan Sequence Read Archive (https://ddbj.nig.ac.jp/dra) with the accession numbers DRA009784.
 This project is currently under development. Thank you!
 
