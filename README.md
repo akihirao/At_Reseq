@@ -17,9 +17,10 @@ TAIR10 genomic sequences were downloaded from the TAIR FTP site.
 
 
 ## Flowchart
- 
+This workflow is referred to "Germline short variant discovery (SNPs + INDELs)" that give in gatk.
+
 <p align="left">
-  <img src="https://github.com/akihirao/Akm_RADseq/blob/master/images/AkmRADseq.SNP.workflow.jpeg"/>
+  <img src="https://github.com/akihirao/At_Reseq/blob/master/images/AtReseq.workflow.jpeg"/>
 </p>
 
 

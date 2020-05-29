@@ -20,7 +20,7 @@ output_folder=$main_folder/vcf_out
 mkdir -p $output_folder
 
 genomicsDB_name=genomicsDB.$target_ID
-DB_path=$output_folder/$genomicsDB_name
+DB_path=$main_folder/gDB/$genomicsDB_name
 
 
 cd $output_folder
