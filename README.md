@@ -7,7 +7,7 @@ Bioinformatics pipeline for idintifying mutations in whole genome sequences of <
 * samtools: Tools for manipulating NGS data (https://github.com/samtools/samtools)
 * vcftools: A set of tools for working with VCF files (https://github.com/vcftools/vcftools)
 * BWA: Burrow-Wheeler Aligner (http://bio-bwa.sourceforge.net) 
-* gatk: Genome Analysis Toolkit (https://gatk.broadinstitute.org/)
+* GATK: Genome Analysis Toolkit (https://gatk.broadinstitute.org/)
 * BioAlcidaeJdk: java-based version of awk for bioinformatics (http://lindenb.github.io/jvarkit/BioAlcidaeJdk.html)
 
 The environment under CentOS 7.5 is tested. The versions of the tools used are documented in a series of shell scripts.
@@ -17,10 +17,10 @@ TAIR10 genomic sequences were downloaded from the TAIR FTP site.
 
 
 ## Flowchart
-This workflow is referred to "Germline short variant discovery (SNPs + INDELs)" that give in gatk.
+This workflow is referred to the practice "Germline short variant discovery (SNPs + INDELs)" in GATK.
 
 <p align="left">
-  <img src="https://github.com/akihirao/At_Reseq/blob/master/images/AtReseq.workflow.jpeg"/>
+  <img src="https://github.com/akihirao/At_Reseq/blob/master/images/AtReseq.workflow.jpeg" width="75%" height="75%"/>
 </p>
 
 
