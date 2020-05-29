@@ -16,7 +16,7 @@ reference_folder=/zfs/Arabidopsis/Reference_v1.1
 
 
 target_ID=AT48
-output_folder=$main_folder/SNV_call
+output_folder=$main_folder/vcf_out
 mkdir -p $output_folder
 
 genomicsDB_name=genomicsDB.$target_ID
@@ -25,12 +25,12 @@ DB_path=$output_folder/$genomicsDB_name
 
 cd $output_folder
 
-
-
 gatk GenotypeGVCFs \
 -R $reference_folder/TAIR10.fa \
 -V gendb://$DB_path \
 -O $output_folder/$target_ID.vcf.gz
+
+cd $SCRIPT_DIR
 
 	
 module unload gatk/4.1.7.0

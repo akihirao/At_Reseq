@@ -6,7 +6,7 @@ set -exuo pipefail
 
 SCRIPT_DIR=$(cd $(dirname $0) && pwd)
 
-CPU=8
+CPU=6
 
 module load gatk/4.1.7.0
 
@@ -25,7 +25,7 @@ slash_lab="/"
 while read sample; do
 
 	echo $sample
-	gvcf_folder=$main_folder/SNV_call/$sample$slash_lab
+	gvcf_folder=$main_folder/bwa_out/$sample$slash_lab
 		
 	input_samples=$input_samples$option_lab$gvcf_folder$sample$TAIR10_gvcf_lab$one_space
 
@@ -50,17 +50,13 @@ DB_path=$output_folder/$genomicsDB_name
 
 cd $output_folder
 
-
 gatk GenomicsDBImport \
 $input_samples \
 --genomicsdb-workspace-path  $DB_path \
 --intervals $SCRIPT_DIR/AT_Chr1-5.list \
 --reader-threads $CPU
 
-
 cd $SCRIPT_DIR
-
 
 	
 module unload gatk/4.1.7.0
-
