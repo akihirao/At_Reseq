@@ -43,7 +43,6 @@ gatk VariantFiltration\
  --filter-name "ExHet"\
  -O $target_ID.mendelian.snp.filter.vcf
 
-#grep -E '^#|PASS' $target_ID.mendelian.snp.filter.vcf > $target_ID.mendelian.snp.filterPASSED.vcf
 grep -E '^#|PASS' $target_ID.mendelian.snp.filter.vcf > $target_ID.mendelian.snp.filterPASSED.vcf
 
 #VariantFiltration for INDEL
@@ -56,7 +55,6 @@ gatk VariantFiltration\
  --filter-name "ExHet"\
  -O $target_ID.mendelian.indel.filter.vcf
 
-#grep -E '^#|PASS' $target_ID.mendelian.indel.filter.vcf > $target_ID.mendelian.indel.filterPASSED.vcf
 grep -E '^#|PASS' $target_ID.mendelian.indel.filter.vcf > $target_ID.mendelian.indel.filterPASSED.vcf
 
 #COMMENTOUT1
