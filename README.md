@@ -4,11 +4,13 @@ Bioinformatics pipeline for idintifying mutations in whole genome sequences of <
 
 ## Requirement
 
-* samtools: Tools for manipulating NGS data (https://github.com/samtools/samtools)
-* vcftools: A set of tools for working with VCF files (https://github.com/vcftools/vcftools)
+* bcftools: Tools for manipulating VCF and BCF files (http://samtools.github.io/bcftools/bcftools.html)
+* BioAlcidaeJdk: java-based version of awk for bioinformatics (http://lindenb.github.io/jvarkit/BioAlcidaeJdk.html)
 * BWA: Burrow-Wheeler Aligner (http://bio-bwa.sourceforge.net) 
 * GATK: Genome Analysis Toolkit (https://gatk.broadinstitute.org/)
-* BioAlcidaeJdk: java-based version of awk for bioinformatics (http://lindenb.github.io/jvarkit/BioAlcidaeJdk.html)
+* samtools: Tools for manipulating NGS data (https://github.com/samtools/samtools)
+* vcftools: A set of tools for working with VCF files (https://github.com/vcftools/vcftools)
+
 
 The environment under CentOS 7.5 is tested. The versions of the tools used are documented in a series of shell scripts.
 
