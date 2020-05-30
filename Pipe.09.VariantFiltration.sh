@@ -99,9 +99,9 @@ gatk VariantFiltration\
  -V $target_ID.mendelian.snp.filterPASSED.vcf\
  -G-filter "GQ < 20"\
  -G-filter-name "lowGQ"\
--G-filter "DP < 10 || DP > 200"\
--G-filter-name "DP_10-200"\
--O $target_ID.mendelian.snp.DPfilterPASSED.vcf
+ -G-filter "DP < 10 || DP > 200"\
+ -G-filter-name "DP_10-200"\
+ -O $target_ID.mendelian.snp.DPfilterPASSED.vcf
 
 #DepthFiltering for INDEL: DP < 10 & DP > 200 & GQ < 20 (Low Genotype Quality: less than 99%) 
 gatk VariantFiltration\

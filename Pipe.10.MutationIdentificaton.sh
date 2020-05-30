@@ -21,7 +21,7 @@ work_folder=$main_folder/vcf_out
 
 BioAlcidaeJdk_path=/usr/local/jvarkit/dist
 #-----------------------------------------------------
-# defining argument of 48 samples
+# defining the argument for 48 samples
 samples_48=()
 
 while read sample; do
@@ -51,14 +51,16 @@ mkdir -p vcf_compare
 gatk SelectVariants\
  -R $reference_folder/TAIR10.fa\
  -V $target_ID.snp.DPfilterNoCall.vcf.gz\
- -select 'set =="Intersection";' -invertSelect \
+ -select 'set =="Intersection";'\
+ -invertSelect\
  -O $work_folder/$target_ID.snp.unique.vcf
 
 #extraction of unique variants: INDELs
 gatk SelectVariants\
  -R $reference_folder/TAIR10.fa\
  -V $target_ID.indel.DPfilterNoCall.vcf.gz\
- -select 'set =="Intersection";' -invertSelect\
+ -select 'set =="Intersection";'\
+ -invertSelect\
  -O $work_folder/$target_ID.indel.unique.vcf
 
 
