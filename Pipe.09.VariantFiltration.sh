@@ -3,6 +3,7 @@
 #by HIRAO Akira
 
 #modified to restrict to biallelic @2020530
+#modified for filtering out ExcessHet P < 0.05
 
 set -exuo pipefail
 
@@ -22,6 +23,12 @@ module load gatk/4.1.7.0
 
 cd $work_folder
 
+#defining ExcessHet parameter
+#"ExcessHet > 13.0" means excess of heterozygosity with p value 0.05 
+ExcessHet_P=0.05
+ExcessHet_Q=`echo "scale=5; -10 * l($ExcessHet_P) /l(10)" |bc -l | xargs printf %.1f`
+ExcessHet_param="ExcessHet > ${ExcessHet_Q}"
+echo $ExcessHet_param
 
 #=====================================================================
 #<< COMMENTOUT1
@@ -32,6 +39,8 @@ gatk VariantFiltration\
  -V $target_ID.mendelian.snp.vcf.gz\
  --filter-expression "QD < 2.0 || FS > 60.0 || MQ < 40.0 || MQRankSum < -12.5 || ReadPosRankSum < -8.0 || SOR > 4.0"\
  --filter-name "basic_snp_filter"\
+ --filter-expression "${ExcessHet_param}"\
+ --filter-name "ExHet"\
  -O $target_ID.mendelian.snp.filter.vcf
 
 #grep -E '^#|PASS' $target_ID.mendelian.snp.filter.vcf > $target_ID.mendelian.snp.filterPASSED.vcf
@@ -43,6 +52,8 @@ gatk VariantFiltration\
  -V $target_ID.mendelian.indel.vcf.gz \
  --filter-expression "QD < 2.0 || FS > 200.0 || ReadPosRankSum < -20.0 || SOR > 10.0"\
  --filter-name "basic_indel_filter"\
+ --filter-expression "${ExcessHet_param}"\
+ --filter-name "ExHet"\
  -O $target_ID.mendelian.indel.filter.vcf
 
 #grep -E '^#|PASS' $target_ID.mendelian.indel.filter.vcf > $target_ID.mendelian.indel.filterPASSED.vcf
@@ -58,6 +69,8 @@ gatk VariantFiltration\
  -V $target_ID.snp.vcf.gz \
  --filter-expression "QD < 2.0 || FS > 60.0 || MQ < 40.0 || MQRankSum < -12.5 || ReadPosRankSum < -8.0 || SOR > 4.0"\
  --filter-name "basic_snp_filter"\
+ --filter-expression "${ExcessHet_param}"\
+ --filter-name "ExHet"\
  -O $target_ID.snp.filter.vcf
 
 grep -E '^#|PASS' $target_ID.snp.filter.vcf > $target_ID.snp.filterPASSED.vcf
@@ -68,6 +81,8 @@ gatk VariantFiltration\
  -V $target_ID.indel.vcf.gz\
  --filter-expression "QD < 2.0 || FS > 200.0 || ReadPosRankSum < -20.0 || SOR > 10.0"\
  --filter-name "basic_indel_filter"\
+ --filter-expression "${ExcessHet_param}"\
+ --filter-name "ExHet"\
  -O $target_ID.indel.filter.vcf
 
 grep -E '^#|PASS' $target_ID.indel.filter.vcf > $target_ID.indel.filterPASSED.vcf

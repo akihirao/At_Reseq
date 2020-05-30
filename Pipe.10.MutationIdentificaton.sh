@@ -19,6 +19,7 @@ reference_folder=/zfs/Arabidopsis/Reference_v1.1
 main_folder=/zfs/Arabidopsis/work/At_Reseq
 work_folder=$main_folder/vcf_out
 
+BioAlcidaeJdk_path=/usr/local/jvarkit/dist
 #-----------------------------------------------------
 # defining argument of 48 samples
 samples_48=()
@@ -40,15 +41,9 @@ M2_vec=(${samples_48[@]:12:36})
 echo ${mother_vec[@]}
 echo ${M2_vec[@]}
 
-#M2_vec=(${sample_No_13} ${sample_No_14} ${sample_No_15} ${sample_No_16}  ${sample_No_17}  ${sample_No_18}  ${sample_No_19}  ${sample_No_20}  ${sample_No_21}  ${sample_No_22}  ${sample_No_23}  ${sample_No_24}  ${sample_No_25}  ${sample_No_26}  ${sample_No_27}  ${sample_No_28}  ${sample_No_29}  ${sample_No_30}  ${sample_No_31}  ${sample_No_32}  ${sample_No_33}  ${sample_No_34}  ${sample_No_35}  ${sample_No_36}  ${sample_No_37}  ${sample_No_38}  ${sample_No_39} ${sample_No_40} ${sample_No_41} ${sample_No_42} ${sample_No_43} ${sample_No_44} ${sample_No_45} ${sample_No_46} ${sample_No_47} ${sample_No_48})
-#echo "${M2_vec[0]}","${M2_vec[1]}","${M2_vec[2]}","${M2_vec[3]}" 
 
 cd $work_folder
 mkdir -p vcf_compare
-
-cp $SCRIPT_DIR/summarizing_Family.unique_snp.R $work_folder/summarizing_Family.unique_snp.R
-cp $SCRIPT_DIR/summarizing_Family.unique_indel.R $work_folder/summarizing_Family.unique_indel.R
-cp $SCRIPT_DIR/summarizing_Family.unique_snv.R $work_folder/summarizing_Family.unique_snv.R
 
 
 #addition@2020,3.30
@@ -69,18 +64,11 @@ gatk SelectVariants\
 
 << COMMENTOUT
 
-
-#snpsindels
-gunzip -c $work_folder/$target_ID.snp.DPfilterNoCall.vcf.gz > $work_folder/$target_ID.snp.DPfilterNoCall.vcf
-gunzip -c $work_folder/$target_ID.indel.DPfilterNoCall.vcf.gz > $work_folder/$target_ID.indel.DPfilterNoCall.vcf
-gunzip -c $work_folder/$target_ID.snv.DPfilterNoCall.vcf.gz > $work_folder/$target_ID.snv.DPfilterNoCall.vcf
-
-
 #identifying unique SNVs with using bioalcidaejdk.jar
 #See detail for https://www.biostars.org/p/329423/#329742
-java -jar /usr/local/jvarkit/dist/bioalcidaejdk.jar -e 'stream().forEach(V->{final List<Genotype> L=V.getGenotypes().stream().filter(G->G.isHet() || G.isHomVar()).collect(Collectors.toList());if(L.size()!=1) return;final Genotype g=L.get(0);println(V.getContig()+" "+V.getStart()+" "+V.getReference()+" "+g.getSampleName()+" "+g.getAlleles());});' $work_folder/$target_ID.snp.DPfilterNoCall.vcf > $work_folder/$target_ID.unique_snps_list.txt
-java -jar /usr/local/jvarkit/dist/bioalcidaejdk.jar -e 'stream().forEach(V->{final List<Genotype> L=V.getGenotypes().stream().filter(G->G.isHet() || G.isHomVar()).collect(Collectors.toList());if(L.size()!=1) return;final Genotype g=L.get(0);println(V.getContig()+" "+V.getStart()+" "+V.getReference()+" "+g.getSampleName()+" "+g.getAlleles());});' $work_folder/$target_ID.indel.DPfilterNoCall.vcf > $work_folder/$target_ID.unique_indels_list.txt
-java -jar /usr/local/jvarkit/dist/bioalcidaejdk.jar -e 'stream().forEach(V->{final List<Genotype> L=V.getGenotypes().stream().filter(G->G.isHet() || G.isHomVar()).collect(Collectors.toList());if(L.size()!=1) return;final Genotype g=L.get(0);println(V.getContig()+" "+V.getStart()+" "+V.getReference()+" "+g.getSampleName()+" "+g.getAlleles());});' $work_folder/$target_ID.snv.DPfilterNoCall.vcf > $work_folder/$target_ID.unique_snvs_list.txt
+java -jar $BioAlcidaeJdk_path/bioalcidaejdk.jar -e 'stream().forEach(V->{final List<Genotype> L=V.getGenotypes().stream().filter(G->G.isHet() || G.isHomVar()).collect(Collectors.toList());if(L.size()!=1) return;final Genotype g=L.get(0);println(V.getContig()+" "+V.getStart()+" "+V.getReference()+" "+g.getSampleName()+" "+g.getAlleles());});' $work_folder/$target_ID.snp.DPfilterNoCall.vcf > $work_folder/$target_ID.unique_snps_list.txt
+java -jar $BioAlcidaeJdk_path/bioalcidaejdk.jar -e 'stream().forEach(V->{final List<Genotype> L=V.getGenotypes().stream().filter(G->G.isHet() || G.isHomVar()).collect(Collectors.toList());if(L.size()!=1) return;final Genotype g=L.get(0);println(V.getContig()+" "+V.getStart()+" "+V.getReference()+" "+g.getSampleName()+" "+g.getAlleles());});' $work_folder/$target_ID.indel.DPfilterNoCall.vcf > $work_folder/$target_ID.unique_indels_list.txt
+java -jar $BioAlcidaeJdk_path/bioalcidaejdk.jar -e 'stream().forEach(V->{final List<Genotype> L=V.getGenotypes().stream().filter(G->G.isHet() || G.isHomVar()).collect(Collectors.toList());if(L.size()!=1) return;final Genotype g=L.get(0);println(V.getContig()+" "+V.getStart()+" "+V.getReference()+" "+g.getSampleName()+" "+g.getAlleles());});' $work_folder/$target_ID.snv.DPfilterNoCall.vcf > $work_folder/$target_ID.unique_snvs_list.txt
 
 
 perl $SCRIPT_DIR/FilteringUniqueSNVs.pl < $work_folder/$target_ID.unique_snps_list.txt > $work_folder/$target_ID.unique_snps_list.filtered.txt
@@ -120,7 +108,7 @@ echo "SampleID"	"SNP_mutations"	"INDEL_mutations" >> $work_folder/$mutation_summ
 
 mkdir -p unique_vcfs
 mkdir -p mutations_vcf
-for target_sample in A011	A012	A014	A021	A023	A024	A031	A033	A034	A113	A114	A115	A121	A123	A125	A131	A132	A135	A212	A213	A215	A221	A222	A225	A231	A233	A234	A311	A313	A314	A321	A323	A324	A331	A332	A334
+for target_sample in ${M2_vec[@]}
 do
 
 	#Filtering SNPs
@@ -193,79 +181,14 @@ done
 
 vcf-merge \
 $work_folder/mutations_vcf/$sample_No_13.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_14.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_15.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_16.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_17.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_18.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_19.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_20.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_21.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_22.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_23.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_24.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_25.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_26.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_27.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_28.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_29.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_30.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_31.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_32.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_33.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_34.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_35.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_36.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_37.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_38.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_39.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_40.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_41.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_42.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_43.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_44.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_45.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_46.M2.snps.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_47.M2.snps.mutation.vcf.gz \
+...
 $work_folder/mutations_vcf/$sample_No_48.M2.snps.mutation.vcf.gz | bgzip -c > $work_folder/$target_ID.M2.snps.mutation.vcf.gz
 
 
 vcf-merge \
 $work_folder/mutations_vcf/$sample_No_13.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_14.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_15.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_16.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_17.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_18.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_19.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_20.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_21.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_22.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_23.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_24.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_25.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_26.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_27.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_28.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_29.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_30.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_31.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_32.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_33.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_34.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_35.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_36.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_37.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_38.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_39.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_40.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_41.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_42.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_43.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_44.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_45.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_46.M2.indels.mutation.vcf.gz \
-$work_folder/mutations_vcf/$sample_No_47.M2.indels.mutation.vcf.gz \
+...
+
 $work_folder/mutations_vcf/$sample_No_48.M2.indels.mutation.vcf.gz | bgzip -c > $work_folder/$target_ID.M2.indels.mutation.vcf.gz
 
 
@@ -279,6 +202,10 @@ java -jar /usr/local/jvarkit/dist/bioalcidaejdk.jar -e 'stream().forEach(V->{fin
 
 
 #cd $SCRIPT_DIR/$work_folder
+
+cp $SCRIPT_DIR/summarizing_Family.unique_snp.R $work_folder/summarizing_Family.unique_snp.R
+cp $SCRIPT_DIR/summarizing_Family.unique_indel.R $work_folder/summarizing_Family.unique_indel.R
+cp $SCRIPT_DIR/summarizing_Family.unique_snv.R $work_folder/summarizing_Family.unique_snv.R
 
 R --no-save $target_ID $sample_No_01 $sample_No_02 $sample_No_03 $sample_No_04 $sample_No_05 $sample_No_06 $sample_No_07 $sample_No_08 $sample_No_09 $sample_No_10 $sample_No_11 $sample_No_12 $sample_No_13 $sample_No_14 $sample_No_15 $sample_No_16 $sample_No_17 $sample_No_18 $sample_No_19 $sample_No_20 $sample_No_21 $sample_No_22 $sample_No_23 $sample_No_24 $sample_No_25 $sample_No_26 $sample_No_27 $sample_No_28 $sample_No_29 $sample_No_30 $sample_No_31 $sample_No_32 $sample_No_33 $sample_No_34 $sample_No_35 $sample_No_36 $sample_No_37 $sample_No_38 $sample_No_39 $sample_No_40 $sample_No_41 $sample_No_42 $sample_No_43 $sample_No_44 $sample_No_45 $sample_No_46 $sample_No_47 $sample_No_48 < summarizing_Family.unique_snp.R 
 R --no-save $target_ID $sample_No_01 $sample_No_02 $sample_No_03 $sample_No_04 $sample_No_05 $sample_No_06 $sample_No_07 $sample_No_08 $sample_No_09 $sample_No_10 $sample_No_11 $sample_No_12 $sample_No_13 $sample_No_14 $sample_No_15 $sample_No_16 $sample_No_17 $sample_No_18 $sample_No_19 $sample_No_20 $sample_No_21 $sample_No_22 $sample_No_23 $sample_No_24 $sample_No_25 $sample_No_26 $sample_No_27 $sample_No_28 $sample_No_29 $sample_No_30 $sample_No_31 $sample_No_32 $sample_No_33 $sample_No_34 $sample_No_35 $sample_No_36 $sample_No_37 $sample_No_38 $sample_No_39 $sample_No_40 $sample_No_41 $sample_No_42 $sample_No_43 $sample_No_44 $sample_No_45 $sample_No_46 $sample_No_47 $sample_No_48 < summarizing_Family.unique_indel.R 
