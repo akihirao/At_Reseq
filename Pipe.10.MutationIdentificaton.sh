@@ -40,8 +40,6 @@ M2_vec=(${samples_48[@]:12:36})
 echo ${mother_vec[@]}
 echo ${M2_vec[@]}
 
-#M2_vec=(${sample_No_13} ${sample_No_14} ${sample_No_15} ${sample_No_16}  ${sample_No_17}  ${sample_No_18}  ${sample_No_19}  ${sample_No_20}  ${sample_No_21}  ${sample_No_22}  ${sample_No_23}  ${sample_No_24}  ${sample_No_25}  ${sample_No_26}  ${sample_No_27}  ${sample_No_28}  ${sample_No_29}  ${sample_No_30}  ${sample_No_31}  ${sample_No_32}  ${sample_No_33}  ${sample_No_34}  ${sample_No_35}  ${sample_No_36}  ${sample_No_37}  ${sample_No_38}  ${sample_No_39} ${sample_No_40} ${sample_No_41} ${sample_No_42} ${sample_No_43} ${sample_No_44} ${sample_No_45} ${sample_No_46} ${sample_No_47} ${sample_No_48})
-#echo "${M2_vec[0]}","${M2_vec[1]}","${M2_vec[2]}","${M2_vec[3]}" 
 
 cd $work_folder
 mkdir -p vcf_compare
