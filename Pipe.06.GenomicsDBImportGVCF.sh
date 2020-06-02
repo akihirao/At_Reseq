@@ -29,7 +29,7 @@ while read sample; do
 		
 	input_samples=$input_samples$option_lab$gvcf_folder$sample$TAIR10_gvcf_lab$one_space
 
-done < $SCRIPT_DIR/sample_list.txt #list of samples
+done < $SCRIPT_DIR/sample_ID.list #list of samples
 
 echo $input_samples
 

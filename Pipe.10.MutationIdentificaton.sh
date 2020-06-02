@@ -2,14 +2,16 @@
 #Pipe.10.MutationIdentificaton.sh
 #by HIRAO Akira
 
-#requirement: FilteringUniqueSNVs.pl, summarizing_Family.unique_snp.R
+#requirement:
+#*FilteringVcfNeighborSNVs.pl: filtering out combined variants (SNPs and INDELs) around neighborhood
+#*VariantFilteredAF.pl: filtering out mutation sites whrere proportion of mutant reads < 25%
+#*MakeMulationList.pl: output mutation list
 
 set -exuo pipefail
 
 SCRIPT_DIR=$(cd $(dirname $0)  && pwd)
 
 module load gatk/4.1.7.0
-module load vcftools/0.1.15
 module load bedops/2.4.39
 
 target_ID=AT48
@@ -34,7 +36,7 @@ samples_48=()
 while read sample; do
 	echo $sample
 	samples_48+=($sample)
-done < $SCRIPT_DIR/sample_list.txt #list of samples
+done < $SCRIPT_DIR/sample_ID.list #list of samples
 
 echo $samples_48
 
@@ -87,9 +89,9 @@ gatk VariantFiltration\
  -O $work_folder/AT.M2.unique.hetero_marked.vcf.gz
 
 
-#for target_sample in A011 A012 A014
 for target_sample in ${M2_vec[@]}
 do
+
 	mkdir -p $target_sample
 
 	gatk SelectVariants\
@@ -129,6 +131,7 @@ do
 
 done
 
+
 #Sort SNPs + INDELs mutation list 
 cat $work_folder/$mutation_list_file.txt | sort -k 1,1 -k 2,2 >  $work_folder/$mutation_list_file.position_sort.txt
 
@@ -136,11 +139,10 @@ cat $work_folder/$mutation_list_file.txt | sort -k 1,1 -k 2,2 >  $work_folder/$m
 awk '/SNP/' $work_folder/$mutation_list_file.position_sort.txt > $work_folder/M2.snp.list.txt
 
 #Extract INDELs mutation list
-awk '/Insertion/,/Deletion/' $work_folder/$mutation_list_file.position_sort.txt > $work_folder/M2.indel.list.txt
+awk '/Insertion/ || /Deletion/' $work_folder/$mutation_list_file.position_sort.txt > $work_folder/M2.indel.list.txt
 
 
 cd $SCRIPT_DIR
 
 module unload gatk/4.1.7.0
-module unload vcftools/0.1.15
 module load bedops/2.4.39

@@ -2,9 +2,6 @@
 #Pipe.09.VariantFiltration.sh
 #by HIRAO Akira
 
-#modified to restrict to biallelic @2020530
-#modified for filtering out ExcessHet P < 0.05
-
 set -exuo pipefail
 
 SCRIPT_DIR=$(cd $(dirname $0) && pwd)
