@@ -4,10 +4,11 @@ Bioinformatics pipeline for idintifying mutations in whole genome sequences of <
 
 ## Requirement
 
+* BEDOPS: the fast, highly scalable and easily-parallelizable genome analysis toolkit (https://bedops.readthedocs.io)
 * bcftools: Tools for manipulating VCF and BCF files (http://samtools.github.io/bcftools/bcftools.html)
 * BioAlcidaeJdk: java-based version of awk for bioinformatics (http://lindenb.github.io/jvarkit/BioAlcidaeJdk.html)
 * BWA: Burrow-Wheeler Aligner (http://bio-bwa.sourceforge.net) 
-* GATK: Genome Analysis Toolkit (https://gatk.broadinstitute.org/)
+* GATK: Genome Analysis Toolkit (https://gatk.broadinstitute.org)
 * samtools: Tools for manipulating NGS data (https://github.com/samtools/samtools)
 * vcftools: A set of tools for working with VCF files (https://github.com/vcftools/vcftools)
 
