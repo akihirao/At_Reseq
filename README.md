@@ -3,16 +3,16 @@ Bioinformatics pipeline for idintifying mutations in whole genome sequences of <
  
 
 ## Requirement
+###
+* BEDOPS: the fast, highly scalable and easily-parallelizable genome analysis toolkit (https://bedops.readthedocs.io)
+* bcftools: Tools for manipulating VCF and BCF files (http://samtools.github.io/bcftools/bcftools.html)
+* BioAlcidaeJdk: java-based version of awk for bioinformatics (http://lindenb.github.io/jvarkit/BioAlcidaeJdk.html)
+* BWA: Burrow-Wheeler Aligner (http://bio-bwa.sourceforge.net) 
+* GATK: Genome Analysis Toolkit (https://gatk.broadinstitute.org)
+* samtools: Tools for manipulating NGS data (https://github.com/samtools/samtools)
+* vcftools: A set of tools for working with VCF files (https://github.com/vcftools/vcftools)  
 
-###* BEDOPS: the fast, highly scalable and easily-parallelizable genome analysis toolkit (https://bedops.readthedocs.io)
-###* bcftools: Tools for manipulating VCF and BCF files (http://samtools.github.io/bcftools/bcftools.html)
-###* BioAlcidaeJdk: java-based version of awk for bioinformatics (http://lindenb.github.io/jvarkit/BioAlcidaeJdk.html)
-###* BWA: Burrow-Wheeler Aligner (http://bio-bwa.sourceforge.net) 
-###* GATK: Genome Analysis Toolkit (https://gatk.broadinstitute.org)
-###* samtools: Tools for manipulating NGS data (https://github.com/samtools/samtools)
-###* vcftools: A set of tools for working with VCF files (https://github.com/vcftools/vcftools)  
-
-###* Perl: (https://www.perl.org)  
+* Perl: (https://www.perl.org)  
 
 The environment under CentOS 7.5 is tested. The versions of the tools used are documented in a series of shell scripts.
 
@@ -46,8 +46,8 @@ The called raw variants by gatk VariantFiltration in Pipe.09
 * Common for filtering out: Depth ＜ 10x, Depth > 200x, GenotypeQuality < 20 
 * SNPs for flitering out: QualByDepth < 2.0, FisherStrand > 60.0, RMSMappingQuality < 40.0, MQRankSum < -12.5, ReadPosRankUsm < -8.0, StrandOddsRatio > 4.0, and ExcessHet > 13.0  
 * INDELs for flitering out: QualByDepth < 2.0, FisherStrand > 200.0, RMSMappingQuality < 20.0, StrandOddsRatio > 10.0, and ExcessHet > 13.0  
-
-## The mutation identification in Pipe.10
+##
+The mutation identification in Pipe.10
 ###
 * mendelian-violation-qual-threshold: 30  
 This setting in gatk SelectVariants wiil select only variants that correspond to a mendelian violation as determined on the basis of family structure as P < 0.01.
