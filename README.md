@@ -39,14 +39,12 @@ Pipe.03.BaseRecalibrator.sh
 Pipe.10.MutationIdentification.sh
 ```
 
-## Filtering parameters
-The called raw variants by gatk VariantFiltration in Pipe.08  
+## Filtering out parameters
+The called raw variants by gatk VariantFiltration in Pipe.08    
 
-SNPs:  
-QualByDepth < 2.0, FisherStrand > 60.0, RMSMappingQuality < 40.0, MQRankSum < -12.5, ReadPosRankUsm < -8.0, StrandOddsRatio > 4.0, and ExcessHet > 13.0  
-
-INDELs:  
-QualByDepth < 2.0, FisherStrand > 200.0, RMSMappingQuality < 20.0, StrandOddsRatio > 10.0, and ExcessHet > 13.0  
+* SNPs and INDELs: Depth ＜ 10x, Depth > 200x, GenotypeQuality < 20 
+* SNPs specific: QualByDepth < 2.0, FisherStrand > 60.0, RMSMappingQuality < 40.0, MQRankSum < -12.5, ReadPosRankUsm < -8.0, StrandOddsRatio > 4.0, and ExcessHet > 13.0  
+* INDELs specific: QualByDepth < 2.0, FisherStrand > 200.0, RMSMappingQuality < 20.0, StrandOddsRatio > 10.0, and ExcessHet > 13.0  
 
 
 
