@@ -25,9 +25,11 @@ work_folder=$main_folder/vcf_out
 BioAlcidaeJdk_path=/usr/local/jvarkit/dist
 
 mutation_summary_file="mutation_summary.txt"
+mutation_summary_file_homo="mutation_summary.homo.txt"
 mutation_list_file="M2.mutation_list"
 
 echo -n >| $work_folder/$mutation_summary_file
+echo -n >| $work_folder/$mutation_summary_file_homo
 echo -n >| $work_folder/$mutation_list_file.txt
 
 
@@ -77,7 +79,7 @@ gatk SelectVariants\
  --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
  -O $work_folder/AT.M2.unique.vcf.gz
 
-
+#mark homozygous mutation sites
 gatk VariantFiltration\
  -R $reference_folder/TAIR10.fa\
  -V $work_folder/AT.M2.unique.vcf.gz\
@@ -87,8 +89,8 @@ gatk VariantFiltration\
  -G-filter-name "homozygous_ref"\
  -O $work_folder/AT.M2.unique.hetero_marked.vcf.gz
 
-
-for target_sample in ${M2_vec[@]}
+#for target_sample in ${M2_vec[@]}
+for target_sample in A011 A012 A014
 do
 
 	mkdir -p $target_sample
@@ -109,6 +111,17 @@ do
 	bgzip -c $work_folder/$target_sample/$target_sample.hetero.vcf > $work_folder/$target_sample/$target_sample.hetero.vcf.gz
 	tabix -f -p vcf $work_folder/$target_sample/$target_sample.hetero.vcf.gz
 
+	#select homozygous mutation sites per samples
+	gatk SelectVariants\
+	 -R $reference_folder/TAIR10.fa\
+	 -V $work_folder/AT.M2.unique.vcf.gz\
+	 -select 'vc.getGenotype("${target_sample}").isHomRef() || vc.getGenotype("${target_sample}").isHomVar()'\
+	 --sample-name $target_sample\
+	 -O $work_folder/$target_sample/$target_sample.homo.vcf
+	bgzip -c $work_folder/$target_sample/$target_sample.homo.vcf > $work_folder/$target_sample/$target_sample.homo.vcf.gz
+	tabix -f -p vcf $work_folder/$target_sample/$target_sample.homo.vcf.gz
+
+
 	#filtering out combined mutations 
 	perl $SCRIPT_DIR/FilteringVcfNeighborSNVs.pl < $work_folder/$target_sample/$target_sample.hetero.vcf > $work_folder/$target_sample/$target_sample.non_neighbor.vcf
 	bgzip -c $work_folder/$target_sample/$target_sample.non_neighbor.vcf > $work_folder/$target_sample/$target_sample.non_neighbor.vcf.gz
@@ -121,34 +134,56 @@ do
 	perl $SCRIPT_DIR/VariantFilteredAF.pl < $work_folder/$target_sample/$target_sample.non_neighbor.vcf > $work_folder/$target_sample/$target_sample.final.mutants.vcf
 	perl $SCRIPT_DIR/VariantFilteredAF.pl < $work_folder/$target_sample/$target_sample.combined.vcf > $work_folder/$target_sample/$target_sample.final.combined.vcf
 
-	#output mutation.list
+	#output heterozygous mutation.list 
 	perl $SCRIPT_DIR/MakeMulationList.pl $work_folder/$target_sample/$target_sample.final.mutants.vcf $target_sample >> $work_folder/$mutation_list_file.txt
+	#output homozygous mutation.list 
+	perl $SCRIPT_DIR/MakeMulationList.pl $work_folder/$target_sample/$target_sample.homo.vcf $target_sample >> $work_folder/$mutation_list_file.homo.txt
+
 
 	vcf2bed --snvs <  $work_folder/$target_sample/$target_sample.final.mutants.vcf > $work_folder/$target_sample/$target_sample.snp.bed
 	vcf2bed --insertions < $work_folder/$target_sample/$target_sample.final.mutants.vcf > $work_folder/$target_sample/$target_sample.insertion.bed
 	vcf2bed --deletions <  $work_folder/$target_sample/$target_sample.final.mutants.vcf > $work_folder/$target_sample/$target_sample.deletion.bed
 	vcf2bed <  $work_folder/$target_sample/$target_sample.final.combined.vcf > $work_folder/$target_sample/$target_sample.final.combined.bed
   
+	vcf2bed --snvs <  $work_folder/$target_sample/$target_sample.homo.vcf > $work_folder/$target_sample/$target_sample.snp.homo.bed
+	vcf2bed --insertions < $work_folder/$target_sample/$target_sample.homo.vcf > $work_folder/$target_sample/$target_sample.insertion.homo.bed
+	vcf2bed --deletions <  $work_folder/$target_sample/$target_sample.homo.vcf > $work_folder/$target_sample/$target_sample.deletion.homo.bed
+
 	no_snp=`wc -l $work_folder/$target_sample/$target_sample.snp.bed |awk '{print $1}'`
 	no_insertion=`wc -l $work_folder/$target_sample/$target_sample.insertion.bed |awk '{print $1}'`
 	no_deletion=`wc -l $work_folder/$target_sample/$target_sample.deletion.bed |awk '{print $1}'`
 	no_indel=$((no_insertion + no_deletion))
+
+	no_snp_homo=`wc -l $work_folder/$target_sample/$target_sample.snp.homo.bed |awk '{print $1}'`
+	no_insertion_homo=`wc -l $work_folder/$target_sample/$target_sample.insertion.homo.bed |awk '{print $1}'`
+	no_deletion_homo=`wc -l $work_folder/$target_sample/$target_sample.deletion.homo.bed |awk '{print $1}'`
+	no_indel_homo=$((no_insertion_homo + no_deletion_homo))
 	 
 	tab_lab="	"
 	output_info=$target_sample$tab_lab$no_snp$tab_lab$no_indel$tab_lab$no_insertion$tab_lab$no_deletion
-	echo $output_info >> $work_folder/$mutation_summary_file
+	echo $output_info >> $work_folder/$mutation_summary_file.txt
+
+	output_info_homo=$target_sample$tab_lab$no_snp_homo$tab_lab$no_indel_homo$tab_lab$no_insertion_homo$tab_lab$no_deletion_homo
+	echo $output_info_homo >> $work_folder/$mutation_summary_file_homo.txt
 
 done
 
 
-#Sort SNPs + INDELs mutation list 
+#Sort SNPs + INDELs heterozygous mutation list 
 cat $work_folder/$mutation_list_file.txt | sort -k 1,1 -k 2,2 >  $work_folder/$mutation_list_file.position_sort.txt
-
-#Extract SNPs mutation list
+#Extract SNPs heterozygous mutation list
 awk '/SNP/' $work_folder/$mutation_list_file.position_sort.txt > $work_folder/M2.snp.list.txt
-
-#Extract INDELs mutation list
+#Extract INDELs heterozygous mutation list
 awk '/Insertion/ || /Deletion/' $work_folder/$mutation_list_file.position_sort.txt > $work_folder/M2.indel.list.txt
+
+#Sort SNPs + INDELs homozygous mutation list 
+cat $work_folder/$mutation_list_file.homo.txt | sort -k 1,1 -k 2,2 >  $work_folder/$mutation_list_file.position_sort.homo.txt
+#Extract SNPs homozygous mutation list
+awk '/SNP/' $work_folder/$mutation_list_file.position_sort.homo.txt > $work_folder/M2.snp.homo.list.txt
+#Extract INDELs homozygous mutation list
+awk '/Insertion/ || /Deletion/' $work_folder/$mutation_list_file.position_sort.homo.txt > $work_folder/M2.indel.homo.list.txt
+
+
 
 
 cd $SCRIPT_DIR
