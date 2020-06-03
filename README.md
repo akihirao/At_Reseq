@@ -12,13 +12,12 @@ Bioinformatics pipeline for idintifying mutations in whole genome sequences of <
 * GATK: Genome Analysis Toolkit (https://gatk.broadinstitute.org)
 * samtools: Tools for manipulating NGS data (https://github.com/samtools/samtools)
 * vcftools: A set of tools for working with VCF files (https://github.com/vcftools/vcftools)  
-
 * Perl: (https://www.perl.org)  
 
 The environment under CentOS 7.5 is tested. The versions of the tools used are documented in a series of shell scripts.
 
 ## <i>Arabidopsis thaliana</i> genomic resources
-TAIR10 genomic sequences were downloaded from the TAIR FTP site. The whole-genome sequencing data analyzed were deposited into the DNA Data Bank of Japan Sequence Read Archive (https://ddbj.nig.ac.jp/dra) with the accession numbers DRA009784.
+TAIR10 genomic sequences were downloaded from the TAIR FTP site. The whole-genome sequencing data analyzed were deposited into the DNA Data Bank of Japan Sequence Read Archive with the accession numbers DRA009784.
 
 
 ## Flowchart
@@ -52,7 +51,7 @@ The called raw variants by gatk VariantFiltration in Pipe.09
 The mutation identification in Pipe.10
 
 * mendelian-violation-qual-threshold: 30  
-This setting in gatk SelectVariants wiil select only variants that correspond to a mendelian violation as determined on the basis of family structure as P < 0.01.
+This setting in gatk SelectVariants wiil select only variants that correspond to a mendelian violation as determined on the basis of family structure as <i>P</i> < 0.01.
 * Candidate muatation sites having allele frequencies (e.g., proportions of mutant reads at a site) of more than 25% && leth than 80%.
 * Final-identified mutation sites having allele frequencies (proportions of mutant reads at a site) of more than 25% && leth than 80% with GQ = 99.
 
