@@ -12,7 +12,9 @@ set -exuo pipefail
 SCRIPT_DIR=$(cd $(dirname $0)  && pwd)
 
 module load gatk/4.1.7.0
+module load vcftools/0.1.15
 module load bedops/2.4.39
+
 
 target_ID=AT48
 
@@ -46,9 +48,7 @@ echo ${mother_vec[@]}
 echo ${M2_vec[@]}
 #-----------------------------------------------------
 
-
 cd $work_folder
-
 
 #----------------------------------------------------------------------------------
 #Output mendelian violation site only: --pedigree & --mendelian-violation
@@ -76,7 +76,6 @@ gatk SelectVariants\
  -L $work_folder/$target_ID.unique.bed\
  --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
  -O $work_folder/AT.M2.unique.vcf.gz
-
 
 
 gatk VariantFiltration\
@@ -107,11 +106,20 @@ do
 	 --max-nocall-number 0\
 	 -O $work_folder/$target_sample/$target_sample.hetero.vcf
 
-	#filtering out conbined mutations 
+	bgzip -c $work_folder/$target_sample/$target_sample.hetero.vcf > $work_folder/$target_sample/$target_sample.hetero.vcf.gz
+	tabix -f -p vcf $work_folder/$target_sample/$target_sample.hetero.vcf.gz
+
+	#filtering out combined mutations 
 	perl $SCRIPT_DIR/FilteringVcfNeighborSNVs.pl < $work_folder/$target_sample/$target_sample.hetero.vcf > $work_folder/$target_sample/$target_sample.non_neighbor.vcf
+	bgzip -c $work_folder/$target_sample/$target_sample.non_neighbor.vcf > $work_folder/$target_sample/$target_sample.non_neighbor.vcf.gz
+	tabix -f -p vcf $work_folder/$target_sample/$target_sample.non_neighbor.vcf.gz
+
+	#picking up combined mutations
+	vcf-isec -c $work_folder/$target_sample/$target_sample.hetero.vcf.gz $work_folder/$target_sample/$target_sample.non_neighbor.vcf.gz > $work_folder/$target_sample/$target_sample.combined.vcf
 
 	#filtering out mutation sites whrere proportion of mutant reads < 25% or GQ < 99
 	perl $SCRIPT_DIR/VariantFilteredAF.pl < $work_folder/$target_sample/$target_sample.non_neighbor.vcf > $work_folder/$target_sample/$target_sample.final.mutants.vcf
+	perl $SCRIPT_DIR/VariantFilteredAF.pl < $work_folder/$target_sample/$target_sample.combined.vcf > $work_folder/$target_sample/$target_sample.final.combined.vcf
 
 	#output mutation.list
 	perl $SCRIPT_DIR/MakeMulationList.pl $work_folder/$target_sample/$target_sample.final.mutants.vcf $target_sample >> $work_folder/$mutation_list_file.txt
@@ -119,7 +127,8 @@ do
 	vcf2bed --snvs <  $work_folder/$target_sample/$target_sample.final.mutants.vcf > $work_folder/$target_sample/$target_sample.snp.bed
 	vcf2bed --insertions < $work_folder/$target_sample/$target_sample.final.mutants.vcf > $work_folder/$target_sample/$target_sample.insertion.bed
 	vcf2bed --deletions <  $work_folder/$target_sample/$target_sample.final.mutants.vcf > $work_folder/$target_sample/$target_sample.deletion.bed
-
+	vcf2bed <  $work_folder/$target_sample/$target_sample.final.combined.vcf > $work_folder/$target_sample/$target_sample.final.combined.bed
+  
 	no_snp=`wc -l $work_folder/$target_sample/$target_sample.snp.bed |awk '{print $1}'`
 	no_insertion=`wc -l $work_folder/$target_sample/$target_sample.insertion.bed |awk '{print $1}'`
 	no_deletion=`wc -l $work_folder/$target_sample/$target_sample.deletion.bed |awk '{print $1}'`
@@ -145,4 +154,5 @@ awk '/Insertion/ || /Deletion/' $work_folder/$mutation_list_file.position_sort.t
 cd $SCRIPT_DIR
 
 module unload gatk/4.1.7.0
-module load bedops/2.4.39
+module unload vcftools/0.1.15
+module unload bedops/2.4.39

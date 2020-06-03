@@ -2,21 +2,33 @@
 #FilteringVcfNeighborSNVs.pl
 #by HIRAO Akira
 
-$neighbor_threshold = 300; #
-
-#priori setting
-$pre2_Chr = "Chr1";
-$pre1_Chr = "Chr1";
-$pre2_position = 0; 
-$pre1_position = 1; 
+$neighbor_threshold = 150; #
 
 while ($line = <>) {
 	chomp $line;
-
-	if(eof()){
-		($last_Chr, $last_position, @last_info) = split /\s+/, $line; 
-	}elsif($line =~ m/^#/){
+	if($line =~ m/^##/){
 		print $line, "\n";
+	}elsif($line =~ m/^#CHROM/) {
+		print $line, "\n";
+
+		$line = <>;
+		chomp $line;
+		($pre2_Chr, $pre2_position, @pre2_info) = split /\s+/, $line; 
+
+		$line = <>;
+		chomp $line;
+		($pre1_Chr, $pre1_position, @pre1_info) = split /\s+/, $line; 
+
+		$ini_position_dif = $pre1_position - $pre2_position;
+	
+		if($ini_position_dif > $neighbor_threshold){
+			print $pre2_Chr, "\t", $pre2_position, "\t";
+			$pre2_info_last = pop @pre2_info;
+			foreach $output_pre2 (@pre2_info){
+				print $output_pre2, "\t";
+			}
+			print $pre2_info_last, "\n";   	
+		}
 	}else{
 		($Chr, $position, @info) = split /\s+/, $line; 
 	    
@@ -51,6 +63,8 @@ while ($line = <>) {
 
 			if($pre_position_dif <= $neighbor_threshold or $post_position_dif <= $neighbor_threshold){
 
+				#no print
+							
 				$pre2_Chr = $pre1_Chr;
 				$pre2_position = $pre1_position;
 				@pre2_info = @pre1_info;
@@ -82,26 +96,3 @@ while ($line = <>) {
 
 	}
 }#close while()
-
-
-#handling final two lines
-$last_pre_position_dif = abs($position - $pre2_position); # pre1_position had replaced with pre2_position
-$last_post_position_dif = abs($last_position - $position);
-
-if($last_pre_position_dif > $neighbor_threshold and $last_post_position_dif > $neighbor_threshold){
-	print $Chr, "\t", $position, "\t";
-	$info_last = pop @info;
-	foreach $output_info (@info){
-		print $output_info, "\t";
-	}
-	print $info_last, "\n";    	
-}
-
-if($last_post_position_dif > $neighbor_threshold){
-	print $last_Chr, "\t", $last_position, "\t";
-	$last_info_last = pop @last_info;
-	foreach $output_last_info (@last_info){
-		print $output_last_info, "\t";
-	}
-	print $last_info_last, "\n";    	
-}
