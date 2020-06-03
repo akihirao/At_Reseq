@@ -1,4 +1,4 @@
-#Mutation identification in whole genome sequencing data of <i>Arabidopsis thaliana</i>#
+# Mutation identification in whole genome sequencing data of <i>Arabidopsis thaliana</i>
 Bioinformatics pipeline for idintifying mutations in whole genome sequences of <i>Arabidopsis thaliana</i>   
   
   
@@ -46,10 +46,11 @@ The called raw variants by gatk VariantFiltration in Pipe.09
 ###
 * Common for filtering out: Depth ＜ 10x, Depth > 200x, GenotypeQuality < 20 
 * SNPs for flitering out: QualByDepth < 2.0, FisherStrand > 60.0, RMSMappingQuality < 40.0, MQRankSum < -12.5, ReadPosRankUsm < -8.0, StrandOddsRatio > 4.0, and ExcessHet > 13.0  
-* INDELs for flitering out: QualByDepth < 2.0, FisherStrand > 200.0, RMSMappingQuality < 20.0, StrandOddsRatio > 10.0, and ExcessHet > 13.0  
-##
+* INDELs for flitering out: QualByDepth < 2.0, FisherStrand > 200.0, RMSMappingQuality < 20.0, StrandOddsRatio > 10.0, and ExcessHet > 13.0    
+  
+
 The mutation identification in Pipe.10
-###
+
 * mendelian-violation-qual-threshold: 30  
 This setting in gatk SelectVariants wiil select only variants that correspond to a mendelian violation as determined on the basis of family structure as P < 0.01.
 * Candidate muatation sites having allele frequencies (e.g., proportions of mutant reads at a site) of more than 25% && leth than 80%.
