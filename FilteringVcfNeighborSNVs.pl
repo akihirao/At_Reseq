@@ -23,64 +23,39 @@ while ($line = <>) {
 		$pre_position_dif = abs($pre1_position - $pre2_position);
  		$post_position_dif = abs($position - $pre1_position);
 
-    	if($pre1_Chr ne $pre2_Chr){
-    	
-    		if($post_position_dif > $neighbor_threshold){
-	  			
-	  			print $pre1_Chr, "\t", $pre1_position, "\t";
 
-				$pre1_info_last = pop @pre1_info;
-				foreach $output_pre1 (@pre1_info){
-					print $output_pre1, "\t";
-				}
-				print $pre1_info_last, "\n";   	
+		if($pre_position_dif > $neighbor_threshold and $post_position_dif > $neighbor_threshold){
 
-				$pre2_Chr = $pre1_Chr;
-				$pre2_position = $pre1_position;
-				@pre2_info = @pre1_info;
-				
-	 			$pre1_Chr = $Chr;
-				$pre1_position = $position;
-				@pre1_info = @info;
-			
-    		}else{
-    			#no print
-    		}
+		 	print $pre1_Chr, "\t", $pre1_position, "\t";
 
-		}else{ #Chr equal
-
-			if($pre_position_dif <= $neighbor_threshold or $post_position_dif <= $neighbor_threshold){
-
-				$pre2_Chr = $pre1_Chr;
-				$pre2_position = $pre1_position;
-				@pre2_info = @pre1_info;
-					
-	 			$pre1_Chr = $Chr;
-				$pre1_position = $position;
-				@pre1_info = @info;
-
-			}else{
-
-		  		print $pre1_Chr, "\t", $pre1_position, "\t";
-
-				$pre1_info_last = pop @pre1_info;
-				foreach $output_pre1 (@pre1_info){
-					print $output_pre1, "\t";
-				}
-				print $pre1_info_last, "\n";    	
-
-				$pre2_Chr = $pre1_Chr;
-				$pre2_position = $pre1_position;
-				@pre2_info = @pre1_info;
-					
-	 			$pre1_Chr = $Chr;
-				$pre1_position = $position;
-				@pre1_info = @info;
-
+			$pre1_info_last = pop @pre1_info;
+			foreach $output_pre1 (@pre1_info){
+				print $output_pre1, "\t";
 			}
-		}
+			print $pre1_info_last, "\n";    	
+
+			$pre2_Chr = $pre1_Chr;
+			$pre2_position = $pre1_position;
+			@pre2_info = @pre1_info;
+					
+	 		$pre1_Chr = $Chr;
+			$pre1_position = $position;
+			@pre1_info = @info;
+
+		}else{
+
+			$pre2_Chr = $pre1_Chr;
+			$pre2_position = $pre1_position;
+			@pre2_info = @pre1_info;
+					
+	 		$pre1_Chr = $Chr;
+			$pre1_position = $position;
+			@pre1_info = @info;
+			
+		}				
 
 	}
+
 }#close while()
 
 
