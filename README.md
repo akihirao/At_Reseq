@@ -50,7 +50,7 @@ The mutation identification in Pipe.10
 * mendelian-violation-qual-threshold: 30  
 This setting in gatk SelectVariants wiil select only variants that correspond to a mendelian violation as determined on the basis of family structure as P < 0.01.
 * Candidate muatation sites having allele frequencies (e.g., proportions of mutant reads at a site) of more than 25% && leth than 80%.
-* Final-identified mutation sites having GQ = 99.
+* Final-identified mutation sites having allele frequencies (proportions of mutant reads at a site) of more than 25% && leth than 80% with GQ = 99.
 
 
 ## Note
