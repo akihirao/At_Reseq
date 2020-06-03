@@ -1,10 +1,12 @@
 #!/usr/bin/perl -i
 #VariantFilteredAF.pl
+#filtering out mutation sites whrere proportion of mutant reads < 25% && > 80% && GQ < 99
 #by HIRAO Akira
 
 
 #definign threshold value for proportion of mutant reads at a site
-$AF_threshold = 0.25;
+$AF_low_threshold = 0.25;
+$AF_high_threshold = 0.8;
 
 while ($line = <>) {
 	chomp $line;
@@ -17,7 +19,7 @@ while ($line = <>) {
 		($AD0, $AD1) = split /,/, $AD;
 		$AF = $AD1 / ($AD0 + $AD1); 	
 		
-		if($AF > $AF_threshold){
+		if($AF > $AF_low_threshold && $AF < $AF_high_threshold && $GQ >= 99 ){
 			print $line, "\n";		
 		}else{
 

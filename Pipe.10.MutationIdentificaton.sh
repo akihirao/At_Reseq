@@ -58,21 +58,21 @@ gatk SelectVariants\
  --pedigree $SCRIPT_DIR/AT48.ped\
  --mendelian-violation\
  --mendelian-violation-qual-threshold 30\
- -O $work_folder/$target_ID.mendelian.snp.indel.DPfilterNoCall.vcf.gz
-bcftools index -f $work_folder/$target_ID.mendelian.snp.indel.DPfilterNoCall.vcf.gz
-bcftools view $work_folder/$target_ID.mendelian.snp.indel.DPfilterNoCall.vcf.gz\
- -Ov -o $work_folder/$target_ID.mendelian.snp.indel.DPfilterNoCall.vcf
+ -O $work_folder/$target_ID.mu.snp.indel.DPfilterNoCall.vcf.gz
+bcftools index -f $work_folder/$target_ID.mu.snp.indel.DPfilterNoCall.vcf.gz
+bcftools view $work_folder/$target_ID.mu.snp.indel.DPfilterNoCall.vcf.gz\
+ -Ov -o $work_folder/$target_ID.mu.snp.indel.DPfilterNoCall.vcf
 
 
 #identifying unique SNVs with using bioalcidaejdk.jar
 #See detail for https://www.biostars.org/p/329423/#329742
-java -jar $BioAlcidaeJdk_path/bioalcidaejdk.jar -e 'stream().forEach(V->{final List<Genotype> L=V.getGenotypes().stream().filter(G->G.isHet() || G.isHomVar()).collect(Collectors.toList());if(L.size()!=1) return;final Genotype g=L.get(0);println(V.getContig()+" "+V.getStart()+" "+V.getReference()+" "+g.getSampleName()+" "+g.getAlleles());});' $work_folder/$target_ID.mendelian.snp.indel.DPfilterNoCall.vcf > $work_folder/$target_ID.unique.snp.indel.list.txt
+java -jar $BioAlcidaeJdk_path/bioalcidaejdk.jar -e 'stream().forEach(V->{final List<Genotype> L=V.getGenotypes().stream().filter(G->G.isHet() || G.isHomVar()).collect(Collectors.toList());if(L.size()!=1) return;final Genotype g=L.get(0);println(V.getContig()+" "+V.getStart()+" "+V.getReference()+" "+g.getSampleName()+" "+g.getAlleles());});' $work_folder/$target_ID.mu.snp.indel.DPfilterNoCall.vcf > $work_folder/$target_ID.unique.snp.indel.list.txt
 
 perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < $work_folder/$target_ID.unique.snp.indel.list.txt > $work_folder/$target_ID.unique.bed
 
 gatk SelectVariants\
  -R $reference_folder/TAIR10.fa\
- -V $work_folder/$target_ID.mendelian.snp.indel.DPfilterNoCall.vcf.gz\
+ -V $work_folder/$target_ID.mu.snp.indel.DPfilterNoCall.vcf.gz\
  -L $work_folder/$target_ID.unique.bed\
  --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
  -O $work_folder/AT.M2.unique.vcf.gz
@@ -110,7 +110,7 @@ do
 	#filtering out conbined mutations 
 	perl $SCRIPT_DIR/FilteringVcfNeighborSNVs.pl < $work_folder/$target_sample/$target_sample.hetero.vcf > $work_folder/$target_sample/$target_sample.non_neighbor.vcf
 
-	#filtering out mutation sites whrere proportion of mutant reads < 25%
+	#filtering out mutation sites whrere proportion of mutant reads < 25% or GQ < 99
 	perl $SCRIPT_DIR/VariantFilteredAF.pl < $work_folder/$target_sample/$target_sample.non_neighbor.vcf > $work_folder/$target_sample/$target_sample.final.mutants.vcf
 
 	#output mutation.list
