@@ -82,7 +82,7 @@ tabix -f -p vcf $target_ID.snp.filterPASSED.vcf.gz
 #VariantFiltration for INDEL
 gatk VariantFiltration\
  -R $reference_folder/TAIR10.fa\
- -V $target_ID.snp.no_ExcessHetBlock.vcf.gz \
+ -V $target_ID.indel.no_ExcessHetBlock.vcf.gz \
  --filter-expression "QD < 2.0" --filter-name "QDlt2"\
  --filter-expression "FS > 200.0" --filter-name "FSgt200"\
  --filter-expression "ReadPosRankSum < -20.0" --filter-name "RPRSltnagative20"\
