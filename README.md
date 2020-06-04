@@ -6,6 +6,7 @@ Bioinformatics pipeline for idintifying mutations in whole genome sequences of <
 ## Requirement
 ###
 * BEDOPS: the fast, highly scalable and easily-parallelizable genome analysis toolkit (https://bedops.readthedocs.io)
+* bedtools: a powerful toolset for genome arithmetic (https://bedtools.readthedocs.io)
 * bcftools: Tools for manipulating VCF and BCF files (http://samtools.github.io/bcftools/bcftools.html)
 * BioAlcidaeJdk: java-based version of awk for bioinformatics (http://lindenb.github.io/jvarkit/BioAlcidaeJdk.html)
 * BWA: Burrow-Wheeler Aligner (http://bio-bwa.sourceforge.net) 
