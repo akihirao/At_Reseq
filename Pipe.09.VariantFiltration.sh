@@ -17,6 +17,9 @@ work_folder=$main_folder/vcf_out
 
 module load samtools/1.10
 module load gatk/4.1.7.0
+module load bedtools2/2.27.1
+
+
 #!!! module load bcftools centOS　environmnt moduleの設定
 
 cd $work_folder
@@ -26,13 +29,43 @@ cd $work_folder
 ExcessHet_P=0.05
 ExcessHet_Q=`echo "scale=5; -10 * l($ExcessHet_P) /l(10)" |bc -l | xargs printf %.1f`
 ExcessHet_param="ExcessHet > ${ExcessHet_Q}"
+
 echo $ExcessHet_param
+
+
+#Making select sited that having ExcessHet
+gatk SelectVariants\
+ -R $reference_folder/TAIR10.fa\
+ -V AT48.vcf.gz\
+ -select "${ExcessHet_param}"\
+ -O AT48.ExcessHet.vcf
+
+#Making bed file that marked ExcessHet block
+perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < AT48.ExcessHet.vcf | bedtools cluster -d 300 > AT48.ExcessHet.cluster.bed
+perl $SCRIPT_DIR/ClusterBedBlock.pl < AT48.ExcessHet.cluster.bed > AT48.ExcessHet.block.bed
+
+#=====================================================================
+#filtering out ExcessHetblock:SNP
+gatk SelectVariants\
+ -R $reference_folder/TAIR10.fa\
+ -V $target_ID.snp.vcf.gz\
+ --exclude-intervals AT48.ExcessHet.block.bed\
+ -O $target_ID.snp.no_ExcessHetBlock.vcf.gz \
+
+#Set filtered sites to no call:INDEL
+gatk SelectVariants\
+ -R $reference_folder/TAIR10.fa\
+ -V $target_ID.indel.vcf.gz\
+ --exclude-intervals AT48.ExcessHet.block.bed\
+ -O $target_ID.indel.no_ExcessHetBlock.vcf.gz \
+#=====================================================================
+
 
 
 #VariantFiltration for SNP
 gatk VariantFiltration\
  -R $reference_folder/TAIR10.fa\
- -V $target_ID.snp.vcf.gz \
+ -V $target_ID.snp.no_ExcessHetBlock.vcf.gz \
  --filter-expression "QD < 2.0" --filter-name "QDlt2"\
  --filter-expression "FS > 60.0" --filter-name "FSgt60"\
  --filter-expression "MQ < 40.0" --filter-name "MQlt40"\
@@ -49,7 +82,7 @@ tabix -f -p vcf $target_ID.snp.filterPASSED.vcf.gz
 #VariantFiltration for INDEL
 gatk VariantFiltration\
  -R $reference_folder/TAIR10.fa\
- -V $target_ID.indel.vcf.gz\
+ -V $target_ID.snp.no_ExcessHetBlock.vcf.gz \
  --filter-expression "QD < 2.0" --filter-name "QDlt2"\
  --filter-expression "FS > 200.0" --filter-name "FSgt200"\
  --filter-expression "ReadPosRankSum < -20.0" --filter-name "RPRSltnagative20"\
@@ -115,5 +148,6 @@ cd $SCRIPT_DIR
 
 module unload samtools/1.10
 module unload gatk/4.1.7.0
+module unload bedtools2/2.27.1
 
 
