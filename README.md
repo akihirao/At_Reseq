@@ -41,7 +41,7 @@ Pipe.10.MutationIdentification.sh
 ```
 
 ## Filtering parameters
-The called raw variants by gatk VariantFiltration in Pipe.09   
+The called raw variants by gatk VariantFiltration in Pipe09   
 
 ###
 * Common for filtering out: Depth ＜ 10x, Depth > 200x, GenotypeQuality < 20 
@@ -49,12 +49,12 @@ The called raw variants by gatk VariantFiltration in Pipe.09
 * INDELs for flitering out: QualByDepth < 2.0, FisherStrand > 200.0, RMSMappingQuality < 20.0, StrandOddsRatio > 10.0, and ExcessHet > 13.0    
   
 
-The mutation identification in Pipe.10
+The mutation identification in Pipe10
 
 * mendelian-violation-qual-threshold: 30  
 This setting in gatk SelectVariants wiil select only variants that correspond to a mendelian violation as determined on the basis of family structure as <i>P</i> < 0.01.
-* Candidate muatation sites having allele frequencies (e.g., proportions of mutant reads at a site) of more than 25% && leth than 80%.
-* Final-identified mutation sites having allele frequencies (proportions of mutant reads at a site) of more than 25% && leth than 80% with GQ = 99.
+* The candidate mutation sites having allele frequencies (AF; proportions of mutant reads at a site) of 25% or less were also excluded.
+* The candidate mutation sites having GQ < 99 were excluded.
 
 
 ## Note
