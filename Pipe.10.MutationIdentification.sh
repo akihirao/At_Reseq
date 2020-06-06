@@ -78,7 +78,7 @@ gatk SelectVariants\
  -V $target_ID.mu.snp.indel.DPfilterNoCall.vcf.gz\
  -L $target_ID.unique.bed\
  --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
- --max-nocall-fraction 0.9\
+ --max-nocall-fraction 0.1\
  --exclude-filtered\
  -O AT.M2.unique.vcf.gz
 
