@@ -72,11 +72,14 @@ java -jar $BioAlcidaeJdk_path/bioalcidaejdk.jar -e 'stream().forEach(V->{final L
 
 perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < $target_ID.unique.snp.indel.list.txt > $target_ID.unique.bed
 
+#select back variants with unique.bed 
 gatk SelectVariants\
  -R $reference_folder/TAIR10.fa\
  -V $target_ID.mu.snp.indel.DPfilterNoCall.vcf.gz\
  -L $target_ID.unique.bed\
  --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
+ --max-nocall-fraction 0.9\
+ --exclude-filtered\
  -O AT.M2.unique.vcf.gz
 
 #mark homozygous mutation sites
