@@ -51,10 +51,12 @@ The called raw variants by gatk VariantFiltration in Pipe09
 
 The mutation identification in Pipe10
 
-* mendelian-violation-qual-threshold: 30  
+* --mendelian-violation-qual-threshold: 30  
 This setting in gatk SelectVariants wiil select only variants that correspond to a mendelian violation as determined on the basis of family structure as <i>P</i> < 0.01.
-* The candidate mutation sites having allele frequencies (AF; proportions of mutant reads at a site) of 25% or less were also excluded.
-* The candidate mutation sites having GQ of less than 99 were excluded.
+* --max-nocall-fraction: 0.1  
+This setting in gatk SelectVariants wiil select only variants having genotyping rate among samples of more than 90%.
+* The candidate mutation sites having allele frequencies (AF; proportions of mutant reads at a site) of 25% or less were excluded.
+* The candidate mutation sites having GQ of less than 99 were also excluded.
 
 
 ## Note
