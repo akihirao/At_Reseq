@@ -35,27 +35,27 @@ echo $ExcessHet_param
 #Making select sited that having ExcessHet
 gatk SelectVariants\
  -R $reference_folder/TAIR10.fa\
- -V AT48.vcf.gz\
+ -V $target_ID.vcf.gz\
  -select "${ExcessHet_param}"\
- -O AT48.ExcessHet.vcf
+ -O $target_ID.ExcessHet.vcf
 
 #Making bed file that marked ExcessHet block
-perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < AT48.ExcessHet.vcf | bedtools cluster -d 300 > AT48.ExcessHet.cluster.bed
-perl $SCRIPT_DIR/ClusterBedBlock.pl < AT48.ExcessHet.cluster.bed > AT48.ExcessHet.block.bed
+perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < $target_ID.ExcessHet.vcf | bedtools cluster -d 300 > $target_ID.ExcessHet.cluster.bed
+perl $SCRIPT_DIR/ClusterBedBlock.pl < $target_ID.ExcessHet.cluster.bed > $target_ID.ExcessHet.block.bed
 
 #=====================================================================
 #filtering out ExcessHetblock:SNP
 gatk SelectVariants\
  -R $reference_folder/TAIR10.fa\
  -V $target_ID.snp.vcf.gz\
- --exclude-intervals AT48.ExcessHet.block.bed\
+ --exclude-intervals $target_ID.ExcessHet.block.bed\
  -O $target_ID.snp.no_ExcessHetBlock.vcf.gz \
 
 #Set filtered sites to no call:INDEL
 gatk SelectVariants\
  -R $reference_folder/TAIR10.fa\
  -V $target_ID.indel.vcf.gz\
- --exclude-intervals AT48.ExcessHet.block.bed\
+ --exclude-intervals $target_ID.ExcessHet.block.bed\
  -O $target_ID.indel.no_ExcessHetBlock.vcf.gz \
 #=====================================================================
 
