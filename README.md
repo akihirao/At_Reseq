@@ -12,6 +12,7 @@ Bioinformatics pipeline for idintifying mutations in whole genome sequences of <
 * BWA: Burrow-Wheeler Aligner (http://bio-bwa.sourceforge.net) 
 * GATK: Genome Analysis Toolkit (https://gatk.broadinstitute.org)
 * samtools: Tools for manipulating NGS data (https://github.com/samtools/samtools)
+* sapEff: Genomic variant annotations and functional effect prediction toolbox (http://snpeff.sourceforge.net)
 * vcftools: A set of tools for working with VCF files (https://github.com/vcftools/vcftools)  
 * Perl: (https://www.perl.org)  
 
@@ -38,6 +39,7 @@ Pipe.02.MarkduplicatesSpark.sh
 Pipe.03.BaseRecalibrator.sh
 ...
 Pipe.10.MutationIdentification.sh
+Pipe.11.Annotation.sh
 ```
 
 ## Filtering parameters
