@@ -20,7 +20,7 @@ target_ID=AT48
 
 reference_folder=/zfs/Arabidopsis/Reference_v1.1
 main_folder=/zfs/Arabidopsis/work/At_Reseq
-work_folder=$main_folder/pindel_out_chr1
+work_folder=$main_folder/pindel_out
 
 BioAlcidaeJdk_path=/usr/local/jvarkit/dist
 
