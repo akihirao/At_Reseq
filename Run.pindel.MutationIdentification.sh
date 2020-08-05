@@ -1,5 +1,5 @@
 #!/bin/bash -i
-#Run.MutationIdentification.pindel_vcf.sh
+#Run.pindel.MutationIdentification.sh
 #by HIRAO Akira
 
 #requirement:
@@ -20,7 +20,7 @@ target_ID=AT48
 
 reference_folder=/zfs/Arabidopsis/Reference_v1.1
 main_folder=/zfs/Arabidopsis/work/At_Reseq
-work_folder=$main_folder/pindel_out
+work_folder=$main_folder/pindel_out_chr1
 
 BioAlcidaeJdk_path=/usr/local/jvarkit/dist
 
@@ -61,8 +61,8 @@ tabix -f -p vcf $target_ID.pindel_out.SI.vcf.gz
 
 
 #filtering out neighborhood mutations 
-perl $SCRIPT_DIR/FilteringVcfNeighborSNVs.pl < $target_ID.pindel_out.D.vcf > $target_ID.pindel_out.D.non_neighbor.vcf
-perl $SCRIPT_DIR/FilteringVcfNeighborSNVs.pl < $target_ID.pindel_out.SI.vcf > $target_ID.pindel_out.SI.non_neighbor.vcf
+perl $SCRIPT_DIR/FilteringVcfNeighborSNVs.pindel.pl < $target_ID.pindel_out.D.vcf > $target_ID.pindel_out.D.non_neighbor.vcf
+perl $SCRIPT_DIR/FilteringVcfNeighborSNVs.pindel.pl < $target_ID.pindel_out.SI.vcf > $target_ID.pindel_out.SI.non_neighbor.vcf
 
 #identifying unique SNVs with using bioalcidaejdk.jar
 #See detail for https://www.biostars.org/p/329423/#329742
