@@ -1,0 +1,3 @@
+/zfs/Arabidopsis/work/At_Reseq/bwa_out/A011/A011.TAIR10.bqsr.bam	450	A011
+/zfs/Arabidopsis/work/At_Reseq/bwa_out/A012/A012.TAIR10.bqsr.bam	450	A012
+/zfs/Arabidopsis/work/At_Reseq/bwa_out/A014/A014.TAIR10.bqsr.bam	450	A014

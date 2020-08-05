@@ -196,6 +196,18 @@ awk '/SNP/' $mutation_list_file.homo.txt > M2.snp.homo.list.txt
 awk '/Insertion/ || /Deletion/' $mutation_list_file.homo.txt > M2.indel.homo.list.txt
 
 
+#Output for M2.indel.unique.vcf
+perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < M2.indel.list.txt > M2.indel.unique.bed
+#select back variants with unique.bed 
+gatk SelectVariants\
+ -R $reference_folder/TAIR10.fa\
+ -V $target_ID.mu.snp.indel.DPfilterNoCall.vcf.gz\
+ -L M2.indel.unique.bed\
+ --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
+ -O M2.indel.unique.vcf.gz
+
+ bcftools index M2.indel.unique.vcf.gz
+
 
 
 cd $SCRIPT_DIR
