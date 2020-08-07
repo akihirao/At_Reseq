@@ -13,8 +13,9 @@ Bioinformatics pipeline for idintifying mutations in whole genome sequences of <
 * GATK: Genome Analysis Toolkit (https://gatk.broadinstitute.org)
 * samtools: Tools for manipulating NGS data (https://github.com/samtools/samtools)
 * sapEff: Genomic variant annotations and functional effect prediction toolbox (http://snpeff.sourceforge.net)
-* vcftools: A set of tools for working with VCF files (https://github.com/vcftools/vcftools)  
 * Perl: (https://www.perl.org)  
+* Pindel: A indel calling tool based on the split-read approach(http://gmt.genome.wustl.edu/packages/pindel/index.html)
+* vcftools: A set of tools for working with VCF files (https://github.com/vcftools/vcftools)  
 
 The environment under CentOS 7.5 is tested. The versions of the tools used are documented in a series of shell scripts.
 
