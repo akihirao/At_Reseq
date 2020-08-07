@@ -62,7 +62,7 @@ This setting in gatk SelectVariants wiil select only variants that correspond to
 This setting in gatk SelectVariants wiil select only variants having genotyping rate among samples of more than 90%.
 * The candidate mutation sites having allele frequencies (AF; proportions of mutant reads at a site) of 25% or less were excluded.
 * The candidate mutation sites having GQ of less than 99 were also excluded.
-* The candidate mutation sites with the other neighbor sites within 150bp range in a single sample were disregarded because a high proportion of false positives of neighboring mutation sites are known to be cause by mismapping (KEIGHTLEY et al. 2014)
+* The candidate mutation sites with the other neighbor sites within 150bp range in a single sample were disregarded because a high proportion of false positives of neighboring mutation sites are known to be cause by mismapping (Keightley <i>et al</i>. 2014)
 
 
 ## Note
