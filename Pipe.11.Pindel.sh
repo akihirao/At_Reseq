@@ -1,5 +1,5 @@
 #!/bin/bash -i
-#Pipe.11.pindel.sh
+#Pipe.11.Pindel.sh
 #by HIRAO Akira
 
 
@@ -62,14 +62,16 @@ while read sample fastq_R1 fastq_R2; do
 	bgzip -c $sample.pindel_out.SI.non_neighbor.vcf > $sample.pindel_out.SI.non_neighbor.vcf.gz
 	tabix -f -p vcf $sample.pindel_out.SI.non_neighbor.vcf.gz
 
-	vcf-concat $sample.pindel.D.vcf.gz $sample.pindel.SI.vcf.gz > $sample.pindel.indel.unsorted.vcf
+	vcf-concat $sample.pindel_out.D.non_neighbor.vcf.gz $sample.pindel_out.SI.non_neighbor.vcf.gz > $sample.pindel.indel.unsorted.vcf
 	vcf-sort $sample.pindel.indel.unsorted.vcf > $sample.pindel.indel.vcf
 	bgzip -c $sample.pindel.indel.vcf > $sample.pindel.indel.vcf.gz
-	tabix -f -p vcf $sample.pindel.indel.vcf
-	bcftools index $sample.pindel.indel.vcf
+	tabix -f -p vcf $sample.pindel.indel.vcf.gz
+	bcftools index $sample.pindel.indel.vcf.gz
 
+	cd $work_folder
 
-done < $SCRIPT_DIR/fastq_list.txt #list of MIDs and folder deposited their read fastq.gz
+done < $SCRIPT_DIR/fastq_list_non1.txt #list of MIDs and folder deposited their read fastq.gz
+#one < $SCRIPT_DIR/fastq_list.txt #list of MIDs and folder deposited their read fastq.gz
 
 
 cd $SCRIPT_DIR
