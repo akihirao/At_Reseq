@@ -1,0 +1,3 @@
+A011	/zfs/Arabidopsis/data/AT48/A011/A011_R1.trimQ30.fastq.gz	/zfs/Arabidopsis/data/AT48/A011/A011_R2.trimQ30.fastq.gz
+A012	/zfs/Arabidopsis/data/AT48/A012/A012_R1.trimQ30.fastq.gz	/zfs/Arabidopsis/data/AT48/A012/A012_R2.trimQ30.fastq.gz
+A014	/zfs/Arabidopsis/data/AT48/A014/A014_R1.trimQ30.fastq.gz	/zfs/Arabidopsis/data/AT48/A014/A014_R2.trimQ30.fastq.gz

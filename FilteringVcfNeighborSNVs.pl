@@ -2,7 +2,7 @@
 #FilteringVcfNeighborSNVs.pl
 #by HIRAO Akira
 
-$neighbor_threshold = 300; #
+$neighbor_threshold = 150; #
 
 #priori setting
 $pre2_Chr = "Chr1";

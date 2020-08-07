@@ -1,27 +1,18 @@
 #!/bin/bash -i
-#Run.pindel.MutationIdentification.sh
+#Pipe.11.pindel.sh
 #by HIRAO Akira
 
-#requirement:
-#*FilteringVcfNeighborSNVs.pl: filtering out combined variants (SNPs and INDELs) around neighborhood
-#*VariantFilteredAF.pl: filtering out mutation sites whrere proportion of mutant reads < 25% && > 80% && GQ < 99
-#*MakeMulationList.pl: output mutation list
 
 set -exuo pipefail
 
 SCRIPT_DIR=$(cd $(dirname $0)  && pwd)
 
-module load gatk/4.1.7.0
-module load vcftools/0.1.15
-module load bedops/2.4.39
-
-
-target_ID=AT48
+CPU=16
 
 reference_folder=/zfs/Arabidopsis/Reference_v1.1
 main_folder=/zfs/Arabidopsis/work/At_Reseq
+bwa_folder=$main_folder/bwa_out
 work_folder=$main_folder/pindel_out
-
 BioAlcidaeJdk_path=/usr/local/jvarkit/dist
 
 
@@ -42,8 +33,35 @@ echo ${mother_vec[@]}
 echo ${M2_vec[@]}
 #-----------------------------------------------------
 
-cd $work_folder
 
+mkdir -p $work_folder
+
+module load miniconda2
+module load vcftools/0.1.15
+
+#Identifying structural variants with using pindel
+#six types of structural variants（D = deletion、SI = short insertion、INV = inversion、TD = tandem duplication、LI = large insertion、BP = unassigned breakpoints）
+#if Option "-c ALL" does not work well in the environment, please work for each of chromosomes   
+/usr/local/miniconda2/bin/pindel -T $CPU -f $reference_folder/TAIR10.fa -i $SCRIPT_DIR/AT48.pindel.config.txt -c ALL -o $work_folder/AT48.pindel.out
+#/usr/local/miniconda2/bin/pindel -T $CPU -f $reference_folder/TAIR10.fa -i $SCRIPT_DIR/AT48.pindel.config.txt -c Chr1 -o $work_folder/AT48.pindel.chr1.out
+#/usr/local/miniconda2/bin/pindel -T $CPU -f $reference_folder/TAIR10.fa -i $SCRIPT_DIR/AT48.pindel.config.txt -c Chr2 -o $work_folder/AT48.pindel.chr2.out
+#/usr/local/miniconda2/bin/pindel -T $CPU -f $reference_folder/TAIR10.fa -i $SCRIPT_DIR/AT48.pindel.config.txt -c Chr3 -o $work_folder/AT48.pindel.chr3.out
+#/usr/local/miniconda2/bin/pindel -T $CPU -f $reference_folder/TAIR10.fa -i $SCRIPT_DIR/AT48.pindel.config.txt -c Chr4 -o $work_folder/AT48.pindel.chr4.out
+#/usr/local/miniconda2/bin/pindel -T $CPU -f $reference_folder/TAIR10.fa -i $SCRIPT_DIR/AT48.pindel.config.txt -c Chr5 -o $work_folder/AT48.pindel.chr5.out
+
+
+#conversion to vcf: six types of structural variants（D = deletion、SI = short insertion、INV = inversion、TD = tandem duplication、LI = large insertion、BP = unassigned breakpoints）
+/usr/local/miniconda2/bin/pindel2vcf -p $work_folder/AT48.pindel.out_D -r $reference_folder/TAIR10.fa -R TAIR10 -d 20101117 -v $work_folder/AT48.pindel_out.D.vcf -e 10
+/usr/local/miniconda2/bin/pindel2vcf -p $work_folder/AT48.pindel.out_SI -r $reference_folder/TAIR10.fa -R TAIR10 -d 20101117 -v $work_folder/AT48.pindel_out.SI.vcf -e 10
+/usr/local/miniconda2/bin/pindel2vcf -p $work_folder/AT48.pindel.out_INV -r $reference_folder/TAIR10.fa -R TAIR10 -d 20101117 -v $work_folder/AT48.pindel_out.INV.vcf -e 10
+/usr/local/miniconda2/bin/pindel2vcf -p $work_folder/AT48.pindel.out_TD -r $reference_folder/TAIR10.fa -R TAIR10 -d 20101117 -v $work_folder/AT48.pindel_out.TD.vcf -e 10
+/usr/local/miniconda2/bin/pindel2vcf -p $work_folder/AT48.pindel.out_LI -r $reference_folder/TAIR10.fa -R TAIR10 -d 20101117 -v $work_folder/AT48.pindel_out.LI.vcf -e 10
+/usr/local/miniconda2/bin/pindel2vcf -p $work_folder/AT48.pindel.out_BP -r $reference_folder/TAIR10.fa -R TAIR10 -d 20101117 -v $work_folder/AT48.pindel_out.BP.vcf -e 10
+/usr/local/miniconda2/bin/pindel2vcf -p $work_folder/AT48.pindel.out_RP -r $reference_folder/TAIR10.fa -R TAIR10 -d 20101117 -v $work_folder/AT48.pindel_out.RP.vcf -e 10
+
+
+#-----------------------------------------------------
+#Identification of mutations
 #six types of structural variants（D = deletion、SI = short insertion、INV = inversion、TD = tandem duplication、LI = large insertion、BP = unassigned breakpoints）
 bgzip -c $target_ID.pindel_out.D.vcf > $target_ID.pindel_out.D.vcf.gz
 tabix -f -p vcf $target_ID.pindel_out.D.vcf.gz
@@ -92,13 +110,12 @@ vcf-sort AT.M2.unique.pindel.indel.unsorted.vcf > AT.M2.unique.pindel.indel.vcf
 bgzip -c AT.M2.unique.pindel.indel.vcf > AT.M2.unique.pindel.indel.vcf.gz
 tabix -f -p vcf AT.M2.unique.pindel.indel.vcf.gz
 bcftools index AT.M2.unique.pindel.indel.vcf.gz
+#-----------------------------------------------------
 
-#compare indel variants identified by gatk with those by ppindel
-bcftools isec ../vcf_out/M2.indel.unique.vcf.gz AT.M2.unique.pindel.D.vcf.gz -p AT.M2.gatk.pindel.common -n=2
 
 
 cd $SCRIPT_DIR
 
-module unload gatk/4.1.7.0
+module unload miniconda2
 module unload vcftools/0.1.15
-module unload bedops/2.4.39
+
