@@ -24,7 +24,7 @@ TAIR10 genomic sequences were downloaded from the TAIR FTP site. The whole-genom
 
 
 ## Flowchart
-This workflow is referred to the practice "Germline short variant discovery (SNPs + INDELs)" in GATK.
+Variant call procedure was adapted from the germline short variant discovery workflow in GATK.
 
 <p align="left">
   <img src="https://github.com/akihirao/At_Reseq/blob/master/images/AtReseq.workflow.jpeg"/>
@@ -40,7 +40,9 @@ Pipe.02.MarkduplicatesSpark.sh
 Pipe.03.BaseRecalibrator.sh
 ...
 Pipe.10.MutationIdentification.sh
-Pipe.11.Annotation.sh
+Pipe.11.Pindel.sh
+Pipe.12.UnifyGATKPindel.sh
+Pipe.13.Annotation.sh
 ```
 
 ## Filtering parameters
@@ -60,6 +62,7 @@ This setting in gatk SelectVariants wiil select only variants that correspond to
 This setting in gatk SelectVariants wiil select only variants having genotyping rate among samples of more than 90%.
 * The candidate mutation sites having allele frequencies (AF; proportions of mutant reads at a site) of 25% or less were excluded.
 * The candidate mutation sites having GQ of less than 99 were also excluded.
+* The candidate mutation sites with the other neighbor sites within 150bp range in a single sample were disregarded because a high proportion of false positives of neighboring mutation sites are known to be cause by mismapping (KEIGHTLEY et al. 2014)
 
 
 ## Note
