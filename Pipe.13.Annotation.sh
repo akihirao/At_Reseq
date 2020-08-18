@@ -10,12 +10,15 @@ SCRIPT_DIR=$(cd $(dirname $0)  && pwd)
 
 reference_folder=/zfs/Arabidopsis/Reference_v1.1
 main_folder=/zfs/Arabidopsis/work/At_Reseq
+pindel_folder=$main_folder/pindel_out
 work_folder=$main_folder/vcf_out
+
 
 echo -n >| snpEff_all_samples_summary_file.txt
 
 module load java
 module load R
+module load gatk/4.1.7.0
 
 #-----------------------------------------------------
 # defining the argument for 48 samples
@@ -42,7 +45,16 @@ do
 
 	cd $target_sample
 
-	java -Xmx4g -jar /usr/local/snpEff/snpEff.jar Arabidopsis_thaliana $target_sample.final.mutants.vcf > $target_sample.final.mutants.snpeff.vcf
+	bgzip -c $target_sample.final.mutants.vcf > $target_sample.final.mutants.vcf.gz
+	tabix -f -p vcf $target_sample.final.mutants.vcf.gz
+
+	gatk SelectVariants\
+	 -R $reference_folder/TAIR10.fa\
+	 -V $target_sample.final.mutants.vcf.gz\
+	 -XL $pindel_folder/AT.M2.filterout.pindel.gatk.indel.bed\
+	 -O $target_sample.pindel_gatk_common.mutants.vcf
+
+	java -Xmx4g -jar /usr/local/snpEff/snpEff.jar Arabidopsis_thaliana $target_sample.pindel_gatk_common.mutants.vcf > $target_sample.final.mutants.snpeff.vcf
 
 	Rscript $SCRIPT_DIR/snpEff_effect_summaryzing.R $target_sample
 
@@ -56,3 +68,4 @@ cd $SCRIPT_DIR
 
 module unload java
 module unload R
+module unload gatk/4.1.7.0

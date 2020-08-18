@@ -24,9 +24,9 @@ work_folder=$main_folder/vcf_out
 
 BioAlcidaeJdk_path=/usr/local/jvarkit/dist
 
-mutation_summary_file="mutation_summary"
-mutation_summary_file_homo="mutation_summary.homo"
-mutation_list_file="M2.mutation_list"
+mutation_summary_file="mutation_summary.gatk"
+mutation_summary_file_homo="mutation_summary.gatk.homo"
+mutation_list_file="M2.mutation_list.gatk"
 
 echo -n >| $mutation_summary_file.txt
 echo -n >| $mutation_summary_file_homo.txt

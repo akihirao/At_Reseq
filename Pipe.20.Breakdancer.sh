@@ -1,5 +1,5 @@
 #!/bin/bash -i
-#Pipe.11.pindel.sh
+#Pipe.xx.Breakdancer.sh
 #by HIRAO Akira
 
 
@@ -8,6 +8,7 @@ set -exuo pipefail
 SCRIPT_DIR=$(cd $(dirname $0)  && pwd)
 
 CPU=16
+
 
 reference_folder=/zfs/Arabidopsis/Reference_v1.1
 main_folder=/zfs/Arabidopsis/work/At_Reseq
@@ -38,16 +39,14 @@ mkdir -p $work_folder
 
 module load miniconda2
 module load vcftools/0.1.15
+module load gatk/4.1.7.0
+
+cd $work_folder
 
 #Identifying structural variants with using pindel
 #six types of structural variants（D = deletion、SI = short insertion、INV = inversion、TD = tandem duplication、LI = large insertion、BP = unassigned breakpoints）
-#if Option "-c ALL" does not work well in the environment, please work for each of chromosomes   
-/usr/local/miniconda2/bin/pindel -T $CPU -f $reference_folder/TAIR10.fa -i $SCRIPT_DIR/AT48.pindel.config.txt -c ALL -o $work_folder/AT48.pindel.out
-#/usr/local/miniconda2/bin/pindel -T $CPU -f $reference_folder/TAIR10.fa -i $SCRIPT_DIR/AT48.pindel.config.txt -c Chr1 -o $work_folder/AT48.pindel.chr1.out
-#/usr/local/miniconda2/bin/pindel -T $CPU -f $reference_folder/TAIR10.fa -i $SCRIPT_DIR/AT48.pindel.config.txt -c Chr2 -o $work_folder/AT48.pindel.chr2.out
-#/usr/local/miniconda2/bin/pindel -T $CPU -f $reference_folder/TAIR10.fa -i $SCRIPT_DIR/AT48.pindel.config.txt -c Chr3 -o $work_folder/AT48.pindel.chr3.out
-#/usr/local/miniconda2/bin/pindel -T $CPU -f $reference_folder/TAIR10.fa -i $SCRIPT_DIR/AT48.pindel.config.txt -c Chr4 -o $work_folder/AT48.pindel.chr4.out
-#/usr/local/miniconda2/bin/pindel -T $CPU -f $reference_folder/TAIR10.fa -i $SCRIPT_DIR/AT48.pindel.config.txt -c Chr5 -o $work_folder/AT48.pindel.chr5.out
+#if Option "-c ALL" does not work well in the environment, please work for each of chromosomes   We changed widonws size from 5 to 1 (e.g. "-w 1") due to high momory usage 
+/usr/local/miniconda2/bin/pindel -T $CPU -f $reference_folder/TAIR10.fa -i $SCRIPT_DIR/AT48.pindel.config.txt -c ALL -w 1 -o $work_folder/AT48.pindel.out
 
 
 #conversion to vcf: six types of structural variants（D = deletion、SI = short insertion、INV = inversion、TD = tandem duplication、LI = large insertion、BP = unassigned breakpoints）
@@ -63,32 +62,32 @@ module load vcftools/0.1.15
 #-----------------------------------------------------
 #Identification of mutations
 #six types of structural variants（D = deletion、SI = short insertion、INV = inversion、TD = tandem duplication、LI = large insertion、BP = unassigned breakpoints）
-bgzip -c $target_ID.pindel_out.D.vcf > $target_ID.pindel_out.D.vcf.gz
-tabix -f -p vcf $target_ID.pindel_out.D.vcf.gz
+bgzip -c AT48.pindel_out.D.vcf > AT48.pindel_out.D.vcf.gz
+tabix -f -p vcf AT48.pindel_out.D.vcf.gz
 
-bgzip -c $target_ID.pindel_out.SI.vcf > $target_ID.pindel_out.SI.vcf.gz
-tabix -f -p vcf $target_ID.pindel_out.SI.vcf.gz
+bgzip -c AT48.pindel_out.SI.vcf > AT48.pindel_out.SI.vcf.gz
+tabix -f -p vcf AT48.pindel_out.SI.vcf.gz
 
 
 #filtering out neighborhood mutations 
-perl $SCRIPT_DIR/FilteringVcfNeighborSNVs.pindel.pl < $target_ID.pindel_out.D.vcf > $target_ID.pindel_out.D.non_neighbor.vcf
-perl $SCRIPT_DIR/FilteringVcfNeighborSNVs.pindel.pl < $target_ID.pindel_out.SI.vcf > $target_ID.pindel_out.SI.non_neighbor.vcf
+perl $SCRIPT_DIR/FilteringVcfNeighborSNVs.pindel.pl < AT48.pindel_out.D.vcf > AT48.pindel_out.D.non_neighbor.vcf
+perl $SCRIPT_DIR/FilteringVcfNeighborSNVs.pindel.pl < AT48.pindel_out.SI.vcf > AT48.pindel_out.SI.non_neighbor.vcf
 
 #identifying unique SNVs with using bioalcidaejdk.jar
 #See detail for https://www.biostars.org/p/329423/#329742
-java -jar $BioAlcidaeJdk_path/bioalcidaejdk.jar -e 'stream().forEach(V->{final List<Genotype> L=V.getGenotypes().stream().filter(G->G.isHet() || G.isHomVar()).collect(Collectors.toList());if(L.size()!=1) return;final Genotype g=L.get(0);println(V.getContig()+" "+V.getStart()+" "+V.getReference()+" "+g.getSampleName()+" "+g.getAlleles());});' $target_ID.pindel_out.D.non_neighbor.vcf > $target_ID.unique.pindel.D.list.txt
-java -jar $BioAlcidaeJdk_path/bioalcidaejdk.jar -e 'stream().forEach(V->{final List<Genotype> L=V.getGenotypes().stream().filter(G->G.isHet() || G.isHomVar()).collect(Collectors.toList());if(L.size()!=1) return;final Genotype g=L.get(0);println(V.getContig()+" "+V.getStart()+" "+V.getReference()+" "+g.getSampleName()+" "+g.getAlleles());});' $target_ID.pindel_out.SI.non_neighbor.vcf > $target_ID.unique.pindel.SI.list.txt
+java -jar $BioAlcidaeJdk_path/bioalcidaejdk.jar -e 'stream().forEach(V->{final List<Genotype> L=V.getGenotypes().stream().filter(G->G.isHet() || G.isHomVar()).collect(Collectors.toList());if(L.size()!=1) return;final Genotype g=L.get(0);println(V.getContig()+" "+V.getStart()+" "+V.getReference()+" "+g.getSampleName()+" "+g.getAlleles());});' AT48.pindel_out.D.non_neighbor.vcf > AT48.unique.pindel.D.list.txt
+java -jar $BioAlcidaeJdk_path/bioalcidaejdk.jar -e 'stream().forEach(V->{final List<Genotype> L=V.getGenotypes().stream().filter(G->G.isHet() || G.isHomVar()).collect(Collectors.toList());if(L.size()!=1) return;final Genotype g=L.get(0);println(V.getContig()+" "+V.getStart()+" "+V.getReference()+" "+g.getSampleName()+" "+g.getAlleles());});' AT48.pindel_out.SI.non_neighbor.vcf > AT48.unique.pindel.SI.list.txt
 
 
-perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < $target_ID.unique.pindel.D.list.txt > $target_ID.unique.pindel.D.bed
-perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < $target_ID.unique.pindel.SI.list.txt > $target_ID.unique.pindel.SI.bed
-cat $target_ID.unique.pindel.D.bed $target_ID.unique.pindel.SI.bed | sort -k 1,1 -k 2n,2 > $target_ID.unique.pindel.indel.bed
+perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < AT48.unique.pindel.D.list.txt > AT48.unique.pindel.D.bed
+perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < AT48.unique.pindel.SI.list.txt > AT48.unique.pindel.SI.bed
+cat AT48.unique.pindel.D.bed AT48.unique.pindel.SI.bed | sort -k 1,1 -k 2n,2 > AT48.unique.pindel.indel.bed
 
 #select back variants with unique.bed 
 gatk SelectVariants\
  -R $reference_folder/TAIR10.fa\
- -V $target_ID.pindel_out.D.vcf.gz\
- -L $target_ID.unique.pindel.D.bed\
+ -V AT48.pindel_out.D.vcf.gz\
+ -L AT48.unique.pindel.D.bed\
  --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
  --exclude-non-variants\
  -O AT.M2.unique.pindel.D.vcf
@@ -97,8 +96,8 @@ tabix -f -p vcf AT.M2.unique.pindel.D.vcf.gz
 
 gatk SelectVariants\
  -R $reference_folder/TAIR10.fa\
- -V $target_ID.pindel_out.SI.vcf.gz\
- -L $target_ID.unique.pindel.SI.bed\
+ -V AT48.pindel_out.SI.vcf.gz\
+ -L AT48.unique.pindel.SI.bed\
  --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
  --exclude-non-variants\
  -O AT.M2.unique.pindel.SI.vcf
@@ -118,4 +117,6 @@ cd $SCRIPT_DIR
 
 module unload miniconda2
 module unload vcftools/0.1.15
+module unload gatk/4.1.7.0
+
 
