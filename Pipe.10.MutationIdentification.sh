@@ -184,6 +184,8 @@ cat $mutation_list_file.unsort.txt | sort -k 1,1 -k 2n,2 >  $mutation_list_file.
 rm $mutation_list_file.unsort.txt
 #Extract SNPs heterozygous mutation list
 awk '/SNP/' $mutation_list_file.txt > M2.snp.list.txt
+#transform to bed for final vcf in pipe.12
+perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < M2.snp.list.txt > M2.snp.unique.bed
 #Extract INDELs heterozygous mutation list
 awk '/Insertion/ || /Deletion/' $mutation_list_file.txt > M2.indel.list.txt
 
