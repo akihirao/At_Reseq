@@ -40,10 +40,7 @@ Pipe.02.MarkduplicatesSpark.sh
 Pipe.03.BaseRecalibrator.sh
 ...
 Pipe.10.MutationIdentification.sh
-Pipe.11.Pindel.sh
-Pipe.12.UnifyGATKPindel.sh
-Pipe.13.Annotation.sh
-```
+
 
 ## Filtering parameters
 The called raw variants by gatk VariantFiltration in Pipe09   
