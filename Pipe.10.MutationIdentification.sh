@@ -118,11 +118,13 @@ do
 	gatk SelectVariants\
 	 -R $reference_folder/TAIR10.fa\
 	 -V AT.M2.unique.vcf.gz\
-	 -select "vc.getGenotype('${target_sample}').isHomVar() && vc.getGenotype('${target_sample}').getGQ() == 99 "\
+	 -select "vc.getGenotype('${target_sample}').isHomVar()"\
 	 --sample-name $target_sample\
 	 -O $target_sample/$target_sample.homo.vcf
 	bgzip -c $target_sample/$target_sample.homo.vcf > $target_sample/$target_sample.homo.vcf.gz
 	tabix -f -p vcf $target_sample/$target_sample.homo.vcf.gz
+
+#	 -select "vc.getGenotype('${target_sample}').isHomVar() && vc.getGenotype('${target_sample}').getGQ() == 99 "\
 
 
 	#filtering out combined mutations 
@@ -137,8 +139,8 @@ do
 	vcf-isec -c $target_sample/$target_sample.hetero.vcf.gz $target_sample/$target_sample.non_neighbor.vcf.gz > $target_sample/$target_sample.combined.vcf
 
 	#filtering out mutation sites whrere proportion of mutant reads < 25% or GQ < 99
-	perl $SCRIPT_DIR/VariantFilteredAF.pl < $target_sample/$target_sample.non_neighbor.vcf > $target_sample/$target_sample.final.mutants.vcf
-	perl $SCRIPT_DIR/VariantFilteredAF.pl < $target_sample/$target_sample.combined.vcf > $target_sample/$target_sample.final.combined.vcf
+	perl $SCRIPT_DIR/VariantFilteredOnlyAF.pl < $target_sample/$target_sample.non_neighbor.vcf > $target_sample/$target_sample.final.mutants.vcf
+	perl $SCRIPT_DIR/VariantFilteredOnlyAF.pl < $target_sample/$target_sample.combined.vcf > $target_sample/$target_sample.final.combined.vcf
 
 	#output heterozygous mutation.list 
 	perl $SCRIPT_DIR/MakeMulationList.pl $target_sample/$target_sample.final.mutants.vcf $target_sample >> $mutation_list_file.unsort.txt
