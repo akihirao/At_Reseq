@@ -65,6 +65,15 @@ bcftools index -f $target_ID.mu.snp.indel.DPfilterNoCall.vcf.gz
 bcftools view $target_ID.mu.snp.indel.DPfilterNoCall.vcf.gz\
  -Ov -o $target_ID.mu.snp.indel.DPfilterNoCall.vcf
 
+#select variants with max-nocall-fraction 0.1
+gatk SelectVariants\
+ -R $reference_folder/TAIR10.fa\
+ -V $target_ID.mu.snp.indel.DPfilterNoCall.vcf.gz\
+ --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
+ --max-nocall-fraction 0.1\
+ --exclude-filtered\
+ -O AT.M2.mu.snp.indel.DPfilterNocall.filtered.vcf.gz
+
 
 #identifying unique SNVs with using bioalcidaejdk.jar
 #See detail for https://www.biostars.org/p/329423/#329742
