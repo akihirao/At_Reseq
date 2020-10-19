@@ -13,9 +13,9 @@ $pre1_position = 1;
 while ($line = <>) {
 	chomp $line;
 
-	($last_Chr, $last_position, @last_info) = split /\s+/, $line; 
-	
-	if($line =~ m/^#/){
+	if(eof()){
+		($last_Chr, $last_position, @last_info) = split /\s+/, $line; 
+	}elsif($line =~ m/^#/){
 		print $line, "\n";
 	}else{
 		($Chr, $position, @info) = split /\s+/, $line; 
