@@ -45,12 +45,9 @@ do
 
 	cd $target_sample
 
-	bgzip -c $target_sample.final.mutants.vcf > $target_sample.final.mutants.vcf.gz
-	tabix -f -p vcf $target_sample.final.mutants.vcf.gz
-
 	gatk SelectVariants\
 	 -R $reference_folder/TAIR10.fa\
-	 -V $target_sample.final.mutants.vcf.gz\
+	 -V $target_sample.all.vcf.gz\
 	 -XL $pindel_folder/AT.M2.filterout.pindel.gatk.indel.bed\
 	 -O $target_sample.pindel_gatk_common.mutants.vcf
 
