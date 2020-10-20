@@ -118,8 +118,6 @@ java -jar $BioAlcidaeJdk_path/bioalcidaejdk.jar -e 'stream().forEach(V->{final L
 perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < $target_ID.unique.snp.indel.list.txt > $target_ID.unique.bed
 
 
-
-
 #select back variants with unique.bed 
 gatk SelectVariants\
  -R $reference_folder/TAIR10.fa\
@@ -162,7 +160,7 @@ do
 	bgzip -c $target_sample/$target_sample.hetero.vcf > $target_sample/$target_sample.hetero.vcf.gz
 	tabix -f -p vcf $target_sample/$target_sample.hetero.vcf.gz
 
-	#select homozygous mutation sites per samples with filtering out QG < 99
+	#select homozygous mutation sites per samples
 	gatk SelectVariants\
 	 -R $reference_folder/TAIR10.fa\
 	 -V AT.M2.unique.vcf.gz\
@@ -172,10 +170,8 @@ do
 	bgzip -c $target_sample/$target_sample.homo.vcf > $target_sample/$target_sample.homo.vcf.gz
 	tabix -f -p vcf $target_sample/$target_sample.homo.vcf.gz
 
-#	 -select "vc.getGenotype('${target_sample}').isHomVar() && vc.getGenotype('${target_sample}').getGQ() == 99 "\
 
-
-	#select family_clustered_mutattions
+	#select family-clustered mutation sites per samples
 	gatk SelectVariants\
 	 -R $reference_folder/TAIR10.fa\
 	 -V AT.M2.family.clustered.mu.non_neighbor.vcf.gz\

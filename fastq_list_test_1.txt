@@ -1,1 +1,0 @@
-A011	/zfs/Arabidopsis/data/AT48/A011/A011_R1.trimQ30.fastq.gz	/zfs/Arabidopsis/data/AT48/A011/A011_R2.trimQ30.fastq.gz
