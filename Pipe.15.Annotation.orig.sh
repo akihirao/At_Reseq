@@ -11,7 +11,6 @@ SCRIPT_DIR=$(cd $(dirname $0)  && pwd)
 reference_folder=/zfs/Arabidopsis/Reference_v1.1
 main_folder=/zfs/Arabidopsis/work/At_Reseq
 pindel_folder=$main_folder/pindel_out
-vcf_folder=$main_folder/vcf_out
 work_folder=$main_folder/vcf_out
 
 
@@ -48,18 +47,11 @@ do
 
 	gatk SelectVariants\
 	 -R $reference_folder/TAIR10.fa\
-	 -V $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf.gz\
-	 --set-filtered-gt-to-nocall\
-	 --sample-name $target_sample\
-	 -O  $vcf_folder/$target_sample/$target_sample.homo.hetero.familyclustered.pre.vcf.gz
+	 -V $target_sample.all.vcf.gz\
+	 -XL $pindel_folder/AT.M2.filterout.pindel.gatk.indel.bed\
+	 -O $target_sample.pindel_gatk_common.mutants.vcf
 
-	gatk SelectVariants\
-	 -R $reference_folder/TAIR10.fa\
-	 -V $vcf_folder/$target_sample/$target_sample.homo.hetero.familyclustered.pre.vcf.gz\
-	 -select "vc.getGenotype('${target_sample}').isHomVar() || vc.getGenotype('${target_sample}').isHet() "\
-	 -O $vcf_folder/$target_sample/$target_sample.homo.hetero.familyclustered.vcf
-
-	java -Xmx4g -jar /usr/local/snpEff/snpEff.jar Arabidopsis_thaliana $vcf_folder/$target_sample/$target_sample.homo.hetero.familyclustered.vcf >$vcf_folder/$target_sample/$target_sample.final.mutants.snpeff.vcf
+	java -Xmx4g -jar /usr/local/snpEff/snpEff.jar Arabidopsis_thaliana $target_sample.pindel_gatk_common.mutants.vcf > $target_sample.final.mutants.snpeff.vcf
 
 	Rscript $SCRIPT_DIR/snpEff_effect_summaryzing.R $target_sample
 

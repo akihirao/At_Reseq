@@ -104,9 +104,19 @@ perl $SCRIPT_DIR/BioalcidaejdkList2Rform.pl < $vcf_folder/M2.snp.indel.gatk.pind
 perl $SCRIPT_DIR/BioalcidaejdkList2Rform.pl < $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.homo.list.txt > $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.homo.R.list.txt
 
 
+#Merge homo + hetero vcfs + familyclustered vcf
+gatk MergeVcfs\
+ -I $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.vcf\
+ -I $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.vcf\
+ -I $vcf_folder/AT.M2.family.clustered.mu.non_neighbor.vcf.gz\
+ -O $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf.gz
+bcftools index -f $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf.gz
+bcftools view  $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf.gz -Ov -o $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf
+
 
 cd $SCRIPT_DIR
 
 	
 module unload gatk/4.1.7.0
 module unload vcftools/0.1.15
+
