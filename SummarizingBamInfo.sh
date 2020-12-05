@@ -10,9 +10,8 @@ SCRIPT_DIR=$(cd $(dirname $0)  && pwd)
 
 reference_folder=/zfs/Arabidopsis/Reference_v1.1
 main_folder=/zfs/Arabidopsis/work/At_Reseq
-pindel_folder=$main_folder/pindel_out
 vcf_folder=$main_folder/vcf_out
-vcf_folder=$main_folder/bwa_out
+bwa_folder=$main_folder/bwa_out
 work_folder=$main_folder/bwa_out
 
 
@@ -45,10 +44,9 @@ do
 
 	cd $target_sample
 
+	#Sumamarizing BAM info
 	bamtools stats -in $target_sample.TAIR10.bqsr.bam > $target_sample.TAIR10.bqsr.stats.txt
-
 	mapping_rate=$(grep "Mapped reads" $target_sample.TAIR10.bqsr.stats.txt)
-
 	echo $target_sample $mapping_rate >> BWA.bqsr.summary.txt
 	
 	cd ../
