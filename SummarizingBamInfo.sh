@@ -15,8 +15,9 @@ bwa_folder=$main_folder/bwa_out
 work_folder=$main_folder/bwa_out
 
 
-echo -n >| BWA.bqsr.summary.txt
+echo -n >| $SCRIPT_DIR/BAM.info.summary.txt
 
+#bamtoools. 2.5.1
 module load bamtools
 
 #-----------------------------------------------------
@@ -45,9 +46,11 @@ do
 	cd $target_sample
 
 	#Sumamarizing BAM info
-	bamtools stats -in $target_sample.TAIR10.bqsr.bam > $target_sample.TAIR10.bqsr.stats.txt
-	mapping_rate=$(grep "Mapped reads" $target_sample.TAIR10.bqsr.stats.txt)
-	echo $target_sample $mapping_rate >> BWA.bqsr.summary.txt
+	bamtools stats -in $target_sample.TAIR10.bam > $target_sample.TAIR10.bam.stats.txt
+	mapping_rate=$(grep "Mapped reads" $target_sample.TAIR10.bam.stats.txt)
+	both_mapping_rate=$(grep "Both pairs mapped" $target_sample.TAIR10.bam.stats.txt)
+
+	echo $target_sample $mapping_rate $both_mapping_rate >> $SCRIPT_DIR/BAM.info.summary.txt
 	
 	cd ../
 

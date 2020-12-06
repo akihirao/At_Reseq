@@ -1,0 +1,1 @@
+A011 Mapped reads: 72214733 (99.7334%) Both pairs mapped: 72206594 (99.7222%)
