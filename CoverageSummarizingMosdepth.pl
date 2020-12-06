@@ -23,11 +23,11 @@ $total_nuclear_chr_len = $Chr1_len + $Chr2_len + $Chr3_len + $Chr4_len + $Chr5_l
 $NoSample = @sample;
 
 open(OUT, ">AT48.coverage.summary.txt");
-print OUT "Sample","\t","Coverage.total", "\t","Coverage.nDNA","\t","Genome.Coverage.rate.x10s","\n";
+print OUT "Sample","\t","Coverage.total", "\t","Coverage.nDNA","\t","Genome.Coverage.rate.x10.total","\n";
 
 
-for($i = 0; $i < 2; $i++){
-#for($i = 0; $i < $NoSample; $i++){
+#for($i = 0; $i < 2; $i++){
+for($i = 0; $i < $NoSample; $i++){
 
 	$target_sample = $sample[$i];
 

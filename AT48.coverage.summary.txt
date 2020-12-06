@@ -1,1 +1,1 @@
-Sample	Coverage.total	Coverage.nDNA	Genome.Coverage.rate.x10s
+Sample	Coverage.total	Coverage.nDNA	Genome.Coverage.rate.x10.total
