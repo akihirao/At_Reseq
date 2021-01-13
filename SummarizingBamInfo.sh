@@ -40,7 +40,7 @@ echo ${M2_vec[@]}
 cd $work_folder
 
 
-for target_sample in ${M2_vec[@]}
+for target_sample in ${samples_48[@]}
 do
 
 	cd $target_sample
