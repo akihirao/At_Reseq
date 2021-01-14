@@ -1,5 +1,5 @@
 #!/bin/bash -i
-#Pipe.10.MutationIdentification.sh
+#Pipe.11.MutationIdentification.sh
 #by HIRAO Akira
 
 #requirement:

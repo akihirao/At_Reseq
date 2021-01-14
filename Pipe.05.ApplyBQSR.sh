@@ -1,5 +1,5 @@
 #!/bin/bash -i
-#Pipe.04.ApplyBQSR.sh
+#Pipe.05.ApplyBQSR.sh
 #by HIRAO Akira
 
 set -exuo pipefail

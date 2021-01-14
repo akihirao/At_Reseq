@@ -1,5 +1,5 @@
 #!/bin/bash -i
-#Pipe.05v.HaplotypeCaller.sh
+#Pipe.06.HaplotypeCaller.sh
 #by HIRAO Akira
 
 set -exuo pipefail

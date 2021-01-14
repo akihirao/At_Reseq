@@ -1,5 +1,5 @@
 #!/bin/bash -i
-#Pipe.12.UnifyGATKPindel.sh
+#Pipe.13.UnifyGATKPindel.sh
 #by HIRAO Akira
 
 set -exuo pipefail

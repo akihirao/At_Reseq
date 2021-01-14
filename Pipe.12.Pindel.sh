@@ -1,5 +1,5 @@
 #!/bin/bash -i
-#Pipe.11.Pindel.sh
+#Pipe.12.Pindel.sh
 #by HIRAO Akira
 
 

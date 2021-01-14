@@ -1,5 +1,5 @@
 #!/bin/bash -i
-#Pipe.01.Map.sh
+#Pipe.02.Map.sh
 #by HIRAO Akira
 
 set -exuo pipefail

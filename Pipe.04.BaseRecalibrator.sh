@@ -1,5 +1,5 @@
 #!/bin/bash -i
-#Pipe.03.BaseRecalibrator.sh
+#Pipe.04.BaseRecalibrator.sh
 #by HIRAO Akira
 
 set -exuo pipefail
