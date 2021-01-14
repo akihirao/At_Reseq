@@ -39,7 +39,7 @@ Pipe.01.Map.sh
 Pipe.02.MarkduplicatesSpark.sh
 Pipe.03.BaseRecalibrator.sh
 ...
-Pipe.13.Annotation.sh
+Pipe.14.Annotation.sh
 ```
 
 ## Filtering parameters
