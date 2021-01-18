@@ -28,9 +28,9 @@ while ($line = <>) {
 		 if($REF_len == 1 && $ALT_len == 1){
 		 	$Type = "SBS";
 		 }elsif($REF_len > $ALT_len){
-		 	$Type = "deletion";
+		 	$Type = "Deletion";
 		 }else{
-		 	$Type = "insertion";
+		 	$Type = "Insertion";
 		 }
 
 		print $CHROM, "\t", $POS, "\t", $REF, "\t", $ALT, "\t", $Type, "\t", $Length, "\t";
