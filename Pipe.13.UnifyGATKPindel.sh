@@ -31,11 +31,11 @@ cd $work_folder
 bcftools isec $vcf_folder/M2.indel.hetero.vcf.gz AT.M2.unique.pindel.D.SI.vcf.gz -p AT.M2.gatk.pindel.common.hetero -n=2
 perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < $work_folder/AT.M2.gatk.pindel.common.hetero/0000.vcf > $work_folder/AT.M2.indel.common.pindel.gatk.hetero.bed
 
-#compare indel variants identified by gatk with those by pindel: hetero
+#compare indel variants identified by gatk with those by pindel: homo
 bcftools isec $vcf_folder/M2.indel.homo.vcf.gz AT.M2.unique.pindel.D.SI.vcf.gz -p AT.M2.gatk.pindel.common.homo -n=2
 perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < $work_folder/AT.M2.gatk.pindel.common.homo/0000.vcf > $work_folder/AT.M2.indel.common.pindel.gatk.homo.bed
 
-#compare indel variants identified by gatk with those by pindel: hetero
+#compare indel variants identified by gatk with those by pindel: family-clustered
 bcftools isec $vcf_folder/M2.indel.familyclustered.vcf.gz AT.M2.unique.pindel.D.SI.vcf.gz -p AT.M2.gatk.pindel.common.familyclustered -n=2
 perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < $work_folder/AT.M2.gatk.pindel.common.familyclustered/0000.vcf > $work_folder/AT.M2.indel.common.pindel.gatk.familyclustered.bed
 
@@ -113,6 +113,8 @@ gatk MergeVcfs\
 bcftools index -f $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf.gz
 bcftools view  $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf.gz -Ov -o $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf
 
+
+perl $SCRIPT_DIR/Vcf2List_R_glm.pl < $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf > $vcf_folder/AT.all.list.mutations.txt
 
 cd $SCRIPT_DIR
 

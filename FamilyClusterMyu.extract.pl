@@ -157,141 +157,129 @@ while ($line = <>) {
 
 #        print $GT_A011_Alt, "\n";
 
-        @GT_36indiv_vec = ($GT_sum_A011, $GT_sum_A012, $GT_sum_A014, $GT_sum_A021, $GT_sum_A023, $GT_sum_A024, $GT_sum_A031, $GT_sum_A033, $GT_sum_A034, $GT_sum_A113, $GT_sum_A114, $GT_sum_A115, $GT_sum_A121, $GT_sum_A123, $GT_sum_A125, $GT_sum_A131, $GT_sum_A132, $GT_sum_A135, $GT_sum_A212, $GT_sum_A213, $GT_sum_A215, $GT_sum_A221, $GT_sum_A222, $GT_sum_A225, $GT_sum_A231, $GT_sum_A233, $GT_sum_A234, $GT_sum_A311, $GT_sum_A313, $GT_sum_A314, $GT_sum_A321, $GT_sum_A323, $GT_sum_A324, $GT_sum_A331, $GT_sum_A332, $GT_sum_A334);
-        @GT_36indiv_alt = ($GT_A011_Alt, $GT_A012_Alt, $GT_A014_Alt, $GT_A021_Alt, $GT_A023_Alt, $GT_A024_Alt, $GT_A031_Alt, $GT_A033_Alt, $GT_A034_Alt, $GT_A113_Alt, $GT_A114_Alt, $GT_A115_Alt, $GT_A121_Alt, $GT_A123_Alt, $GT_A125_Alt, $GT_A131_Alt, $GT_A132_Alt, $GT_A135_Alt, $GT_A212_Alt, $GT_A213_Alt, $GT_A215_Alt, $GT_A221_Alt, $GT_A222_Alt, $GT_A225_Alt, $GT_A231_Alt, $GT_A233_Alt, $GT_A234_Alt, $GT_A311_Alt, $GT_A313_Alt, $GT_A314_Alt, $GT_A321_Alt, $GT_A323_Alt, $GT_A324_Alt, $GT_A331_Alt, $GT_A332_Alt, $GT_A334_Alt);
+        @GT_48indiv_vec = ($GT_sum_A011, $GT_sum_A012, $GT_sum_A014, $GT_sum_A021, $GT_sum_A023, $GT_sum_A024, $GT_sum_A031, $GT_sum_A033, $GT_sum_A034, $GT_sum_A113, $GT_sum_A114, $GT_sum_A115, $GT_sum_A121, $GT_sum_A123, $GT_sum_A125, $GT_sum_A131, $GT_sum_A132, $GT_sum_A135, $GT_sum_A212, $GT_sum_A213, $GT_sum_A215, $GT_sum_A221, $GT_sum_A222, $GT_sum_A225, $GT_sum_A231, $GT_sum_A233, $GT_sum_A234, $GT_sum_A311, $GT_sum_A313, $GT_sum_A314, $GT_sum_A321, $GT_sum_A323, $GT_sum_A324, $GT_sum_A331, $GT_sum_A332, $GT_sum_A334, $GT_sum_AT01, $GT_sum_AT02, $GT_sum_AT03, $GT_sum_AT11, $GT_sum_AT12, $GT_sum_AT13, $GT_sum_AT21, $GT_sum_AT22, $GT_sum_AT23, $GT_sum_AT31, $GT_sum_AT32, $GT_sum_AT33);
+        @GT_48indiv_alt = ($GT_A011_Alt, $GT_A012_Alt, $GT_A014_Alt, $GT_A021_Alt, $GT_A023_Alt, $GT_A024_Alt, $GT_A031_Alt, $GT_A033_Alt, $GT_A034_Alt, $GT_A113_Alt, $GT_A114_Alt, $GT_A115_Alt, $GT_A121_Alt, $GT_A123_Alt, $GT_A125_Alt, $GT_A131_Alt, $GT_A132_Alt, $GT_A135_Alt, $GT_A212_Alt, $GT_A213_Alt, $GT_A215_Alt, $GT_A221_Alt, $GT_A222_Alt, $GT_A225_Alt, $GT_A231_Alt, $GT_A233_Alt, $GT_A234_Alt, $GT_A311_Alt, $GT_A313_Alt, $GT_A314_Alt, $GT_A321_Alt, $GT_A323_Alt, $GT_A324_Alt, $GT_A331_Alt, $GT_A332_Alt, $GT_A334_Alt, $GT_AT01_Alt, $GT_AT02_Alt, $GT_AT03_Alt, $GT_AT11_Alt, $GT_AT12_Alt, $GT_AT13_Alt, $GT_AT21_Alt, $GT_AT22_Alt, $GT_AT23_Alt, $GT_AT31_Alt, $GT_AT32_Alt, $GT_AT33_Alt);
     
 
         $A010_mu = 0; $non_A010_mu = 0;  #initializing zero
-        @A010_non = @GT_36indiv_alt; @A010_fam = splice (@A010_non,0,3);$A010_mu += $_ for @A010_fam;$non_A010_mu += $_ for @A010_non;
+        @A010_non = @GT_48indiv_alt; @A010_fam = splice (@A010_non,0,3);$A010_mu += $_ for @A010_fam;$non_A010_mu += $_ for @A010_non;
         if($A010_mu >= 2 and $non_A010_mu == 0 and $AT010 == 0){
             print OUT_FAMILY_ALL $line, "\n";
             print OUT_A010 $line, "\n";
 
         }
          if($A010_mu == 3 and $non_A010_mu == 0 and $AT010 == 0){
-            print OUT_FAMILY_ALL $line, "\n";
             print OUT_A010_ALL $line, "\n";
         }
   
   
         $A020_mu = 0; $non_A020_mu = 0;  #initializing zero
-        @A020_non = @GT_36indiv_alt; @A020_fam = splice (@A020_non,3,3);$A020_mu += $_ for @A020_fam;$non_A020_mu += $_ for @A020_non;
+        @A020_non = @GT_48indiv_alt; @A020_fam = splice (@A020_non,3,3);$A020_mu += $_ for @A020_fam;$non_A020_mu += $_ for @A020_non;
         if($A020_mu >= 2 and $non_A020_mu == 0 and $AT020 == 0){
             print OUT_FAMILY_ALL $line, "\n";
             print OUT_A020 $line, "\n";
         }
          if($A020_mu == 3 and $non_A020_mu == 0 and $AT020 == 0){
-            print OUT_FAMILY_ALL $line, "\n";
             print OUT_A020_ALL $line, "\n";
         }
  
         $A030_mu = 0; $non_A030_mu = 0;  #initializing zero
-        @A030_non = @GT_36indiv_alt; @A030_fam = splice (@A030_non,6,3);$A030_mu += $_ for @A030_fam;$non_A030_mu += $_ for @A030_non;
+        @A030_non = @GT_48indiv_alt; @A030_fam = splice (@A030_non,6,3);$A030_mu += $_ for @A030_fam;$non_A030_mu += $_ for @A030_non;
         if($A030_mu >= 2 and $non_A030_mu == 0 and $AT030 == 0){
             print OUT_FAMILY_ALL $line, "\n";
             print OUT_A030 $line, "\n";
         }
          if($A030_mu == 3 and $non_A030_mu == 0 and $AT030 == 0){
-            print OUT_FAMILY_ALL $line, "\n";
             print OUT_A030_ALL $line, "\n";
         }
  
         $A110_mu = 0; $non_A110_mu = 0;  #initializing zero
-        @A110_non = @GT_36indiv_alt; @A110_fam = splice (@A110_non,9,3);$A110_mu += $_ for @A110_fam;$non_A110_mu += $_ for @A110_non;
+        @A110_non = @GT_48indiv_alt; @A110_fam = splice (@A110_non,9,3);$A110_mu += $_ for @A110_fam;$non_A110_mu += $_ for @A110_non;
         if($A110_mu >= 2 and $non_A110_mu == 0 and $AT110 == 0){
             print OUT_FAMILY_ALL $line, "\n";
             print OUT_A110 $line, "\n";
         }
          if($A110_mu == 3 and $non_A110_mu == 0 and $AT110 == 0){
-            print OUT_FAMILY_ALL $line, "\n";
             print OUT_A110_ALL $line, "\n";
         }
  
         $A120_mu = 0; $non_A120_mu = 0;  #initializing zero
-        @A120_non = @GT_36indiv_alt; @A120_fam = splice (@A120_non,12,3);$A120_mu += $_ for @A120_fam;$non_A120_mu += $_ for @A120_non;
+        @A120_non = @GT_48indiv_alt; @A120_fam = splice (@A120_non,12,3);$A120_mu += $_ for @A120_fam;$non_A120_mu += $_ for @A120_non;
         if($A120_mu >= 2 and $non_A120_mu == 0 and $AT120 == 0){
             print OUT_FAMILY_ALL $line, "\n";
             print OUT_A120 $line, "\n";
         }
          if($A120_mu == 3 and $non_A120_mu == 0 and $AT120 == 0){
-            print OUT_FAMILY_ALL $line, "\n";
             print OUT_A120_ALL $line, "\n";
         }
  
         $A130_mu = 0; $non_A130_mu = 0;  #initializing zero
-        @A130_non = @GT_36indiv_alt; @A130_fam = splice (@A130_non,15,3);$A130_mu += $_ for @A130_fam;$non_A130_mu += $_ for @A130_non;
+        @A130_non = @GT_48indiv_alt; @A130_fam = splice (@A130_non,15,3);$A130_mu += $_ for @A130_fam;$non_A130_mu += $_ for @A130_non;
         if($A130_mu >= 2 and $non_A130_mu == 0 and $AT130 == 0){
             print OUT_FAMILY_ALL $line, "\n";
             print OUT_A130 $line, "\n";
         }
          if($A130_mu == 3 and $non_A130_mu == 0 and $AT130 == 0){
-            print OUT_FAMILY_ALL $line, "\n";
             print OUT_A130_ALL $line, "\n";
         }
  
         $A210_mu = 0; $non_A210_mu = 0;  #initializing zero
-        @A210_non = @GT_36indiv_alt; @A210_fam = splice (@A210_non,18,3);$A210_mu += $_ for @A210_fam;$non_A210_mu += $_ for @A210_non;
+        @A210_non = @GT_48indiv_alt; @A210_fam = splice (@A210_non,18,3);$A210_mu += $_ for @A210_fam;$non_A210_mu += $_ for @A210_non;
         if($A210_mu >= 2 and $non_A210_mu == 0 and $AT210 == 0){
             print OUT_FAMILY_ALL $line, "\n";
             print OUT_A210 $line, "\n";
         }
          if($A210_mu == 3 and $non_A210_mu == 0 and $AT210 == 0){
-            print OUT_FAMILY_ALL $line, "\n";
             print OUT_A210_ALL $line, "\n";
         }
  
         $A220_mu = 0; $non_A220_mu = 0;  #initializing zero
-        @A220_non = @GT_36indiv_alt; @A220_fam = splice (@A220_non,21,3);$A220_mu += $_ for @A220_fam;$non_A220_mu += $_ for @A220_non;
+        @A220_non = @GT_48indiv_alt; @A220_fam = splice (@A220_non,21,3);$A220_mu += $_ for @A220_fam;$non_A220_mu += $_ for @A220_non;
         if($A220_mu >= 2 and $non_A220_mu == 0 and $AT220 == 0){
             print OUT_FAMILY_ALL $line, "\n";
             print OUT_A220 $line, "\n";
         }
          if($A220_mu == 3 and $non_A220_mu == 0 and $AT220 == 0){
-            print OUT_FAMILY_ALL $line, "\n";
             print OUT_A220_ALL $line, "\n";
         }
  
         $A230_mu = 0; $non_A230_mu = 0;  #initializing zero
-        @A230_non = @GT_36indiv_alt; @A230_fam = splice (@A230_non,24,3);$A230_mu += $_ for @A230_fam;$non_A230_mu += $_ for @A230_non;
+        @A230_non = @GT_48indiv_alt; @A230_fam = splice (@A230_non,24,3);$A230_mu += $_ for @A230_fam;$non_A230_mu += $_ for @A230_non;
         if($A230_mu >= 2 and $non_A230_mu == 0 and $AT230 == 0){
             print OUT_FAMILY_ALL $line, "\n";
             print OUT_A230 $line, "\n";
         }
          if($A230_mu == 3 and $non_A230_mu == 0 and $AT230 == 0){
-            print OUT_FAMILY_ALL $line, "\n";
             print OUT_A230_ALL $line, "\n";
         }
  
         $A310_mu = 0; $non_A310_mu = 0;  #initializing zero
-        @A310_non = @GT_36indiv_alt; @A310_fam = splice (@A310_non,27,3);$A310_mu += $_ for @A310_fam;$non_A310_mu += $_ for @A310_non;
+        @A310_non = @GT_48indiv_alt; @A310_fam = splice (@A310_non,27,3);$A310_mu += $_ for @A310_fam;$non_A310_mu += $_ for @A310_non;
         if($A310_mu >= 2 and $non_A310_mu == 0 and $AT310 == 0){
             print OUT_FAMILY_ALL $line, "\n";
             print OUT_A310 $line, "\n";
         }       
          if($A310_mu == 3 and $non_A310_mu == 0 and $AT310 == 0){
-            print OUT_FAMILY_ALL $line, "\n";
             print OUT_A310_ALL $line, "\n";
         }
  
         $A320_mu = 0; $non_A320_mu = 0;  #initializing zero
-        @A320_non = @GT_36indiv_alt; @A320_fam = splice (@A320_non,30,3);$A320_mu += $_ for @A320_fam;$non_A320_mu += $_ for @A320_non;
+        @A320_non = @GT_48indiv_alt; @A320_fam = splice (@A320_non,30,3);$A320_mu += $_ for @A320_fam;$non_A320_mu += $_ for @A320_non;
         if($A320_mu >= 2 and $non_A320_mu == 0 and $AT320 == 0){
             print OUT_FAMILY_ALL $line, "\n";
             print OUT_A320 $line, "\n";
         }
           if($A320_mu == 3 and $non_A320_mu == 0 and $AT320 == 0){
-            print OUT_FAMILY_ALL $line, "\n";
             print OUT_A320_ALL $line, "\n";
         }
  
         $A330_mu = 0; $non_A330_mu = 0;  #initializing zero
-        @A330_non = @GT_36indiv_alt; @A330_fam = splice (@A330_non,33,3);$A330_mu += $_ for @A330_fam;$non_A330_mu += $_ for @A330_non;
+        @A330_non = @GT_48indiv_alt; @A330_fam = splice (@A330_non,33,3);$A330_mu += $_ for @A330_fam;$non_A330_mu += $_ for @A330_non;
         if($A330_mu >= 2 and $non_A330_mu == 0 and $AT330 == 0){
             print OUT_FAMILY_ALL $line, "\n";
             print OUT_A330 $line, "\n";
         }
          if($A330_mu == 3 and $non_A330_mu == 0 and $AT330 == 0){
-            print OUT_FAMILY_ALL $line, "\n";
             print OUT_A330_ALL $line, "\n";
         }
  
