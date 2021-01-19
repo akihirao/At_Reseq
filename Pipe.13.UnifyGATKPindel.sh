@@ -114,7 +114,7 @@ bcftools index -f $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyc
 bcftools view  $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf.gz -Ov -o $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf
 
 
-perl $SCRIPT_DIR/Vcf2List_R_glm.pl < $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf > $vcf_folder/AT.all.list.mutations.txt
+perl $SCRIPT_DIR/Vcf2List_R_glm.pl < $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf > $SCRIPT_DIR/M2.mutations.full.list.csv
 
 cd $SCRIPT_DIR
 

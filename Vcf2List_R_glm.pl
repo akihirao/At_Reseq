@@ -33,7 +33,7 @@ while ($line = <>) {
 		 	$Type = "Insertion";
 		 }
 
-		print $CHROM, "\t", $POS, "\t", $REF, "\t", $ALT, "\t", $Type, "\t", $Length, "\t";
+		print $CHROM, ",", $POS, ",", $REF, ",", $ALT, ",", $Type, ",", $Length, ",";
 
 		($A011_info,$A012_info,$A014_info,$A021_info,$A023_info,$A024_info,$A031_info,$A033_info,$A034_info,$A113_info,$A114_info,$A115_info,$A121_info,$A123_info,$A125_info,$A131_info,$A132_info,$A135_info,$A212_info,$A213_info,$A215_info,$A221_info,$A222_info,$A225_info,$A231_info,$A233_info,$A234_info,$A311_info,$A313_info,$A314_info,$A321_info,$A323_info,$A324_info,$A331_info,$A332_info,$A334_info) = @SampleInfo;
 
@@ -180,7 +180,6 @@ while ($line = <>) {
 		@A334_GT_info = split /:/, $A334_info;
 		$A334_GT_raw = $A334_GT_info[0];
 		$A334_GT = substr ($A334_GT_raw,0,1) + substr ($A334_GT_raw,2,1);
-#			print $A334_GT, "\t";
 
 
 		@GT_list = ($A011_GT,$A012_GT,$A014_GT,$A021_GT,$A023_GT,$A024_GT,$A031_GT,$A033_GT,$A034_GT,$A113_GT,$A114_GT,$A115_GT,$A121_GT,$A123_GT,$A125_GT,$A131_GT,$A132_GT,$A135_GT,$A212_GT,$A213_GT,$A215_GT,$A221_GT,$A222_GT,$A225_GT,$A231_GT,$A233_GT,$A234_GT,$A311_GT,$A313_GT,$A314_GT,$A321_GT,$A323_GT,$A324_GT,$A331_GT,$A332_GT,$A334_GT);
@@ -191,11 +190,11 @@ while ($line = <>) {
 			$target_GT = $GT_list[$i];
 			if($target_GT > 0){
 				$target_out_sample = $sample[$i];
-				print $target_out_sample, "\t";
+				print $target_out_sample, ",";
 				if($target_GT == 1){
-					print "hetero", "\t";
+					print "hetero", ",";
 				}else{
-					print "homo", "\t";
+					print "homo", ",";
 				}
 			$sample_out_count++;
 			$last_sample_ID = $i;
@@ -207,9 +206,9 @@ while ($line = <>) {
 		#}
 
 		if($sample_out_count == 1){
-			print "NA", "\t", "NA", "\t", "NA", "\t", "NA", "\t";
+			print "NA", ",", "NA", ",", "NA", ",", "NA", ",";
 		}elsif(($sample_out_count == 2)){
-			print "NA", "\t","NA", "\t";
+			print "NA", ",","NA", ",";
 		}else{
 
 		}
@@ -217,7 +216,7 @@ while ($line = <>) {
 		$dose_output = $dose[$last_sample_ID];
 		$treatment_output = $treatment[$last_sample_ID];
 
-		print $treatment_output, "\t", $dose_output, "\n";
+		print $treatment_output, ",", $dose_output, "\n";
 
 	}
 }

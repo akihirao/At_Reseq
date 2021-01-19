@@ -1,7 +1,7 @@
 #!/usr/bin/perl -i
 #Make.circos.input.pl
 #by HIRAO Akira
-#How to use: perl Make.circos.input.pl < ../../vcf_out/AT.all.list.mutations.txt 
+#How to use: perl Make.circos.input.pl < ../AT.all.list.mutations.txt 
 
 @treat_lab = ("control","low","middle","high");
 
@@ -29,7 +29,7 @@ $line = <>;
 
 while ($line = <>) {
     chomp $line;
-    ($CHROM, $POS, $REF, $ALT, $TYPE, $LENGTH, $SAMPLE1, $ZYGOSITY1, $SAMPLE2, $ZYGOSITY, $SAMPLE3, $ZYGOSITY3, $TREATMENT, $DOSE)  = split /\s+/, $line;
+    ($CHROM, $POS, $REF, $ALT, $TYPE, $LENGTH, $SAMPLE1, $ZYGOSITY1, $SAMPLE2, $ZYGOSITY, $SAMPLE3, $ZYGOSITY3, $TREATMENT, $DOSE)  = split /,/, $line;
     $CHROM_out = $CHROM;
     substr($CHROM_out,0,1,"c");
     $pre_POS = $POS - 1;

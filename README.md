@@ -41,6 +41,7 @@ Pipe.03.BaseRecalibrator.sh
 ...
 Pipe.14.Annotation.sh
 ```
+A full list of all identified mutations is output to the current folder as "M2.mutations.full.list.csv"
 
 ## Filtering parameters
 The called raw variants by gatk VariantFiltration in Pipe10   
