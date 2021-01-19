@@ -1,4 +1,4 @@
-Chr	Position	Ref	Alt	Type	Length	Sample1	Zygosity1	Sample2	Zygosity2	Sample3	Zygosity3	Treatment	Dose
+Chr,Position,Ref,Alt,Type,Length,Sample1,Zygosity1,Sample2,Zygosity2,Sample3,Zygosity3,Treatment,Dose
 Chr1,200973,C,G,SBS,0,A132,homo,NA,NA,NA,NA,Low,0.4
 Chr1,1488277,C,G,SBS,0,A311,hetero,NA,NA,NA,NA,High,2
 Chr1,1511906,TTTTGTGGTCAACGACTCGGGAGAGAGGCAAAAAAAGATGGGAGC,T,Deletion,-44,A324,hetero,NA,NA,NA,NA,High,2

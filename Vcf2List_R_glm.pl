@@ -11,7 +11,7 @@
 $NoSample = @sample;
 
 
-print "Chr", "\t", "Position", "\t", "Ref", "\t", "Alt", "\t", "Type", "\t", "Length", "\t", "Sample1", "\t", "Zygosity1", "\t", "Sample2", "\t", "Zygosity2", "\t", "Sample3", "\t", "Zygosity3", "\t", "Treatment", "\t", "Dose", "\n";
+print "Chr", ",", "Position", ",", "Ref", ",", "Alt", ",", "Type", ",", "Length", ",", "Sample1", ",", "Zygosity1", ",", "Sample2", ",", "Zygosity2", ",", "Sample3", ",", "Zygosity3", ",", "Treatment", ",", "Dose", "\n";
 
 
 while ($line = <>) {
