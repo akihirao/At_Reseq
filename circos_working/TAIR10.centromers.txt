@@ -1,0 +1,5 @@
+chr1	15086046	15087045	+	color=blue
+chr2	3607930	3608929	+	color=blue
+chr3	13799418	13800417	+	color=blue
+chr4	3956022	3957021	+	color=blue
+chr5	11725025	11726024	+	color=blue

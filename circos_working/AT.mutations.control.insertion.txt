@@ -1,0 +1,3 @@
+chr3	8059547	8059548	+	color=green
+chr5	5560647	5560648	+	color=green
+chr5	16116755	16116756	+	color=green

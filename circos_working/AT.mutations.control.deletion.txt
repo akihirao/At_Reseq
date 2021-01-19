@@ -1,0 +1,3 @@
+chr1	13861754	13861755	+	color=orange
+chr1	19190733	19190734	+	color=orange
+chr5	12397999	12398000	+	color=orange

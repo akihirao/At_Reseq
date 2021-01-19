@@ -1,0 +1,5 @@
+chr1	6715408	6715409	+	color=green
+chr1	13665692	13665693	+	color=green
+chr3	9801533	9801534	+	color=green
+chr3	23281379	23281380	+	color=green
+chr4	2671128	2671129	+	color=green

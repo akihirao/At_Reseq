@@ -1,0 +1,5 @@
+chr1 0 30427617	+	color=white
+chr2 0 19698289	+	color=white
+chr3 0 23459830	+	color=white
+chr4 0 18585056	+	color=white
+chr5 0 26975502	+	color=white
