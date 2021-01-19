@@ -43,7 +43,7 @@ Pipe.14.Annotation.sh
 ```
 
 ## Filtering parameters
-The called raw variants by gatk VariantFiltration in Pipe09   
+The called raw variants by gatk VariantFiltration in Pipe10   
 
 ###
 * Common for filtering out: Depth ＜ 10x, Depth > 200x, GenotypeQuality < 20 
@@ -51,7 +51,7 @@ The called raw variants by gatk VariantFiltration in Pipe09
 * INDELs for flitering out: QualByDepth < 2.0, FisherStrand > 200.0, RMSMappingQuality < 20.0, StrandOddsRatio > 10.0, and ExcessHet > 13.0    
   
 
-The mutation identification in Pipe10
+The mutation identification in Pipe11
 
 * --mendelian-violation-qual-threshold: 30  
 This setting in gatk SelectVariants wiil select only variants that correspond to a mendelian violation as determined on the basis of family structure as <i>P</i> < 0.01.
