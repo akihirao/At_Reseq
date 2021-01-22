@@ -16,8 +16,7 @@ for($i = 0; $i < $NoSample; $i++){
 	$target_sample = $sample[$i];
 
 	#on Takeru
-	$source_file_path = "/zfs/Arabidopsis/work/At_Reseq/vcf_out/".$target_sample."/".$target_sample.".homo.hetero.familyclustered.vcf";
-#	$source_file_path = $target_sample."/".$target_sample.".homo.hetero.familyclustered.vcf";
+	$source_file_path = "/zfs/Arabidopsis/work/At_Reseq/vcf_out/".$target_sample."/".$target_sample.".all.vcf";
 
 	open(SOURCE, $source_file_path);
 

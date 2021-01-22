@@ -95,8 +95,7 @@ No.deletion.per.sample <- No.deletion.per.sample1 + No.deletion.per.sample2 + No
 
 
 treat <- c(rep("Control",length=9),rep("Low",length=9),rep("Middle",length=9),rep("High",length=9))
-gray <- c(rep(0,length=9),rep(0.4,length=9),rep(0.8,length=9),rep(1.6,length=9))
-gray.revised <- c(rep(0,length=9),rep(0.41,length=9),rep(1.4,length=9),rep(2.0,length=9))
+gray <- c(rep(0,length=9),rep(0.4,length=9),rep(1.4,length=9),rep(2.0,length=9))
 Group <- c(rep("Group1",18),rep("Group2",18))
 Group <- factor(Group, levels=c("Group1", "Group2"))
 Accumurate.gray <- gray*60
@@ -105,7 +104,7 @@ family <-c(rep("A01",length=3),rep("A02",length=3),rep("A03",length=3),rep("A11"
 family <- factor(family, levels=c("A01","A02","A03","A11","A12","A13","A21","A22","A23","A31","A32","A33"))
 
 mutation.count.frame <- data.frame(SampleID = sample.vec, Family = family,
-	Treat = treat, Gray = gray.revised, TotalGray = Accumurate.gray,
+	Treat = treat, Gray = gray, TotalGray = Accumurate.gray,
 	Mutation.Count =  No.mutations.per.sample,
 	Mutation.family.Count = No.fammily.mutations.per.sample,
 	Mutation.homo.Count =  No.homo.mutations.per.sample,	
@@ -117,6 +116,7 @@ mutation.count.frame <- data.frame(SampleID = sample.vec, Family = family,
 	kakudai.group = Group
 )
 
+write.table(mutation.count.frame, "No.mutations.summary.txt",quote=F, row.names=F)
 
 #glm for SBSs + INDELs
 print("-------------------------------")
@@ -262,6 +262,8 @@ gg.plot.snp.indel.kakudai <- ggplot2::ggplot() +
 	geom_count(data=mutation.count.frame,aes(x=Gray, y= INDEL.Count), pch=0, col=indel.color) +
 	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= INDEL.Count), method = MASS::glm.nb, se =FALSE, col=indel.color) + facet_zoom(xy = Group == "Group1") + xlim(0,0.4) + ylim(0,15) 
 #plot(gg.plot.snp.indel.kakudai)
+
+
 
 
 effective.genome.bp <- 117743122
