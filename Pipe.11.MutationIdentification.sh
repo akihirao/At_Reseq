@@ -380,7 +380,7 @@ gatk SelectVariants\
  -O M2.indel.homo.vcf.gz
 bcftools index M2.indel.homo.vcf.gz
 
-#select back variants with homo.bed 
+#select back variants with familyclustered.bed 
 gatk SelectVariants\
  -R $reference_folder/TAIR10.fa\
  -V $target_ID.mu.snp.indel.DPfilterNoCall.filtered.vcf.gz\
