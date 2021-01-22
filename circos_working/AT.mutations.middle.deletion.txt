@@ -48,3 +48,4 @@ chr5	18430636	18430637	+	color=orange
 chr5	18759020	18759021	+	color=orange
 chr5	19344134	19344135	+	color=orange
 chr5	23907497	23907498	+	color=orange
+chr5	25346145	25346146	+	color=orange

@@ -1,1 +1,2 @@
 chr5	20464913	20464914	+	color=green
+chr5	24888463	24888464	+	color=green

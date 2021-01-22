@@ -10,5 +10,7 @@ chr3	16499208	16499209	+	color=blue
 chr3	17441755	17441756	+	color=blue
 chr3	17878560	17878561	+	color=blue
 chr5	1738487	1738488	+	color=blue
+chr5	7469484	7469485	+	color=blue
 chr5	14108271	14108272	+	color=blue
+chr5	14851306	14851307	+	color=blue
 chr5	16884626	16884627	+	color=blue
