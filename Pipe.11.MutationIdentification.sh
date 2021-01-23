@@ -3,8 +3,9 @@
 #by HIRAO Akira
 
 #requirement:
-#*FilteringVcfNeighborSNVs.pl: filtering out combined variants (SNPs and INDELs) around neighborhood
-#*VariantFilteredAF.pl: filtering out mutation sites whrere proportion of mutant reads < 25% && > 80% && GQ < 99
+#*FilteringVcfNeighborSNV.pl: filtering out combined variants (SNPs and INDELs) around neighborhood
+#*VariantFilteredAF_hetero.pl: selecting heterozygous mutation sites whrere proportion of mutant reads: < 25% && > 80% && GQ < 99
+#*VariantFilteredAF_homo.pl: selecting homozygous mutation sites whrere proportion of mutant reads: >= 80%
 #*MakeMulationList.pl: output mutation list
 
 set -exuo pipefail
@@ -31,9 +32,7 @@ mutation_summary_file_homo="mutation_summary.gatk.homo"
 mutation_summary_file_familyclustered="mutation_summary.gatk.familyclustered"
 mutation_list_file="M2.mutation_list.gatk"
 
-
 cd $work_folder
-
 
 
 echo -n >| $mutation_summary_file_all.txt
@@ -125,26 +124,22 @@ gatk SelectVariants\
  -V $target_ID.mu.snp.indel.DPfilterNoCall.filtered.vcf.gz\
  -L $target_ID.unique.bed\
  --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
- --max-nocall-fraction 0.1\
- --exclude-filtered\
  -O AT.M2.unique.unfiltered.neighbor.vcf
 
 
 ##filtering out combined mutations
-perl $SCRIPT_DIR/FilteringVcfNeighborSNVs.pl < AT.M2.unique.unfiltered.neighbor.vcf > AT.M2.unique.non_neighbor.vcf
-bgzip -c AT.M2.unique.non_neighbor.vcf > AT.M2.unique.non_neighbor.vcf.gz
-tabix -f -p vcf AT.M2.unique.non_neighbor.vcf.gz
+perl $SCRIPT_DIR/FilteringVcfNeighborSNVs.pl < AT.M2.unique.unfiltered.neighbor.vcf > AT.M2.unique.unfiltered.non_neighbor.vcf
+bgzip -c AT.M2.unique.unfiltered.non_neighbor.vcf > AT.M2.unique.unfiltered.non_neighbor.vcf.gz
+tabix -f -p vcf AT.M2.unique.unfiltered.non_neighbor.vcf.gz
 
-
-#mark homozygous mutation sites
-gatk VariantFiltration\
+#filtering out non genotyped sites 
+gatk SelectVariants\
  -R $reference_folder/TAIR10.fa\
- -V AT.M2.unique.non_neighbor.vcf.gz\
- -G-filter "isHomVar==1"\
- -G-filter-name "homozygous_mutation"\
- -G-filter "isHomRef==1"\
- -G-filter-name "homozygous_ref"\
- -O AT.M2.unique.hetero_marked.vcf.gz
+ -V $vcf_folder/AT.M2.unique.unfiltered.non_neighbor.vcf.gz\
+ --max-nocall-fraction 0\
+ --exclude-filtered\
+ -O $vcf_folder/AT.M2.unique.non_neighbor.vcf.gz
+
 
 
 for target_sample in ${M2_vec[@]}
@@ -153,41 +148,27 @@ do
 	mkdir -p $target_sample
 	cd $target_sample
 
-	##select heterozygous mutation sites per samples	
+	##select mutation sites per samples	
 	gatk SelectVariants\
 	 -R $reference_folder/TAIR10.fa\
-	 -V $vcf_folder/AT.M2.unique.hetero_marked.vcf.gz\
-	 --set-filtered-gt-to-nocall\
+	 -V $vcf_folder/AT.M2.unique.non_neighbor.vcf.gz\
 	 --sample-name $target_sample\
-	 -O $target_sample.hetero.filter.vcf.gz
+	 -O $target_sample.unique.non_neighbor.vcf
+	##
 
-	gatk SelectVariants\
-	 -R $reference_folder/TAIR10.fa\
-	 -V $target_sample.hetero.filter.vcf.gz\
-	 --max-nocall-number 0\
-	 -O $target_sample.hetero.non_AF_filtered.vcf
-
-	#filtering out mutation sites; AF < 25% or AF > 80% or GQ < 99
-	perl $SCRIPT_DIR/VariantFilteredAF.pl < $target_sample.hetero.non_AF_filtered.vcf > $target_sample.hetero.vcf
+	#selecting heterozygous mutations; AF < 25% && AF > 80% && GQ < 99
+	perl $SCRIPT_DIR/VariantFilteredAF_hetero.pl < $target_sample.unique.non_neighbor.vcf > $target_sample.hetero.vcf
 	bgzip -c $target_sample.hetero.vcf > $target_sample.hetero.vcf.gz
 	tabix -f -p vcf $target_sample.hetero.vcf.gz
 	perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < $target_sample.hetero.vcf > $target_sample.hetero.bed
 	##
 
-
-	##select homozygous mutation sites per samples
-	gatk SelectVariants\
-	 -R $reference_folder/TAIR10.fa\
-	 -V $vcf_folder/AT.M2.unique.non_neighbor.vcf.gz\
-	 -select "vc.getGenotype('${target_sample}').isHomVar()"\
-	 --sample-name $target_sample\
-	 -O $target_sample.homo.vcf
+	#selecting homozygous mutations;  AF >= 80%
+	perl $SCRIPT_DIR/VariantFilteredAF_homo.pl < $target_sample.unique.non_neighbor.vcf > $target_sample.homo.vcf
 	bgzip -c $target_sample.homo.vcf > $target_sample.homo.vcf.gz
 	tabix -f -p vcf $target_sample.homo.vcf.gz
 	perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < $target_sample.homo.vcf > $target_sample.homo.bed
-
 	##
-
 
 	##select intra-family shared mutation sites per samples
 	gatk SelectVariants\

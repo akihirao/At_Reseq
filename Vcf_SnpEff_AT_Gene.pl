@@ -16,7 +16,7 @@ for($i = 0; $i < $NoSample; $i++){
 	$target_sample = $sample[$i];
 
 	#on Takeru
-	$source_file_path = "/zfs/Arabidopsis/work/At_Reseq/vcf_out/".$target_sample."/".$target_sample.".final.mutants.snpeff.vcf";
+	$source_file_path = "/zfs/Arabidopsis/work/At_Reseq/vcf_out/".$target_sample."/".$target_sample.".final.mutations.snpeff.vcf";
 #	$source_file_path = $target_sample."/".$target_sample.".final.mutants.snpeff.vcf";
 
 	open(SOURCE, $source_file_path);
@@ -66,21 +66,9 @@ for($i = 0; $i < $NoSample; $i++){
 
 				}
 
-			}
-			
-			
-		
-			#if(($GT eq "1/1")||($GT eq "1|1")){
-			#	$NoHomo = $NoHomo + 1;
-			#}else{
-			#	$NoHetero = $NoHetero + 1;
-			#}
+			}			
 		}
 	}
-
-#	print OUT $target_sample, "\t", $NoTotalMutation, "\t", $NoHomo, "\t", "$NoHetero", "\n";
-#	print $NoTotalMutation, "\t", $NoHomo, "\t", "$NoHetero", "\n";
-
 }
 
 close(OUT);

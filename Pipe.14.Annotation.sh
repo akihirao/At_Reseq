@@ -1,6 +1,7 @@
 #!/bin/bash -i
 #Pipe.14.Annotation.sh
 #by HIRAO Akira
+#requirement Vcf_SnpEff_AT_Gene.pl (making annotation table corresponding with M2.mutations.full.list.csv)
 
 
 set -exuo pipefail
@@ -59,7 +60,7 @@ do
 	 -select "vc.getGenotype('${target_sample}').isHomVar() || vc.getGenotype('${target_sample}').isHet() "\
 	 -O $vcf_folder/$target_sample/$target_sample.homo.hetero.familyclustered.vcf
 
-	java -Xmx4g -jar /usr/local/snpEff/snpEff.jar Arabidopsis_thaliana $vcf_folder/$target_sample/$target_sample.homo.hetero.familyclustered.vcf >$vcf_folder/$target_sample/$target_sample.final.mutants.snpeff.vcf
+	java -Xmx4g -jar /usr/local/snpEff/snpEff.jar Arabidopsis_thaliana $vcf_folder/$target_sample/$target_sample.homo.hetero.familyclustered.vcf >$vcf_folder/$target_sample/$target_sample.final.mutations.snpeff.vcf
 
 	Rscript $SCRIPT_DIR/snpEff_effect_summaryzing.R $target_sample
 
@@ -70,6 +71,10 @@ do
 done
 
 cd $SCRIPT_DIR
+
+perl $SCRIPT_DIR/Vcf_SnpEff_AT_Gene.pl
+(head -n +1 SnpEff.AT.gene.unsorted.txt && tail -n +2 SnpEff.AT.gene.unsorted.txt | sort -k 1,1 -k 2n,2) | uniq > SnpEff.AT.gene.txt
+rm SnpEff.AT.gene.unsorted.txt
 
 module unload java
 module unload R
