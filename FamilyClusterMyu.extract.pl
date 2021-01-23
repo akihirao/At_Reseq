@@ -163,123 +163,123 @@ while ($line = <>) {
 
         $A010_mu = 0; $non_A010_mu = 0;  #initializing zero
         @A010_non = @GT_48indiv_alt; @A010_fam = splice (@A010_non,0,3);$A010_mu += $_ for @A010_fam;$non_A010_mu += $_ for @A010_non;
-        if($A010_mu >= 2 and $non_A010_mu == 0 and $AT010 == 0){
+        if($A010_mu >= 2 and $non_A010_mu == 0 and $GT_sum_AT01 == 0){
             print OUT_FAMILY_ALL $line, "\n";
             print OUT_A010 $line, "\n";
 
         }
-         if($A010_mu == 3 and $non_A010_mu == 0 and $AT010 == 0){
+         if($A010_mu == 3 and $non_A010_mu == 0 and $GT_sum_AT01 == 0){
             print OUT_A010_ALL $line, "\n";
         }
   
   
         $A020_mu = 0; $non_A020_mu = 0;  #initializing zero
         @A020_non = @GT_48indiv_alt; @A020_fam = splice (@A020_non,3,3);$A020_mu += $_ for @A020_fam;$non_A020_mu += $_ for @A020_non;
-        if($A020_mu >= 2 and $non_A020_mu == 0 and $AT020 == 0){
+        if($A020_mu >= 2 and $non_A020_mu == 0 and $GT_sum_AT02 == 0){
             print OUT_FAMILY_ALL $line, "\n";
             print OUT_A020 $line, "\n";
         }
-         if($A020_mu == 3 and $non_A020_mu == 0 and $AT020 == 0){
+         if($A020_mu == 3 and $non_A020_mu == 0 and $GT_sum_AT02 == 0){
             print OUT_A020_ALL $line, "\n";
         }
  
         $A030_mu = 0; $non_A030_mu = 0;  #initializing zero
         @A030_non = @GT_48indiv_alt; @A030_fam = splice (@A030_non,6,3);$A030_mu += $_ for @A030_fam;$non_A030_mu += $_ for @A030_non;
-        if($A030_mu >= 2 and $non_A030_mu == 0 and $AT030 == 0){
+        if($A030_mu >= 2 and $non_A030_mu == 0 and $GT_sum_AT03 == 0){
             print OUT_FAMILY_ALL $line, "\n";
             print OUT_A030 $line, "\n";
         }
-         if($A030_mu == 3 and $non_A030_mu == 0 and $AT030 == 0){
+         if($A030_mu == 3 and $non_A030_mu == 0 and $GT_sum_AT03 == 0){
             print OUT_A030_ALL $line, "\n";
         }
  
         $A110_mu = 0; $non_A110_mu = 0;  #initializing zero
         @A110_non = @GT_48indiv_alt; @A110_fam = splice (@A110_non,9,3);$A110_mu += $_ for @A110_fam;$non_A110_mu += $_ for @A110_non;
-        if($A110_mu >= 2 and $non_A110_mu == 0 and $AT110 == 0){
+        if($A110_mu >= 2 and $non_A110_mu == 0 and $GT_sum_AT11 == 0){
             print OUT_FAMILY_ALL $line, "\n";
             print OUT_A110 $line, "\n";
         }
-         if($A110_mu == 3 and $non_A110_mu == 0 and $AT110 == 0){
+         if($A110_mu == 3 and $non_A110_mu == 0 and $GT_sum_AT11 == 0){
             print OUT_A110_ALL $line, "\n";
         }
  
         $A120_mu = 0; $non_A120_mu = 0;  #initializing zero
         @A120_non = @GT_48indiv_alt; @A120_fam = splice (@A120_non,12,3);$A120_mu += $_ for @A120_fam;$non_A120_mu += $_ for @A120_non;
-        if($A120_mu >= 2 and $non_A120_mu == 0 and $AT120 == 0){
+        if($A120_mu >= 2 and $non_A120_mu == 0 and GT_sum_AT12 == 0){
             print OUT_FAMILY_ALL $line, "\n";
             print OUT_A120 $line, "\n";
         }
-         if($A120_mu == 3 and $non_A120_mu == 0 and $AT120 == 0){
+         if($A120_mu == 3 and $non_A120_mu == 0 and $GT_sum_AT12 == 0){
             print OUT_A120_ALL $line, "\n";
         }
  
         $A130_mu = 0; $non_A130_mu = 0;  #initializing zero
         @A130_non = @GT_48indiv_alt; @A130_fam = splice (@A130_non,15,3);$A130_mu += $_ for @A130_fam;$non_A130_mu += $_ for @A130_non;
-        if($A130_mu >= 2 and $non_A130_mu == 0 and $AT130 == 0){
+        if($A130_mu >= 2 and $non_A130_mu == 0 and $GT_sum_AT13 == 0){
             print OUT_FAMILY_ALL $line, "\n";
             print OUT_A130 $line, "\n";
         }
-         if($A130_mu == 3 and $non_A130_mu == 0 and $AT130 == 0){
+         if($A130_mu == 3 and $non_A130_mu == 0 and $GT_sum_AT13 == 0){
             print OUT_A130_ALL $line, "\n";
         }
  
         $A210_mu = 0; $non_A210_mu = 0;  #initializing zero
         @A210_non = @GT_48indiv_alt; @A210_fam = splice (@A210_non,18,3);$A210_mu += $_ for @A210_fam;$non_A210_mu += $_ for @A210_non;
-        if($A210_mu >= 2 and $non_A210_mu == 0 and $AT210 == 0){
+        if($A210_mu >= 2 and $non_A210_mu == 0 and $GT_sum_AT21 == 0){
             print OUT_FAMILY_ALL $line, "\n";
             print OUT_A210 $line, "\n";
         }
-         if($A210_mu == 3 and $non_A210_mu == 0 and $AT210 == 0){
+         if($A210_mu == 3 and $non_A210_mu == 0 and GT_sum_AT21 == 0){
             print OUT_A210_ALL $line, "\n";
         }
  
         $A220_mu = 0; $non_A220_mu = 0;  #initializing zero
         @A220_non = @GT_48indiv_alt; @A220_fam = splice (@A220_non,21,3);$A220_mu += $_ for @A220_fam;$non_A220_mu += $_ for @A220_non;
-        if($A220_mu >= 2 and $non_A220_mu == 0 and $AT220 == 0){
+        if($A220_mu >= 2 and $non_A220_mu == 0 and GT_sum_AT22 == 0){
             print OUT_FAMILY_ALL $line, "\n";
             print OUT_A220 $line, "\n";
         }
-         if($A220_mu == 3 and $non_A220_mu == 0 and $AT220 == 0){
+         if($A220_mu == 3 and $non_A220_mu == 0 and GT_sum_AT22 == 0){
             print OUT_A220_ALL $line, "\n";
         }
  
         $A230_mu = 0; $non_A230_mu = 0;  #initializing zero
         @A230_non = @GT_48indiv_alt; @A230_fam = splice (@A230_non,24,3);$A230_mu += $_ for @A230_fam;$non_A230_mu += $_ for @A230_non;
-        if($A230_mu >= 2 and $non_A230_mu == 0 and $AT230 == 0){
+        if($A230_mu >= 2 and $non_A230_mu == 0 and GT_sum_AT23 == 0){
             print OUT_FAMILY_ALL $line, "\n";
             print OUT_A230 $line, "\n";
         }
-         if($A230_mu == 3 and $non_A230_mu == 0 and $AT230 == 0){
+         if($A230_mu == 3 and $non_A230_mu == 0 and $GT_sum_AT23 == 0){
             print OUT_A230_ALL $line, "\n";
         }
  
         $A310_mu = 0; $non_A310_mu = 0;  #initializing zero
         @A310_non = @GT_48indiv_alt; @A310_fam = splice (@A310_non,27,3);$A310_mu += $_ for @A310_fam;$non_A310_mu += $_ for @A310_non;
-        if($A310_mu >= 2 and $non_A310_mu == 0 and $AT310 == 0){
+        if($A310_mu >= 2 and $non_A310_mu == 0 and $GT_sum_AT31 == 0){
             print OUT_FAMILY_ALL $line, "\n";
             print OUT_A310 $line, "\n";
         }       
-         if($A310_mu == 3 and $non_A310_mu == 0 and $AT310 == 0){
+         if($A310_mu == 3 and $non_A310_mu == 0 and $GT_sum_AT31 == 0){
             print OUT_A310_ALL $line, "\n";
         }
  
         $A320_mu = 0; $non_A320_mu = 0;  #initializing zero
         @A320_non = @GT_48indiv_alt; @A320_fam = splice (@A320_non,30,3);$A320_mu += $_ for @A320_fam;$non_A320_mu += $_ for @A320_non;
-        if($A320_mu >= 2 and $non_A320_mu == 0 and $AT320 == 0){
+        if($A320_mu >= 2 and $non_A320_mu == 0 and GT_sum_AT32 == 0){
             print OUT_FAMILY_ALL $line, "\n";
             print OUT_A320 $line, "\n";
         }
-          if($A320_mu == 3 and $non_A320_mu == 0 and $AT320 == 0){
+          if($A320_mu == 3 and $non_A320_mu == 0 and $GT_sum_AT32 == 0){
             print OUT_A320_ALL $line, "\n";
         }
  
         $A330_mu = 0; $non_A330_mu = 0;  #initializing zero
         @A330_non = @GT_48indiv_alt; @A330_fam = splice (@A330_non,33,3);$A330_mu += $_ for @A330_fam;$non_A330_mu += $_ for @A330_non;
-        if($A330_mu >= 2 and $non_A330_mu == 0 and $AT330 == 0){
+        if($A330_mu >= 2 and $non_A330_mu == 0 and $GT_sum_AT33 == 0){
             print OUT_FAMILY_ALL $line, "\n";
             print OUT_A330 $line, "\n";
         }
-         if($A330_mu == 3 and $non_A330_mu == 0 and $AT330 == 0){
+         if($A330_mu == 3 and $non_A330_mu == 0 and $GT_sum_AT33 == 0){
             print OUT_A330_ALL $line, "\n";
         }
  
