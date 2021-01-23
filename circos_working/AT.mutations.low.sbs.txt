@@ -1,4 +1,5 @@
 chr1	200972	200973	+	color=blue
+chr1	3332707	3332708	+	color=blue
 chr1	3988859	3988860	+	color=blue
 chr1	7667789	7667790	+	color=blue
 chr1	8504191	8504192	+	color=blue
@@ -57,10 +58,8 @@ chr5	556095	556096	+	color=blue
 chr5	1794481	1794482	+	color=blue
 chr5	4216733	4216734	+	color=blue
 chr5	8178722	8178723	+	color=blue
-chr5	8432040	8432041	+	color=blue
 chr5	8794499	8794500	+	color=blue
 chr5	9146835	9146836	+	color=blue
-chr5	10951455	10951456	+	color=blue
 chr5	11168716	11168717	+	color=blue
 chr5	13324334	13324335	+	color=blue
 chr5	15828590	15828591	+	color=blue
