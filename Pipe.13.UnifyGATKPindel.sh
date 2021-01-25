@@ -81,9 +81,9 @@ gatk SelectVariants\
  -V $vcf_folder/$target_ID.mu.snp.indel.DPfilterNoCall.vcf.gz\
  -L $work_folder/M2.snp.indel.gatk.pindl.common.all.bed\
  --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
- -O $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf
-bgzip -c $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf > $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf.gz
-tabix -f -p vcf $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf.gz
+ -O $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.homo.familyclustered.vcf
+bgzip -c $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.homo.familyclustered.vcf > $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.homo.familyclustered.vcf.gz
+tabix -f -p vcf $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.homo.familyclustered.vcf.gz
 	
 
 #java -jar $BioAlcidaeJdk_path/bioalcidaejdk.jar -e 'stream().forEach(V->{final List<Genotype> L=V.getGenotypes().stream().filter(G->G.isHet() || G.isHomVar()).collect(Collectors.toList());if(L.size()!=1) return;final Genotype g=L.get(0);println(V.getContig()+" "+V.getStart()+" "+V.getReference()+" "+g.getSampleName()+" "+g.getAlleles());});' $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.vcf > $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.list.txt
@@ -104,7 +104,7 @@ tabix -f -p vcf $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclu
 #bcftools view  $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf.gz -Ov -o $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf
 
 
-perl $SCRIPT_DIR/Vcf2List_R_glm.pl < $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf > $SCRIPT_DIR/M2.mutations.full.list.csv
+perl $SCRIPT_DIR/Vcf2List_R_glm.pl < $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.homo.familyclustered.vcf > $SCRIPT_DIR/M2.mutations.full.list.csv
 
 cd $SCRIPT_DIR
 
