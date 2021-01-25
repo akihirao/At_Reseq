@@ -28,64 +28,52 @@ cd $work_folder
 
 
 #compare indel variants identified by gatk with those by pindel: hetero
-bcftools isec $vcf_folder/M2.indel.hetero.vcf.gz AT.M2.unique.pindel.D.SI.vcf.gz -p AT.M2.gatk.pindel.common.hetero -n=2
-perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < $work_folder/AT.M2.gatk.pindel.common.hetero/0000.vcf > $work_folder/AT.M2.indel.common.pindel.gatk.hetero.bed
+#bcftools isec $vcf_folder/M2.indel.hetero.vcf.gz AT.M2.unique.pindel.D.SI.vcf.gz -p AT.M2.gatk.pindel.common.hetero -n=2
+#perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < $work_folder/AT.M2.gatk.pindel.common.hetero/0000.vcf > $work_folder/AT.M2.indel.common.pindel.gatk.hetero.bed
 
 #compare indel variants identified by gatk with those by pindel: homo
-bcftools isec $vcf_folder/M2.indel.homo.vcf.gz AT.M2.unique.pindel.D.SI.vcf.gz -p AT.M2.gatk.pindel.common.homo -n=2
-perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < $work_folder/AT.M2.gatk.pindel.common.homo/0000.vcf > $work_folder/AT.M2.indel.common.pindel.gatk.homo.bed
+#bcftools isec $vcf_folder/M2.indel.homo.vcf.gz AT.M2.unique.pindel.D.SI.vcf.gz -p AT.M2.gatk.pindel.common.homo -n=2
+#perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < $work_folder/AT.M2.gatk.pindel.common.homo/0000.vcf > $work_folder/AT.M2.indel.common.pindel.gatk.homo.bed
 
 #compare indel variants identified by gatk with those by pindel: family-clustered
-bcftools isec $vcf_folder/M2.indel.familyclustered.vcf.gz AT.M2.unique.pindel.D.SI.vcf.gz -p AT.M2.gatk.pindel.common.familyclustered -n=2
-perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < $work_folder/AT.M2.gatk.pindel.common.familyclustered/0000.vcf > $work_folder/AT.M2.indel.common.pindel.gatk.familyclustered.bed
+#bcftools isec $vcf_folder/M2.indel.familyclustered.vcf.gz AT.M2.unique.pindel.D.SI.vcf.gz -p AT.M2.gatk.pindel.common.familyclustered -n=2
+#perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < $work_folder/AT.M2.gatk.pindel.common.familyclustered/0000.vcf > $work_folder/AT.M2.indel.common.pindel.gatk.familyclustered.bed
 
 #compare indel variants identified by gatk with those by pindel: all
 bcftools isec $vcf_folder/M2.indel.all.vcf.gz AT.M2.unique.pindel.D.SI.vcf.gz -p AT.M2.gatk.pindel.common.all -n=2
 perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < $work_folder/AT.M2.gatk.pindel.common.all/0000.vcf > $work_folder/AT.M2.indel.common.pindel.gatk.all.bed
 
 
-bcftools isec $vcf_folder/M2.indel.hetero.vcf.gz AT.M2.unique.pindel.D.SI.vcf.gz -p AT.M2.gatk.pindel.hetero -C
-perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < $work_folder/AT.M2.gatk.pindel.hetero/0000.vcf > $work_folder/AT.M2.filterout.pindel.gatk.indel.hetero.bed
+#at $vcf_folder/M2.snp.hetero.bed $work_folder/AT.M2.indel.common.pindel.gatk.hetero.bed | sort -k 1,1 -k 2n,2 >  $work_folder/M2.snp.indel.gatk.pindl.common.hetero.bed
+#cat $vcf_folder/M2.snp.homo.bed $work_folder/AT.M2.indel.common.pindel.gatk.homo.bed | sort -k 1,1 -k 2n,2 >  $work_folder/M2.snp.indel.gatk.pindl.common.homo.bed
+#cat $vcf_folder/M2.snp.hetero.bed $work_folder/AT.M2.indel.common.pindel.gatk.familyclustered.bed | sort -k 1,1 -k 2n,2 >  $work_folder/M2.snp.indel.gatk.pindl.common.familyclustered.bed
 
-bcftools isec $vcf_folder/M2.indel.homo.vcf.gz AT.M2.unique.pindel.D.SI.vcf.gz -p AT.M2.gatk.pindel.homo -C
-perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < $work_folder/AT.M2.gatk.pindel.homo/0000.vcf > $work_folder/AT.M2.filterout.pindel.gatk.indel.hetero.bed
-
-bcftools isec $vcf_folder/M2.indel.familyclustered.vcf.gz AT.M2.unique.pindel.D.SI.vcf.gz -p AT.M2.gatk.pindel.familyclustered -C
-perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < $work_folder/AT.M2.gatk.pindel.familyclustered/0000.vcf > $work_folder/AT.M2.filterout.pindel.gatk.indel.familyclustered.bed
-
-bcftools isec $vcf_folder/M2.indel.all.vcf.gz AT.M2.unique.pindel.D.SI.vcf.gz -p AT.M2.gatk.pindel.all -C
-perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < $work_folder/AT.M2.gatk.pindel.all/0000.vcf > $work_folder/AT.M2.filterout.pindel.gatk.indel.all.bed
-
-
-cat $vcf_folder/M2.snp.hetero.bed $work_folder/AT.M2.indel.common.pindel.gatk.hetero.bed | sort -k 1,1 -k 2n,2 >  $work_folder/M2.snp.indel.gatk.pindl.common.hetero.bed
-cat $vcf_folder/M2.snp.homo.bed $work_folder/AT.M2.indel.common.pindel.gatk.homo.bed | sort -k 1,1 -k 2n,2 >  $work_folder/M2.snp.indel.gatk.pindl.common.homo.bed
-cat $vcf_folder/M2.snp.hetero.bed $work_folder/AT.M2.indel.common.pindel.gatk.familyclustered.bed | sort -k 1,1 -k 2n,2 >  $work_folder/M2.snp.indel.gatk.pindl.common.familyclustered.bed
 cat $vcf_folder/M2.snp.all.bed $work_folder/AT.M2.indel.common.pindel.gatk.all.bed | sort -k 1,1 -k 2n,2 >  $work_folder/M2.snp.indel.gatk.pindl.common.all.bed
 
 
 #select back variants with hetero.bed 
-gatk SelectVariants\
- -R $reference_folder/TAIR10.fa\
- -V $vcf_folder/$target_ID.mu.snp.indel.DPfilterNoCall.vcf.gz\
- -L $work_folder/M2.snp.indel.gatk.pindl.common.hetero.bed\
- --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
- -O $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.vcf
+#gatk SelectVariants\
+# -R $reference_folder/TAIR10.fa\
+# -V $vcf_folder/$target_ID.mu.snp.indel.DPfilterNoCall.vcf.gz\
+# -L $work_folder/M2.snp.indel.gatk.pindl.common.hetero.bed\
+# --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
+# -O $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.vcf
 
 #select back variants with homo.bed 
-gatk SelectVariants\
- -R $reference_folder/TAIR10.fa\
- -V $vcf_folder/$target_ID.mu.snp.indel.DPfilterNoCall.vcf.gz\
- -L $work_folder/M2.snp.indel.gatk.pindl.common.homo.bed\
- --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
- -O $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.vcf
+#gatk SelectVariants\
+# -R $reference_folder/TAIR10.fa\
+# -V $vcf_folder/$target_ID.mu.snp.indel.DPfilterNoCall.vcf.gz\
+# -L $work_folder/M2.snp.indel.gatk.pindl.common.homo.bed\
+# --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
+# -O $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.vcf
 
 #select back variants with familyclustered.bed 
-gatk SelectVariants\
- -R $reference_folder/TAIR10.fa\
- -V $vcf_folder/$target_ID.mu.snp.indel.DPfilterNoCall.vcf.gz\
- -L $work_folder/M2.snp.indel.gatk.pindl.common.familyclustered.bed\
- --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
- -O $vcf_folder/M2.snp.indel.gatk.pindl.common.familyclustered.vcf
+#gatk SelectVariants\
+# -R $reference_folder/TAIR10.fa\
+# -V $vcf_folder/$target_ID.mu.snp.indel.DPfilterNoCall.vcf.gz\
+# -L $work_folder/M2.snp.indel.gatk.pindl.common.familyclustered.bed\
+# --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
+# -O $vcf_folder/M2.snp.indel.gatk.pindl.common.familyclustered.vcf
 
 #select back variants with all.bed 
 gatk SelectVariants\
@@ -93,25 +81,27 @@ gatk SelectVariants\
  -V $vcf_folder/$target_ID.mu.snp.indel.DPfilterNoCall.vcf.gz\
  -L $work_folder/M2.snp.indel.gatk.pindl.common.all.bed\
  --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
- -O $vcf_folder/M2.snp.indel.gatk.pindl.common.all.vcf
+ -O $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf
+bgzip -c $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf > $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf.gz
+tabix -f -p vcf $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf.gz
+	
+
+#java -jar $BioAlcidaeJdk_path/bioalcidaejdk.jar -e 'stream().forEach(V->{final List<Genotype> L=V.getGenotypes().stream().filter(G->G.isHet() || G.isHomVar()).collect(Collectors.toList());if(L.size()!=1) return;final Genotype g=L.get(0);println(V.getContig()+" "+V.getStart()+" "+V.getReference()+" "+g.getSampleName()+" "+g.getAlleles());});' $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.vcf > $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.list.txt
+#java -jar $BioAlcidaeJdk_path/bioalcidaejdk.jar -e 'stream().forEach(V->{final List<Genotype> L=V.getGenotypes().stream().filter(G->G.isHet() || G.isHomVar()).collect(Collectors.toList());if(L.size()!=1) return;final Genotype g=L.get(0);println(V.getContig()+" "+V.getStart()+" "+V.getReference()+" "+g.getSampleName()+" "+g.getAlleles());});' $vcf_folder/M2.snp.indel.gatk.pindl.common.all.vcf > $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.homo.list.txt
 
 
-java -jar $BioAlcidaeJdk_path/bioalcidaejdk.jar -e 'stream().forEach(V->{final List<Genotype> L=V.getGenotypes().stream().filter(G->G.isHet() || G.isHomVar()).collect(Collectors.toList());if(L.size()!=1) return;final Genotype g=L.get(0);println(V.getContig()+" "+V.getStart()+" "+V.getReference()+" "+g.getSampleName()+" "+g.getAlleles());});' $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.vcf > $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.list.txt
-java -jar $BioAlcidaeJdk_path/bioalcidaejdk.jar -e 'stream().forEach(V->{final List<Genotype> L=V.getGenotypes().stream().filter(G->G.isHet() || G.isHomVar()).collect(Collectors.toList());if(L.size()!=1) return;final Genotype g=L.get(0);println(V.getContig()+" "+V.getStart()+" "+V.getReference()+" "+g.getSampleName()+" "+g.getAlleles());});' $vcf_folder/M2.snp.indel.gatk.pindl.common.all.vcf > $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.homo.list.txt
-
-
-perl $SCRIPT_DIR/BioalcidaejdkList2Rform.pl < $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.list.txt > $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.R.list.txt
-perl $SCRIPT_DIR/BioalcidaejdkList2Rform.pl < $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.homo.list.txt > $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.homo.R.list.txt
+#perl $SCRIPT_DIR/BioalcidaejdkList2Rform.pl < $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.list.txt > $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.R.list.txt
+#perl $SCRIPT_DIR/BioalcidaejdkList2Rform.pl < $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.homo.list.txt > $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.homo.R.list.txt
 
 
 #Merge homo + hetero vcfs + familyclustered vcf
-gatk MergeVcfs\
- -I $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.vcf\
- -I $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.vcf\
- -I $vcf_folder/AT.M2.family.clustered.mu.non_neighbor.vcf.gz\
- -O $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf.gz
-bcftools index -f $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf.gz
-bcftools view  $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf.gz -Ov -o $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf
+#gatk MergeVcfs\
+# -I $vcf_folder/M2.snp.indel.gatk.pindl.common.hetero.vcf\
+# -I $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.vcf\
+# -I $vcf_folder/AT.M2.family.clustered.mu.non_neighbor.vcf.gz\
+# -O $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf.gz
+#bcftools index -f $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf.gz
+#bcftools view  $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf.gz -Ov -o $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf
 
 
 perl $SCRIPT_DIR/Vcf2List_R_glm.pl < $vcf_folder/M2.snp.indel.gatk.pindl.common.homo.hetero.familyclustered.vcf > $SCRIPT_DIR/M2.mutations.full.list.csv

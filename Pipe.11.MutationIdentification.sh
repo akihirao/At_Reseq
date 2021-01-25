@@ -34,6 +34,8 @@ mutation_list_file="M2.mutation_list.gatk"
 
 cd $work_folder
 
+echo -n >| M2.snp.unsorted.all.bed
+echo -n >| M2.indel.unsorted.all.bed
 
 echo -n >| $mutation_summary_file_all.txt
 echo -n >| $mutation_summary_file_hetero.txt
@@ -89,10 +91,12 @@ gatk SelectVariants\
 
 gunzip -c $target_ID.mu.snp.indel.DPfilterNocall.filtered.vcf.gz > $target_ID.mu.snp.indel.DPfilterNocall.filtered.vcf
 
-#---------------------------------------------------------------------------------------------------------------
-#select family-clustered variants
-perl $SCRIPT_DIR/FamilyClusterMyu.extract.pl < $target_ID.mu.snp.indel.DPfilterNocall.filtered.vcf
 
+##select family-clustered variants
+#output of the below perl script: "AT48.family.clustered.mu.vcf"
+perl $SCRIPT_DIR/FamilyClusterMyu.extract.pl < $target_ID.mu.snp.indel.DPfilterNocall.filtered.vcf
+cp AT48.family.clustered.mu.vcf AT48.family.clustered.mu.orig.vcf
+perl $SCRIPT_DIR/FilteringVcfNeighborSNVs.pl < AT48.family.clustered.mu.orig.vcf > AT48.family.clustered.mu.vcf
 bgzip -c AT48.family.clustered.mu.vcf > AT48.family.clustered.mu.vcf.gz
 tabix -f -p vcf AT48.family.clustered.mu.vcf.gz
 
@@ -101,12 +105,12 @@ gatk SelectVariants\
  -R $reference_folder/TAIR10.fa\
  -V AT48.family.clustered.mu.vcf.gz\
  --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
- --max-nocall-fraction 0.1\
+ --max-nocall-fraction 0\
  --exclude-filtered\
  -O AT.M2.family.clustered.mu.vcf.gz
 
 gunzip -c AT.M2.family.clustered.mu.vcf.gz > AT.M2.family.clustered.mu.vcf
-
+##
 #---------------------------------------------------------------------------------------------------------------
 
 
@@ -201,7 +205,12 @@ do
 	##
 
 	
-	vcf-merge $target_sample.hetero.homo.vcf.gz $target_sample.family.clustered.mu.vcf.gz > $target_sample.all.raw.vcf
+	#vcf-merge $target_sample.hetero.homo.vcf.gz $target_sample.family.clustered.mu.vcf.gz > $target_sample.all.raw.vcf
+	#Merge SNPs and INDELs vcf files into a SNV vcf file
+	gatk MergeVcfs\
+	 -I $target_sample.hetero.homo.vcf.gz\
+	 -I $target_sample.family.clustered.mu.vcf.gz\
+	 -O $target_sample.all.raw.vcf
 	perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < $target_sample.all.raw.vcf | sort -k 1,1 -k 2n,2 >  $target_sample.all.bed
 
 	#select back variants with $target_sample.all.bed 
@@ -214,6 +223,27 @@ do
 	bgzip -c $target_sample.all.vcf > $target_sample.all.vcf.gz
 	tabix -f -p vcf $target_sample.all.vcf.gz
 	##
+
+	##select SBSs and INDEL mutations, respectively
+	gatk SelectVariants\
+	 -R $reference_folder/TAIR10.fa\
+	 -V $target_sample.all.vcf.gz\
+	 -select-type SNP\
+	 -O $target_sample.all.snp.vcf
+	bgzip -c $target_sample.all.snp.vcf > $target_sample.all.snp.vcf.gz
+	tabix -f -p vcf $target_sample.all.snp.vcf.gz
+	perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < $target_sample.all.snp.vcf >> $vcf_folder/M2.snp.unsorted.all.bed
+
+	gatk SelectVariants\
+	 -R $reference_folder/TAIR10.fa\
+	 -V $target_sample.all.vcf.gz\
+	 -select-type INDEL\
+	 -O $target_sample.all.indel.vcf
+	bgzip -c $target_sample.all.indel.vcf > $target_sample.all.indel.vcf.gz
+	tabix -f -p vcf $target_sample.all.indel.vcf.gz
+	perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < $target_sample.all.indel.vcf >> $vcf_folder/M2.indel.unsorted.all.bed
+	##
+
 
 
 	#output heterozygous mutation.list 
@@ -287,6 +317,11 @@ done
 
 cd $vcf_folder
 
+
+cat M2.snp.unsorted.all.bed | sort -k 1,1 -k 2n,2 | uniq >  M2.snp.all.bed 
+cat M2.indel.unsorted.all.bed | sort -k 1,1 -k 2n,2 | uniq >  M2.indel.all.bed 
+
+
 #Sort SNPs + INDELs: heterozygous mutation list 
 cat $mutation_list_file.hetero.unsort.txt | sort -k 1,1 -k 2n,2 >  $mutation_list_file.hetero.txt
 rm $mutation_list_file.hetero.unsort.txt
@@ -323,52 +358,63 @@ awk '/Insertion/ || /Deletion/' $mutation_list_file.all.txt > M2.indel.all.list.
 
 
 #transform to bed for final vcf in pipe.12
-perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < M2.snp.hetero.list.txt | uniq > M2.snp.hetero.bed
+#perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < M2.snp.hetero.list.txt | uniq > M2.snp.hetero.bed
 #transform to bed for final vcf in pipe.12
-perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < M2.snp.homo.list.txt | uniq > M2.snp.homo.bed
+#perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < M2.snp.homo.list.txt | uniq > M2.snp.homo.bed
 #transform to bed for final vcf in pipe.12
-perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < M2.snp.familyclustered.list.txt | uniq > M2.snp.familyclustered.bed
+#perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < M2.snp.familyclustered.list.txt | uniq > M2.snp.familyclustered.bed
 #transform to bed for final vcf in pipe.12
-perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < M2.snp.all.list.txt | uniq > M2.snp.all.bed
+#perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < M2.snp.all.list.txt | uniq > M2.snp.all.bed
 
 
 #Output for M2.indel.hetero.vcf
-perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < M2.indel.hetero.list.txt | uniq > M2.indel.hetero.bed
+#perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < M2.indel.hetero.list.txt | uniq > M2.indel.hetero.bed
 #Output for M2.indel.homo.vcf
-perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < M2.indel.homo.list.txt | uniq > M2.indel.homo.bed
+#perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < M2.indel.homo.list.txt | uniq > M2.indel.homo.bed
 #Output for M2.indel.familyclustered.vcf
-perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < M2.indel.familyclustered.list.txt | uniq > M2.indel.familyclustered.bed
+#perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < M2.indel.familyclustered.list.txt | uniq > M2.indel.familyclustered.bed
 #Output for M2.indel.all.vcf
-perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < M2.indel.all.list.txt | uniq > M2.indel.all.bed
+#perl $SCRIPT_DIR/BioalcidaejdkOut2BED.pl < M2.indel.all.list.txt | uniq > M2.indel.all.bed
 
 
 
 #select back variants with hetero.bed 
-gatk SelectVariants\
- -R $reference_folder/TAIR10.fa\
- -V $target_ID.mu.snp.indel.DPfilterNoCall.filtered.vcf.gz\
- -L M2.indel.hetero.bed\
- --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
- -O M2.indel.hetero.vcf.gz
-bcftools index M2.indel.hetero.vcf.gz
+#gatk SelectVariants\
+# -R $reference_folder/TAIR10.fa\
+# -V $target_ID.mu.snp.indel.DPfilterNoCall.filtered.vcf.gz\
+# -L M2.indel.hetero.bed\
+# --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
+# -O M2.indel.hetero.vcf.gz
+#bcftools index M2.indel.hetero.vcf.gz
 
 #select back variants with homo.bed 
-gatk SelectVariants\
- -R $reference_folder/TAIR10.fa\
- -V $target_ID.mu.snp.indel.DPfilterNoCall.filtered.vcf.gz\
- -L M2.indel.homo.bed\
- --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
- -O M2.indel.homo.vcf.gz
-bcftools index M2.indel.homo.vcf.gz
+#gatk SelectVariants\
+# -R $reference_folder/TAIR10.fa\
+# -V $target_ID.mu.snp.indel.DPfilterNoCall.filtered.vcf.gz\
+# -L M2.indel.homo.bed\
+# --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
+# -O M2.indel.homo.vcf.gz
+#bcftools index M2.indel.homo.vcf.gz
 
 #select back variants with familyclustered.bed 
+#gatk SelectVariants\
+# -R $reference_folder/TAIR10.fa\
+# -V $target_ID.mu.snp.indel.DPfilterNoCall.filtered.vcf.gz\
+# -L M2.indel.familyclustered.bed\
+# --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
+# -O M2.indel.familyclustered.vcf.gz
+#bcftools index M2.indel.familyclustered.vcf.gz
+
+#select back variants with all.bed 
 gatk SelectVariants\
  -R $reference_folder/TAIR10.fa\
  -V $target_ID.mu.snp.indel.DPfilterNoCall.filtered.vcf.gz\
- -L M2.indel.familyclustered.bed\
+ -L M2.snp.all.bed\
  --exclude-sample-name $SCRIPT_DIR/Mother_ID.list\
- -O M2.indel.familyclustered.vcf.gz
-bcftools index M2.indel.familyclustered.vcf.gz
+ -O M2.snp.all.vcf.gz
+bcftools index M2.snp.all.vcf.gz
+
+
 
 #select back variants with all.bed 
 gatk SelectVariants\
