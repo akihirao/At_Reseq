@@ -2,7 +2,6 @@
 #by HIRAO Akira
 
 library(stringr)
-library(beeswarm)
 library(MASS)
 library(glmmML)
 library(tidyverse)
@@ -141,36 +140,7 @@ print(kai.square.test.homo.hetero.middle)
 kai.square.test.homo.hetero.high <- chisq.test(x=c(mutation.homo.sum[4],mutation.hetero.sum[4],p=c(1/3,2/3)))
 print(kai.square.test.homo.hetero.high)
 
-if(FALSE){
-#each sample for the control treatment
-print ("chisq test for the control")
-for(i in 1:9){
-	kai.square.test.homo.hetero.control <- chisq.test(x=c(AT.M2.homo.hetero.count$No.Homo.Mutation[i],AT.M2.homo.hetero.count$No.Hetero.Mutation[i],p=c(0.5,0.5)))
-	print(kai.square.test.homo.hetero.control)
-}
 
-#each sample for the low treatment
-print ("chisq test for the low")
-for(j in 10:18){
-	kai.square.test.homo.hetero.low <- chisq.test(x=c(AT.M2.homo.hetero.count$No.Homo.Mutation[j],AT.M2.homo.hetero.count$No.Hetero.Mutation[j],p=c(0.5,0.5)))
-	print(kai.square.test.homo.hetero.low)
-}
-
-#each sample for the middle treatment
-print ("chisq test for the middle")
-for(k in 19:27){
-	chisq.test(x=c(AT.M2.homo.hetero.count$No.Homo.Mutation[k],AT.M2.homo.hetero.count$No.Hetero.Mutation[k],p=c(0.5,0.5)))
-	print(kai.square.test.homo.hetero.middle)
-}
-
-#each sample for the high treatment
-print ("chisq test for the high")
-for(l in 28:36){
-	chisq.test(x=c(AT.M2.homo.hetero.count$No.Homo.Mutation[l],AT.M2.homo.hetero.count$No.Hetero.Mutation[l],p=c(0.5,0.5)))
-	print(kai.square.test.homo.hetero.high)
-}
-
-}#close of if(FALSE)
 
 
 Mutation.homo.hetero.total.mean <- c(mutation.homo.mean,mutation.hetero.mean, mutation.total.mean)
@@ -191,5 +161,48 @@ g <- ggplot(mutation.treat.mean.info, aes(x = Zygosity, y = Mutation.mean, fill 
 	theme(axis.title.x = element_text(size=18), axis.title.y = element_text(size=18), 
 		axis.text.x = element_text(size=16),axis.text.y = element_text(size=16))	
 g <- g + geom_bar(stat = "identity", position ="dodge") + geom_errorbar(aes(ymin = Mutation.mean - Mutation.sd, ymax = Mutation.mean + Mutation.sd, width=0.3), position = position_dodge(width = 0.9)) + ylab("Frequency") + scale_fill_manual(values = col.parette)
+
 plot(g)
 
+
+
+kruskal.test.homo.out <- kruskal.test(mutation.count.frame$Mutation.homo.Count~mutation.count.frame$Treat)
+print(kruskal.test.homo.out)
+pairwise.wilcox.test.homo <- pairwise.wilcox.test(mutation.count.frame$Mutation.homo.Count,mutation.count.frame$Treat,exact=F)
+print(pairwise.wilcox.test.homo)
+
+kruskal.test.hetero.out <- kruskal.test(mutation.count.frame$Mutation.hetero.Coun~mutation.count.frame$Treat)
+print(kruskal.test.hetero.out)
+pairwise.wilcox.test.hetero <- pairwise.wilcox.test(mutation.count.frame$Mutation.hetero.Coun,mutation.count.frame$Treat,exact=F)
+print(pairwise.wilcox.test.hetero)
+
+
+
+No.sample <- length(mutation.count.frame$Sample)
+binom.test.p <- numeric(No.sample)
+binom.test.CI.lower <- numeric(No.sample)
+binom.test.CI.upper <- numeric(No.sample)
+
+for(i in 1:No.sample){
+	target.hetero.count <- mutation.count.frame$Mutation.hetero.Count[i]
+	target.homo.count <- mutation.count.frame$Mutation.homo.Count[i]
+	binom.test.out <- binom.test(target.hetero.count, target.hetero.count+target.homo.count, 2/3, alternative="greater")
+	binom.test.p[i] <- binom.test.out[3]
+	binom.test.CI.lower[i] <- binom.test.out[[4]][1]
+	binom.test.CI.upper[i] <- binom.test.out[[4]][2]
+}
+binom.test.p.vec <- unlist(binom.test.p)
+
+hetero.homo.ratio.out.frame <- data.frame(
+	SampleID = sample.vec, Family = family,
+	Treat = treat, Gray = gray,
+	Mutation.Count =  No.mutations.per.sample,
+	Mutation.homo.Count =  No.homo.mutations.per.sample,	
+	Mutation.hetero.Count =  No.hetero.mutations.per.sample,
+	Proportion.hetero=No.hetero.mutations.per.sample/No.mutations.per.sample,
+	Binom.test.P=binom.test.p.vec,
+	Binom.test.CI.lower=binom.test.CI.lower,
+	Binom.test.CI.upper=binom.test.CI.upper
+)
+
+write.csv(hetero.homo.ratio.out.frame,"hetero.homo.test.summary.csv",quote=F, row.names=F)

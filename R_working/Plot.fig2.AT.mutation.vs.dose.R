@@ -262,11 +262,3 @@ gg.plot.snp.indel.kakudai <- ggplot2::ggplot() +
 	geom_count(data=mutation.count.frame,aes(x=Gray, y= INDEL.Count), pch=0, col=indel.color) +
 	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= INDEL.Count), method = MASS::glm.nb, se =FALSE, col=indel.color) + facet_zoom(xy = Group == "Group1") + xlim(0,0.4) + ylim(0,15) 
 #plot(gg.plot.snp.indel.kakudai)
-
-
-
-
-effective.genome.bp <- 117743122
-spontanesous.mutarion.rate <- mutation.count.frame$Mutation.Count[1:9]/effective.genome.bp
-
-
