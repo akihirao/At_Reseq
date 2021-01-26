@@ -116,7 +116,7 @@ mutation.count.frame <- data.frame(SampleID = sample.vec, Family = family,
 	kakudai.group = Group
 )
 
-write.table(mutation.count.frame, "No.mutations.summary.txt",quote=F, row.names=F)
+write.csv(mutation.count.frame, "No.mutations.summary.csv",quote=F, row.names=F)
 
 #glm for SBSs + INDELs
 print("-------------------------------")
