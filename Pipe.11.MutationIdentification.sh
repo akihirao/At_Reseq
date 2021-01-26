@@ -108,9 +108,27 @@ gatk SelectVariants\
  --max-nocall-fraction 0\
  --exclude-filtered\
  -O AT.M2.family.clustered.mu.vcf.gz
-
 gunzip -c AT.M2.family.clustered.mu.vcf.gz > AT.M2.family.clustered.mu.vcf
+
+#select SNPs
+gatk SelectVariants\
+ -R $reference_folder/TAIR10.fa\
+ -V AT.M2.family.clustered.mu.vcf.gz\
+ -select-type SNP\
+ -O AT.M2.family.clustered.mu.snp.vcf.gz
+gunzip -c AT.M2.family.clustered.mu.snp.vcf.gz > AT.M2.family.clustered.mu.snp.vcf
+perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < AT.M2.family.clustered.mu.snp.vcf > AT.M2.family.clustered.mu.snp.bed
+#select INDELs
+gatk SelectVariants\
+ -R $reference_folder/TAIR10.fa\
+ -V AT.M2.family.clustered.mu.vcf.gz\
+ -select-type INDEL\
+ -O AT.M2.family.clustered.mu.indel.vcf.gz
+gunzip -c AT.M2.family.clustered.mu.indel.vcf.gz > AT.M2.family.clustered.mu.indel.vcf
+perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < AT.M2.family.clustered.mu.indel.vcf > AT.M2.family.clustered.mu.indel.bed
 ##
+
+
 #---------------------------------------------------------------------------------------------------------------
 
 

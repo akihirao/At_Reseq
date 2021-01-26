@@ -30,7 +30,7 @@ cd $work_folder
 bcftools isec $vcf_folder/M2.indel.all.vcf.gz AT.M2.unique.pindel.D.SI.vcf.gz -p AT.M2.gatk.pindel.common.all -n=2
 perl $SCRIPT_DIR/Vcf2BED_chr_start_end.pl < $work_folder/AT.M2.gatk.pindel.common.all/0000.vcf > $work_folder/AT.M2.indel.common.pindel.gatk.all.bed
 
-cat $vcf_folder/M2.snp.all.bed $work_folder/AT.M2.indel.common.pindel.gatk.all.bed | sort -k 1,1 -k 2n,2 >  $work_folder/M2.snp.indel.gatk.pindl.common.all.bed
+cat $vcf_folder/M2.snp.all.bed $work_folder/AT.M2.indel.common.pindel.gatk.all.bed $vcf_folder/AT.M2.family.clustered.mu.indel.bed| sort -k 1,1 -k 2n,2 >  $work_folder/M2.snp.indel.gatk.pindl.common.all.bed
 
 
 #select back variants with all.bed 
