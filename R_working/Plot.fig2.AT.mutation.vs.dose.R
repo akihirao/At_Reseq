@@ -101,7 +101,6 @@ Group <- factor(Group, levels=c("Group1", "Group2"))
 Accumurate.gray <- gray*60
 Accumurate.gray.revised <- c(rep(0,length=9),rep(23,length=9),rep(80,length=9),rep(114,length=9))
 family <-c(rep("A01",length=3),rep("A02",length=3),rep("A03",length=3),rep("A11",length=3),rep("A12",length=3),rep("A13",length=3),rep("A21",length=3),rep("A22",length=3),rep("A23",length=3),rep("A31",length=3),rep("A32",length=3),rep("A33",length=3))
-family <- factor(family, levels=c("A01","A02","A03","A11","A12","A13","A21","A22","A23","A31","A32","A33"))
 
 mutation.count.frame <- data.frame(SampleID = sample.vec, Family = family,
 	Treat = treat, Gray = gray, TotalGray = Accumurate.gray,
@@ -115,6 +114,7 @@ mutation.count.frame <- data.frame(SampleID = sample.vec, Family = family,
 	Deletion.Count = No.deletion.per.sample,
 	kakudai.group = Group
 )
+mutation.count.frame$Family <- factor(mutation.count.frame$Family, levels=c("A01","A02","A03","A11","A12","A13","A21","A22","A23","A31","A32","A33"))
 
 write.csv(mutation.count.frame, "No.mutations.summary.csv",quote=F, row.names=F)
 
@@ -134,7 +134,9 @@ print(overdispertion.test.total.mutation)
 out.glm.total.mutation.gy.nb <- glm.nb(mutation.count.frame$Mutation.Count ~ mutation.count.frame$Gray)
 print(summary(out.glm.total.mutation.gy.nb))
 odTest(out.glm.total.mutation.gy.nb)
-out.glmer.total.mutation.gy.nb <- glmer.nb(Mutation.Count ~ Gray|Family, data=mutation.count.frame)
+out.glmer.total.mutation.gy <- glmer(Mutation.Count ~ Gray + (1|Family), family=poisson, data=mutation.count.frame)
+print(summary(out.glmer.total.mutation.gy))
+out.glmer.total.mutation.gy.nb <- glmer.nb(Mutation.Count ~ Gray + (1|Family), data=mutation.count.frame)
 print(summary(out.glmer.total.mutation.gy.nb))
 print("")
 
@@ -151,8 +153,10 @@ print(overdispertion.test.sbs)
 out.glm.sbs.gy.nb <- glm.nb(mutation.count.frame$SBS.Count ~ mutation.count.frame$Gray)
 print(summary(out.glm.sbs.gy.nb))
 odTest(out.glm.sbs.gy.nb)
-out.glmer.sbs.gy.nb <- glmer.nb(SBS.Count ~ Gray|Family, data=mutation.count.frame)
-print(summary(out.glmer.sbs.gy.nb))
+out.glmer.sbs.mutation.gy <- glmer(SBS.Count ~ Gray + (1|Family), family=poisson, data=mutation.count.frame)
+print(summary(out.glmer.sbs.mutation.gy))
+out.glmer.sbs.mutation.gy.nb <- glmer.nb(SBS.Count ~ Gray + (1|Family), data=mutation.count.frame)
+print(summary(out.glmer.sbs.mutation.gy.nb))
 print("")
 
 print("-------------------------------")
@@ -168,8 +172,10 @@ print(overdispertion.test.indel)
 out.glm.indel.gy.nb <- glm.nb(mutation.count.frame$INDEL.Count ~ mutation.count.frame$Gray)
 print(summary(out.glm.indel.gy.nb))
 odTest(out.glm.indel.gy.nb)
-out.glmer.indel.gy.nb <- glmer.nb(INDEL.Count ~ Gray|Family, data=mutation.count.frame)
-print(summary(out.glmer.indel.gy.nb))
+out.glmer.indel.mutation.gy <- glmer(INDEL.Count ~ Gray + (1|Family), family=poisson, data=mutation.count.frame)
+print(summary(out.glmer.indel.mutation.gy))
+out.glmer.indel.mutation.gy.nb <- glmer.nb(INDEL.Count ~ Gray + (1|Family), data=mutation.count.frame)
+print(summary(out.glmer.indel.mutation.gy.nb))
 print("")
 
 print("-------------------------------")
@@ -185,8 +191,10 @@ print(overdispertion.test.insertion)
 out.glm.insertion.gy.nb <- glm.nb(mutation.count.frame$Insertion.Count ~ mutation.count.frame$Gray)
 print(summary(out.glm.insertion.gy.nb))
 odTest(out.glm.insertion.gy.nb)
-out.glmer.insertion.gy.nb <- glmer.nb(Insertion.Count ~ Gray|Family, data=mutation.count.frame)
-print(summary(out.glmer.insertion.gy.nb))
+out.glmer.insertion.mutation.gy <- glmer(Insertion.Count ~ Gray + (1|Family), family=poisson, data=mutation.count.frame)
+print(summary(out.glmer.insertion.mutation.gy))
+out.glmer.insertion.mutation.gy.nb <- glmer.nb(Insertion.Count ~ Gray + (1|Family), data=mutation.count.frame)
+print(summary(out.glmer.insertion.mutation.gy.nb))
 print("")
 
 print("-------------------------------")
@@ -202,8 +210,10 @@ print(overdispertion.test.deletion)
 out.glm.deletion.gy.nb <- glm.nb(mutation.count.frame$Deletion.Count ~ mutation.count.frame$Gray)
 print(summary(out.glm.deletion.gy.nb))
 odTest(out.glm.deletion.gy.nb)
-out.glmer.deletion.gy.nb <- glmer.nb(Deletion.Count ~ Gray|Family, data=mutation.count.frame)
-print(summary(out.glmer.deletion.gy.nb))
+out.glmer.deletion.mutation.gy <- glmer(Deletion.Count ~ Gray + (1|Family), family=poisson, data=mutation.count.frame)
+print(summary(out.glmer.deletion.mutation.gy))
+out.glmer.deletion.mutation.gy.nb <- glmer.nb(Deletion.Count ~ Gray + (1|Family), data=mutation.count.frame)
+print(summary(out.glmer.deletion.mutation.gy.nb))
 print("")
 
 
@@ -223,13 +233,15 @@ gg.plot.total.mutation <- ggplot2::ggplot() +
 	theme(axis.title.x = element_text(size=16), axis.title.y = element_text(size=16), 
 		axis.text.x = element_text(size=16),axis.text.y = element_text(size=16)) +
 	geom_count(data=mutation.count.frame,aes(x=Gray, y= Mutation.Count), pch=1, col=total.color) +
-	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= Mutation.Count), method = MASS::glm.nb, se =TRUE,col=total.color) + scale_size_continuous(breaks = seq(1,9,1)) +
+#	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= Mutation.Count), method = MASS::glm.nb, se =TRUE,col=total.color) + scale_size_continuous(breaks = seq(1,9,1)) +
+	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= Mutation.Count), method = lm, formula = y ~ exp(out.glmer.total.mutation.gy.nb@beta[1] + out.glmer.total.mutation.gy.nb@beta[2]*x), se =FALSE,col=total.color) + scale_size_continuous(breaks = seq(1,9,1)) +
 	geom_count(data=mutation.count.frame,aes(x=Gray, y= SBS.Count), pch=2, col=sbs.color) +　scale_size_continuous(breaks = seq(1,9,1)) +
-	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= SBS.Count), method = MASS::glm.nb, se =TRUE, col=sbs.color,lwd=0.5) +
+#	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= SBS.Count), method = MASS::glm.nb, se =TRUE, col=sbs.color,lwd=0.5) +
+	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= SBS.Count), method = lm, formula = y ~ exp(out.glmer.sbs.mutation.gy.nb@beta[1] + out.glmer.sbs.mutation.gy.nb@beta[2]*x), se =FALSE,col=sbs.color, lwd=0.5) + scale_size_continuous(breaks = seq(1,9,1)) +
 	geom_count(data=mutation.count.frame,aes(x=Gray, y= Insertion.Count), pch=3, col="cyan4") +　scale_size_continuous(breaks = seq(1,9,1)) +
-	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= Insertion.Count), method = MASS::glm.nb, se =FALSE, col="cyan4",lwd=0.5,lty="dotted") +
+	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= Insertion.Count), method = glm, method.args = list(family = "poisson"), se =FALSE, col="cyan4",lwd=0.5,lty="dotted") +
 	geom_count(data=mutation.count.frame,aes(x=Gray, y= Deletion.Count), pch=4, col="blue4") +　scale_size_continuous(breaks = seq(1,9,1)) +
-	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= Deletion.Count), method = MASS::glm.nb, se =TRUE, col="blue4", lwd=0.5)
+	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= Deletion.Count), method = MASS::glm.nb, se =FALSE, col="blue4", lwd=0.5)
 plot(gg.plot.total.mutation)
 
 

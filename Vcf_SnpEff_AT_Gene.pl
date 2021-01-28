@@ -9,7 +9,7 @@
 $NoSample = @sample;
 
 open(OUT, ">SnpEff.AT.gene.unsorted.txt");
-print OUT "Sample","\t","No.Mutation", "\t","No.Homo.Mutation", "\t","No.Hetero.Mutation","\n";
+print OUT "Chr","\t","Position","\t","Ref","\t","Alt","\t","Gene","\t","Annotation","\t","Annotation_impact","\t","Annotation_gene_name","\t","Annotation_full","\n";
 
 for($i = 0; $i < $NoSample; $i++){
 
@@ -17,7 +17,6 @@ for($i = 0; $i < $NoSample; $i++){
 
 	#on Takeru
 	$source_file_path = "/zfs/Arabidopsis/work/At_Reseq/vcf_out/".$target_sample."/".$target_sample.".final.mutations.snpeff.vcf";
-#	$source_file_path = $target_sample."/".$target_sample.".final.mutants.snpeff.vcf";
 
 	open(SOURCE, $source_file_path);
 
@@ -49,21 +48,16 @@ for($i = 0; $i < $NoSample; $i++){
 					print OUT $CHROM, "\t";
 					print OUT $POS, "\t";
 					print OUT $REF, "\t";
-					print OUT $ALT, "\t";			
+					print OUT $ALT, "\t";
 					if($SnpEff_Annotation_Impact eq "MODIFIER"){
-						print OUT "\t", "\t";
 						print OUT "\t", "\t";
 					}else{
 						print OUT $SnpEff_Annotation_Gene_ID, "\t";
-						print OUT $SnpEff_Annotation_Gene_Name, "\t";
 						print OUT $SnpEff_Annotation, "\t";
-						print OUT $SnpEff_Annotation_Impact, "\t";
 					}
-					print OUT $SnpEff_Annotation_Gene_ID, "\t";
+					print OUT $SnpEff_Annotation_Impact, "\t";					
 					print OUT $SnpEff_Annotation_Gene_Name, "\t";
-					print OUT $SnpEff_Annotation, "\t";
-					print OUT $SnpEff_Annotation_Impact, "\n";
-
+					print OUT $SnpEff_Annotation, "\n";
 				}
 
 			}			
