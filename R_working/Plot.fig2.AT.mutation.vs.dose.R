@@ -217,15 +217,30 @@ print(summary(out.glmer.deletion.mutation.gy.nb))
 print("")
 
 
-#grid.newpage() #空の画面を作る
-#pushViewport(viewport(layout=grid.layout(1, 2))) #画面を区切る（今回は1行2列の2分割）
 
-total.color <- "red"
+#total.color <- "red"
 sbs.indel.color <- "mediumpurple"
-sbs.color <- "deeppink3"
+#sbs.color <- "deeppink3"
 indel.color <- "mediumblue"
 black.color <- "black"
 samon.color <- rgb(1,0.75,0.85)
+
+
+chairo.color <- rgb(128/255,64/255,0/255)
+aka.color <- rgb(255/255,75/255,0/255) 
+total.color <- chairo.color
+#total.color <- aka.color
+
+midori.color <- rgb(3/255,175/255,122/255) 
+pink.color <- rgb(255/255,128/255,130/255)
+sbs.color <-pink.color
+deletion.color <- ao.color <- rgb(0/255,90/255,255/255)
+sora.color <- rgb(77/255,196/255,255/255)
+insertion.color <- sora.color
+orange.col <- rgb(246/255,170/255,0/255)
+murasaki.col <- rgb(153/255,0/255,153/255)
+
+
 
 gg.plot.total.mutation <- ggplot2::ggplot() + 
 	xlab("Radiation dose (Gy/d)") + 
@@ -234,43 +249,13 @@ gg.plot.total.mutation <- ggplot2::ggplot() +
 		axis.text.x = element_text(size=16),axis.text.y = element_text(size=16)) +
 	geom_count(data=mutation.count.frame,aes(x=Gray, y= Mutation.Count), pch=1, col=total.color) +
 #	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= Mutation.Count), method = MASS::glm.nb, se =TRUE,col=total.color) + scale_size_continuous(breaks = seq(1,9,1)) +
-	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= Mutation.Count), method = lm, formula = y ~ exp(out.glmer.total.mutation.gy.nb@beta[1] + out.glmer.total.mutation.gy.nb@beta[2]*x), se =FALSE,col=total.color) + scale_size_continuous(breaks = seq(1,9,1)) +
+	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= Mutation.Count), method = lm, formula = y ~ exp(out.glmer.total.mutation.gy.nb@beta[1] + out.glmer.total.mutation.gy.nb@beta[2]*x), se =FALSE,col=total.color,lwd=0.8) + scale_size_continuous(breaks = seq(1,9,1)) +
 	geom_count(data=mutation.count.frame,aes(x=Gray, y= SBS.Count), pch=2, col=sbs.color) +　scale_size_continuous(breaks = seq(1,9,1)) +
 #	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= SBS.Count), method = MASS::glm.nb, se =TRUE, col=sbs.color,lwd=0.5) +
-	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= SBS.Count), method = lm, formula = y ~ exp(out.glmer.sbs.mutation.gy.nb@beta[1] + out.glmer.sbs.mutation.gy.nb@beta[2]*x), se =FALSE,col=sbs.color, lwd=0.5) + scale_size_continuous(breaks = seq(1,9,1)) +
-	geom_count(data=mutation.count.frame,aes(x=Gray, y= Insertion.Count), pch=3, col="cyan4") +　scale_size_continuous(breaks = seq(1,9,1)) +
-	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= Insertion.Count), method = glm, method.args = list(family = "poisson"), se =FALSE, col="cyan4",lwd=0.5,lty="dotted") +
-	geom_count(data=mutation.count.frame,aes(x=Gray, y= Deletion.Count), pch=4, col="blue4") +　scale_size_continuous(breaks = seq(1,9,1)) +
-	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= Deletion.Count), method = MASS::glm.nb, se =FALSE, col="blue4", lwd=0.5)
+	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= SBS.Count), method = lm, formula = y ~ exp(out.glmer.sbs.mutation.gy.nb@beta[1] + out.glmer.sbs.mutation.gy.nb@beta[2]*x), se =FALSE,col=sbs.color, lwd=0.6) + scale_size_continuous(breaks = seq(1,9,1)) +
+	geom_count(data=mutation.count.frame,aes(x=Gray, y= Insertion.Count), pch=3, col=insertion.color) +　scale_size_continuous(breaks = seq(1,9,1)) +
+	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= Insertion.Count), method = glm, method.args = list(family = "poisson"), se =FALSE, col=insertion.color,lwd=1,lty="dotted") +
+	geom_count(data=mutation.count.frame,aes(x=Gray, y= Deletion.Count), pch=4, col=deletion.color) +　scale_size_continuous(breaks = seq(1,9,1)) +
+	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= Deletion.Count), method = MASS::glm.nb, se =FALSE, col=deletion.color, lwd=0.6)
 plot(gg.plot.total.mutation)
 
-
-gg.plot.sbs.insertion.deletion <- ggplot2::ggplot() + 
-	xlab("Radiation exposure (Gy/d)") + 
-	ylab("No. mutations") +
-#	ylim(0,15) + 
-	theme(axis.title.x = element_text(size=16), axis.title.y = element_text(size=16), 
-		axis.text.x = element_text(size=16),axis.text.y = element_text(size=16)) +
-	geom_count(data=mutation.count.frame,aes(x=Gray, y= SBS.Count), pch=2, col=sbs.color) +　scale_size_continuous(breaks = seq(1,9,1)) +
-	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= SBS.Count), method = MASS::glm.nb, se =TRUE, col=sbs.color,lwd=0.5) +
-	geom_count(data=mutation.count.frame,aes(x=Gray, y= Insertion.Count), pch=3, col="cyan4") +　scale_size_continuous(breaks = seq(1,9,1)) +
-	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= Insertion.Count), method = MASS::glm.nb, se =FALSE, col="cyan4",lwd=0.5,lty="dotted") +
-	geom_count(data=mutation.count.frame,aes(x=Gray, y= Deletion.Count), pch=4, col="blue4") +　scale_size_continuous(breaks = seq(1,9,1)) +
-	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= Deletion.Count), method = MASS::glm.nb, se =TRUE, col="blue4", lwd=0.5)
-#plot(gg.plot.insertion.deletion)
-
-#print(gg.plot.total.mutation, vp=viewport(layout.pos.row=1, layout.pos.col=1)) #1行目の1列
-#print(gg.plot.sbs.insertion.deletion, vp=viewport(layout.pos.row=1, layout.pos.col=2)  ) #1行目の2列
-
-
-gg.plot.snp.indel.kakudai <- ggplot2::ggplot() + 
-	xlab("Radiation exposure (Gy/d)") + 
-	ylab("No. mutations") +
-	ylim(0,40) + 
-	theme(axis.title.x = element_text(size=18), axis.title.y = element_text(size=18), 
-		axis.text.x = element_text(size=16),axis.text.y = element_text(size=16)) +
-	geom_count(data=mutation.count.frame,aes(x=Gray, y= SBS.Count), pch=16, col=sbs.color) +
-	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= SBS.Count), method = MASS::glm.nb, se =FALSE, col=sbs.color) +
-	geom_count(data=mutation.count.frame,aes(x=Gray, y= INDEL.Count), pch=0, col=indel.color) +
-	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= INDEL.Count), method = MASS::glm.nb, se =FALSE, col=indel.color) + facet_zoom(xy = Group == "Group1") + xlim(0,0.4) + ylim(0,15) 
-#plot(gg.plot.snp.indel.kakudai)

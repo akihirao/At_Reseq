@@ -302,7 +302,3 @@ print(gg.plot.moderate, vp=viewport(layout.pos.row=1, layout.pos.col=2)  ) #1行
 print(gg.plot.low, vp=viewport(layout.pos.row=2, layout.pos.col=1)) #1行目の1列
 print(gg.plot.modifier, vp=viewport(layout.pos.row=2, layout.pos.col=2)  ) #1行目の2列
 
-#plot(gg.plot.high)
-
-
-

@@ -155,8 +155,16 @@ mutation.treat.mean.info <- data.frame(Mutation.mean= Mutation.homo.hetero.mean,
 mutation.treat.mean.info$Treatment <- factor(mutation.treat.mean.info$Treatment, levels=Treat.vec)
 mutation.treat.mean.info$Zygosity <- factor(mutation.treat.mean.info$Zygosity, levels=c("Homozygous","Heterozygous"))
 
+
+sora.col <- rgb(77/255,196/255,255/255)
+midori.col <- rgb(3/255,175/255,122/255)
+orange.col <- rgb(246/255,170/255,0/255)
+murasaki.col <- rgb(153/255,0/255,153/255)
+
 #col.parette <- c("#ff8082","#f6aa00","#03af7a","#005aff")
-col.parette <- c("#005aff","#03af7a","#f6aa00","red")
+#col.parette <- c("#005aff","#03af7a","#f6aa00","red")
+col.parette <- c(sora.col,midori.col,orange.col,murasaki.col)
+
 g <- ggplot(mutation.treat.mean.info, aes(x = Zygosity, y = Mutation.mean, fill = Treatment)) +
 	theme(axis.title.x = element_text(size=18), axis.title.y = element_text(size=18), 
 		axis.text.x = element_text(size=16),axis.text.y = element_text(size=16))	
