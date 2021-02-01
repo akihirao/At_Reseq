@@ -100,7 +100,8 @@ perl $SCRIPT_DIR/FilteringVcfNeighborSNVs.pl < AT48.family.clustered.mu.orig.vcf
 bgzip -c AT48.family.clustered.mu.vcf > AT48.family.clustered.mu.vcf.gz
 tabix -f -p vcf AT48.family.clustered.mu.vcf.gz
 
-#select variants with max-nocall-fraction 0.1
+#select variants with max-nocall-fraction: 0.0
+#This setting in gatk SelectVariants wiil select only variants having genotyping rate among samples of 100%
 gatk SelectVariants\
  -R $reference_folder/TAIR10.fa\
  -V AT48.family.clustered.mu.vcf.gz\
