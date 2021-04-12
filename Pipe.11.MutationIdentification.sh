@@ -235,7 +235,7 @@ do
 	#select back variants with $target_sample.all.bed 
 	gatk SelectVariants\
 	 -R $reference_folder/TAIR10.fa\
-     -V $vcf_folder/$target_ID.mu.snp.indel.DPfilterNoCall.filtered.vcf.gz\
+	 -V $vcf_folder/$target_ID.mu.snp.indel.DPfilterNoCall.filtered.vcf.gz\
 	 --sample-name $target_sample\
 	 -L $target_sample.all.bed\
 	 -O $target_sample.all.vcf
