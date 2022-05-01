@@ -62,7 +62,7 @@ This setting in gatk SelectVariants will select only variants having genotyping 
 
 
 ## Statistical analyses
-* [Statistical modeling of the number of each type of mutation and radiation dose](https://github.com/akihirao/AT_Reseq/R_work/blob/master/Plot.fig2.AT.mutation.vs.dose.md)
+* [Statistical modeling of the number of each type of mutation and radiation dose](https://github.com/akihirao/At_Reseq/blob/main/R_work/Plot.fig2.AT.mutation.vs.dose.md)
 
 ## Note
 This project is currently under development. Thank you!
