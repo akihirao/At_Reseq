@@ -1,0 +1,399 @@
+---
+title: Plot.fig2.AT.mutation.vs.dose
+author: "Akira Hirao"
+date: "`r Sys.Date()`"
+output:
+  md_document:
+    toc: true
+    variant: markdown_github
+  html_document:
+    toc: true
+---
+
+
+-----
+
+
+## Loading packages
+
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+library(ggplot2)
+library(stringr)
+library(MASS)
+library(glmmML)
+library(lme4)
+library(tidyverse)
+library(nlstools)
+library(ggforce)
+library(grid)
+library(AER)
+library(pscl)
+```
+
+## Loading data set
+
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+AT.all.mutations <- read.csv("../M2.mutations.full.list.csv",header=T)
+AT_all_mutations <- read_csv("../M2.mutations.full.list.csv")
+```
+
+## Data preprocessing
+
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+sample.vec <- c(sort(unique(AT.all.mutations$Sample1)))
+AT.all.mutations$Sample1 <- factor(AT.all.mutations$Sample1, levels=sample.vec)
+AT.all.mutations$Sample2 <- factor(AT.all.mutations$Sample2, levels=sample.vec)
+AT.all.mutations$Sample3 <- factor(AT.all.mutations$Sample3, levels=sample.vec)
+AT_all_mutations$Sample1 <- factor(AT_all_mutations$Sample1, levels=sample.vec)
+AT_all_mutations$Sample2 <- factor(AT_all_mutations$Sample2, levels=sample.vec)
+AT_all_mutations$Sample3 <- factor(AT_all_mutations$Sample3, levels=sample.vec)
+
+AT.all.family <- subset(AT.all.mutations, AT.all.mutations$Sample2!="NA")
+AT_all_family <- AT_all_mutations %>% filter(Sample2!="NA")
+
+AT.all.sbs <- subset(AT.all.mutations, AT.all.mutations$Type=="SBS")
+AT.all.indel <- subset(AT.all.mutations, AT.all.mutations$Type!="SBS")
+AT.all.insertion <- subset(AT.all.mutations, AT.all.mutations$Type=="Insertion")
+AT.all.deletion <- subset(AT.all.mutations, AT.all.mutations$Type=="Deletion")
+AT_all_sbs <- AT_all_mutations %>% filter(Type=="SBS")
+AT_all_indel <- AT_all_mutations %>% filter(Type!="SBS")
+AT_all_insertion <- AT_all_mutations %>% filter(Type=="Insertion")
+AT_all_deletion <- AT_all_mutations %>% filter(Type=="Deletion")
+
+
+No_mutations_per_sample <- tapply(rep(AT_all_mutations$Chr,3), c(AT_all_mutations$Sample1,AT_all_mutations$Sample2,AT_all_mutations$Sample3), length)
+No_mutations_per_sample[is.na(No_mutations_per_sample)] <- 0
+
+No_family_mutations_per_sample <- tapply(rep(AT_all_family$Chr,3), c(AT_all_family$Sample1,AT_all_family$Sample2,AT_all_family$Sample3), length)
+No_family_mutations_per_sample[is.na(No_family_mutations_per_sample)] <- 0
+
+No_homo_mutations_per_sample <- tapply(c(AT_all_mutations$Chr[AT.all.mutations$Zygosity1=="homo"],AT_all_mutations$Chr[AT.all.mutations$Zygosity2=="homo"],AT_all_mutations$Chr[AT.all.mutations$Zygosity3=="homo"]), c(AT_all_mutations$Sample1[AT.all.mutations$Zygosity1=="homo"],AT_all_mutations$Sample2[AT.all.mutations$Zygosity2=="homo"],AT_all_mutations$Sample3[AT.all.mutations$Zygosity3=="homo"]), length)
+No_homo_mutations_per_sample[is.na(No_homo_mutations_per_sample)] <- 0
+
+No_hetero_mutations_per_sample <- tapply(c(AT_all_mutations$Chr[AT.all.mutations$Zygosity1=="hetero"],AT_all_mutations$Chr[AT.all.mutations$Zygosity2=="hetero"],AT_all_mutations$Chr[AT.all.mutations$Zygosity3=="hetero"]), c(AT_all_mutations$Sample1[AT.all.mutations$Zygosity1=="hetero"],AT_all_mutations$Sample2[AT.all.mutations$Zygosity2=="hetero"],AT_all_mutations$Sample3[AT.all.mutations$Zygosity3=="hetero"]), length)
+No_hetero_mutations_per_sample[is.na(No_hetero_mutations_per_sample)] <- 0
+
+No_sbs_per_sample <- tapply(rep(AT_all_sbs$Chr,3), c(AT_all_sbs$Sample1,AT_all_sbs$Sample2,AT_all_sbs$Sample3), length)
+No_sbs_per_sample[is.na(No_sbs_per_sample)] <- 0
+
+No_indel_per_sample <- tapply(rep(AT_all_indel$Chr,3), c(AT_all_indel$Sample1,AT_all_indel$Sample2,AT_all_indel$Sample3), length)
+No_indel_per_sample[is.na(No_indel_per_sample)] <- 0
+
+No_insertion_per_sample <- tapply(rep(AT_all_insertion$Chr,3), c(AT_all_insertion$Sample1,AT_all_insertion$Sample2,AT_all_insertion$Sample3), length)
+No_insertion_per_sample[is.na(No_insertion_per_sample)] <- 0
+
+No_deletion_per_sample <- tapply(rep(AT_all_deletion$Chr,3), c(AT_all_deletion$Sample1,AT_all_deletion$Sample2,AT_all_deletion$Sample3), length)
+No_deletion_per_sample[is.na(No_deletion_per_sample)] <- 0
+
+
+No.mutations.per.sample1 <- tapply(AT.all.mutations$Chr, AT.all.mutations$Sample1, length)
+No.mutations.per.sample2 <- tapply(AT.all.mutations$Chr, AT.all.mutations$Sample2, length)
+No.mutations.per.sample3 <- tapply(AT.all.mutations$Chr, AT.all.mutations$Sample3, length)
+No.mutations.per.sample1[is.na(No.mutations.per.sample1)] <- 0
+No.mutations.per.sample2[is.na(No.mutations.per.sample2)] <- 0
+No.mutations.per.sample3[is.na(No.mutations.per.sample3)] <- 0
+No.mutations.per.sample <- No.mutations.per.sample1 + No.mutations.per.sample2 + No.mutations.per.sample3
+
+No.family.mutations.per.sample1 <- tapply(AT.all.family$Chr,AT.all.family$Sample1, length)
+No.family.mutations.per.sample2 <- tapply(AT.all.family$Chr,AT.all.family$Sample2, length)
+No.family.mutations.per.sample3 <- tapply(AT.all.family$Chr,AT.all.family$Sample3, length)
+No.family.mutations.per.sample1[is.na(No.family.mutations.per.sample1)] <- 0
+No.family.mutations.per.sample2[is.na(No.family.mutations.per.sample2)] <- 0
+No.family.mutations.per.sample3[is.na(No.family.mutations.per.sample3)] <- 0
+No.fammily.mutations.per.sample <- No.family.mutations.per.sample1 + No.family.mutations.per.sample2 + No.family.mutations.per.sample3
+
+No.homo.mutations.per.sample1 <- tapply(AT.all.mutations$Chr[AT.all.mutations$Zygosity1=="homo"], AT.all.mutations$Sample1[AT.all.mutations$Zygosity1=="homo"], length)
+No.homo.mutations.per.sample2 <- tapply(AT.all.mutations$Chr[AT.all.mutations$Zygosity2=="homo"], AT.all.mutations$Sample2[AT.all.mutations$Zygosity2=="homo"], length)
+No.homo.mutations.per.sample3 <- tapply(AT.all.mutations$Chr[AT.all.mutations$Zygosity3=="homo"], AT.all.mutations$Sample3[AT.all.mutations$Zygosity3=="homo"], length)
+No.homo.mutations.per.sample1[is.na(No.homo.mutations.per.sample1)] <- 0
+No.homo.mutations.per.sample2[is.na(No.homo.mutations.per.sample2)] <- 0
+No.homo.mutations.per.sample3[is.na(No.homo.mutations.per.sample3)] <- 0
+No.homo.mutations.per.sample <- No.homo.mutations.per.sample1 + No.homo.mutations.per.sample2 + No.homo.mutations.per.sample3
+
+No.hetero.mutations.per.sample1 <- tapply(AT.all.mutations$Chr[AT.all.mutations$Zygosity1=="hetero"], AT.all.mutations$Sample1[AT.all.mutations$Zygosity1=="hetero"], length)
+No.hetero.mutations.per.sample2 <- tapply(AT.all.mutations$Chr[AT.all.mutations$Zygosity2=="hetero"], AT.all.mutations$Sample2[AT.all.mutations$Zygosity2=="hetero"], length)
+No.hetero.mutations.per.sample3 <- tapply(AT.all.mutations$Chr[AT.all.mutations$Zygosity3=="hetero"], AT.all.mutations$Sample3[AT.all.mutations$Zygosity3=="hetero"], length)
+No.hetero.mutations.per.sample1[is.na(No.hetero.mutations.per.sample1)] <- 0
+No.hetero.mutations.per.sample2[is.na(No.hetero.mutations.per.sample2)] <- 0
+No.hetero.mutations.per.sample3[is.na(No.hetero.mutations.per.sample3)] <- 0
+No.hetero.mutations.per.sample <- No.hetero.mutations.per.sample1 + No.hetero.mutations.per.sample2 + No.hetero.mutations.per.sample3
+
+No.sbs.per.sample1 <- tapply(AT.all.sbs$Chr, AT.all.sbs$Sample1, length)
+No.sbs.per.sample2 <- tapply(AT.all.sbs$Chr, AT.all.sbs$Sample2, length)
+No.sbs.per.sample3 <- tapply(AT.all.sbs$Chr, AT.all.sbs$Sample3, length)
+No.sbs.per.sample1[is.na(No.sbs.per.sample1)] <- 0
+No.sbs.per.sample2[is.na(No.sbs.per.sample2)] <- 0
+No.sbs.per.sample3[is.na(No.sbs.per.sample3)] <- 0
+No.sbs.per.sample <- No.sbs.per.sample1 + No.sbs.per.sample2 + No.sbs.per.sample3
+
+No.indel.per.sample1 <- tapply(AT.all.indel$Chr, AT.all.indel$Sample1, length)
+No.indel.per.sample2 <- tapply(AT.all.indel$Chr, AT.all.indel$Sample2, length)
+No.indel.per.sample3 <- tapply(AT.all.indel$Chr, AT.all.indel$Sample3, length)
+No.indel.per.sample1[is.na(No.indel.per.sample1)] <- 0
+No.indel.per.sample2[is.na(No.indel.per.sample2)] <- 0
+No.indel.per.sample3[is.na(No.indel.per.sample3)] <- 0
+No.indel.per.sample <- No.indel.per.sample1 + No.indel.per.sample2 + No.indel.per.sample3
+
+No.insertion.per.sample1 <- tapply(AT.all.insertion$Chr, AT.all.insertion$Sample1, length)
+No.insertion.per.sample2 <- tapply(AT.all.insertion$Chr, AT.all.insertion$Sample2, length)
+No.insertion.per.sample3 <- tapply(AT.all.insertion$Chr, AT.all.insertion$Sample3, length)
+No.insertion.per.sample1[is.na(No.insertion.per.sample1)] <- 0
+No.insertion.per.sample2[is.na(No.insertion.per.sample2)] <- 0
+No.insertion.per.sample3[is.na(No.insertion.per.sample3)] <- 0
+No.insertion.per.sample <- No.insertion.per.sample1 + No.insertion.per.sample2 + No.insertion.per.sample3
+
+No.deletion.per.sample1 <- tapply(AT.all.deletion$Chr, AT.all.deletion$Sample1, length)
+No.deletion.per.sample2 <- tapply(AT.all.deletion$Chr, AT.all.deletion$Sample2, length)
+No.deletion.per.sample3 <- tapply(AT.all.deletion$Chr, AT.all.deletion$Sample3, length)
+No.deletion.per.sample1[is.na(No.deletion.per.sample1)] <- 0
+No.deletion.per.sample2[is.na(No.deletion.per.sample2)] <- 0
+No.deletion.per.sample3[is.na(No.deletion.per.sample3)] <- 0
+No.deletion.per.sample <- No.deletion.per.sample1 + No.deletion.per.sample2 + No.deletion.per.sample3
+
+treat <- c(rep("Control",length=9),rep("Low",length=9),rep("Middle",length=9),rep("High",length=9))
+gray <- c(rep(0,length=9),rep(0.4,length=9),rep(1.4,length=9),rep(2.0,length=9))
+Group <- c(rep("Group1",18),rep("Group2",18))
+Group <- factor(Group, levels=c("Group1", "Group2"))
+Accumurate.gray <- gray*60
+Accumurate.gray.revised <- c(rep(0,length=9),rep(23,length=9),rep(80,length=9),rep(114,length=9))
+family <-c(rep("A01",length=3),rep("A02",length=3),rep("A03",length=3),rep("A11",length=3),rep("A12",length=3),rep("A13",length=3),rep("A21",length=3),rep("A22",length=3),rep("A23",length=3),rep("A31",length=3),rep("A32",length=3),rep("A33",length=3))
+
+mutation.count.frame <- data.frame(SampleID = sample.vec, Family = family,
+	Treat = treat, Gray = gray, TotalGray = Accumurate.gray,
+	Mutation.Count =  No.mutations.per.sample,
+	Mutation.family.Count = No.fammily.mutations.per.sample,
+	Mutation.homo.Count =  No.homo.mutations.per.sample,
+	Mutation.hetero.Count =  No.hetero.mutations.per.sample,
+	SBS.Count = No.sbs.per.sample,
+	INDEL.Count = No.indel.per.sample,
+	Insertion.Count = No.insertion.per.sample,
+	Deletion.Count = No.deletion.per.sample,
+	kakudai.group = Group
+)
+mutation.count.frame$Family <- factor(mutation.count.frame$Family, levels=c("A01","A02","A03","A11","A12","A13","A21","A22","A23","A31","A32","A33"))
+
+write.csv(mutation.count.frame, "No.mutations.summary.csv",quote=F, row.names=F)
+```
+
+## statistical analyses of the number of each type of mutation
+
+### statistical modeling of the total number of mutations (SBSs + INDELs)
+
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+# GLM with a negative binominal distribution
+glm.nb.total.mutation <- glm.nb(mutation.count.frame$Mutation.Count ~ mutation.count.frame$Gray)
+print(summary(glm.nb.total.mutation))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+# GLMM with a negative binominal distribution
+glmer.nb.total.mutation <- glmer.nb(Mutation.Count ~ Gray + (1|Family), data=mutation.count.frame)
+print(summary(glmer.nb.total.mutation))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+# GLM with a poisson distribution
+glm.poisson.total.mutation <- glm(mutation.count.frame$Mutation.Count ~ mutation.count.frame$Gray, family = poisson)
+print(summary(glm.poisson.total.mutation))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+# GLMM with a poisson distribution
+glmer.poisson.total.mutation <- glmer(Mutation.Count ~ Gray + (1|Family), family=poisson, data=mutation.count.frame)
+print(summary(glmer.poisson.total.mutation))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+# Non-lenear second polynominal model
+nls.2nd.total.mutation <- nls(mutation.count.frame$Mutation.Count ~　a+b*mutation.count.frame$Gray+c*(mutation.count.frame$Gray)^2, data= mutation.count.frame, start=c(a=1, b=1, c=1),trace=T)
+print(summary(nls.2nd.total.mutation))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+model.AICs.total.mutation <- AIC(glm.nb.total.mutation, glmer.nb.total.mutation,glm.poisson.total.mutation, glmer.poisson.total.mutation, nls.2nd.total.mutation)
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+# Overdespersion test: poisson vs negative binomial
+overdispertion.test.total.mutation <- dispersiontest(glm.poisson.total.mutation)
+print(overdispertion.test.total.mutation)
+odTest(glm.nb.total.mutation)
+```
+
+### statistical modeling of the number of SBS mutations
+
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+# GLM with a negative binomial distribution
+glm.nb.sbs <- glm.nb(mutation.count.frame$SBS.Count ~ mutation.count.frame$Gray)
+print(summary(glm.nb.sbs))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+# GLMM with a negative binomial distribution
+glmer.nb.sbs <- glmer.nb(SBS.Count ~ Gray + (1|Family), data=mutation.count.frame)
+print(summary(glmer.nb.sbs))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+# GLM with a poisson distribution
+glm.poisson.sbs <- glm(mutation.count.frame$SBS.Count ~ mutation.count.frame$Gray, family = poisson)
+print(summary(glm.poisson.sbs))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+# GLMM with a poisson distribution
+glmer.poisson.sbs <- glmer(SBS.Count ~ Gray + (1|Family), family=poisson, data=mutation.count.frame)
+print(summary(glmer.poisson.sbs))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+# Non-lenear second polynominal model
+nls.2nd.sbs <- nls(mutation.count.frame$SBS.Count ~　a+b*mutation.count.frame$Gray+c*(mutation.count.frame$Gray)^2, data= mutation.count.frame, start=c(a=1, b=1, c=1),trace=T)
+print(summary(nls.2nd.sbs))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+AIC(glm.nb.sbs, glmer.nb.sbs, glm.poisson.sbs, glmer.poisson.sbs, nls.2nd.sbs)
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+cat("Overdespersion test: poisson vs negative binomial")
+overdispertion.test.sbs <- dispersiontest(glm.poisson.sbs)
+print(overdispertion.test.sbs)
+odTest(glm.nb.sbs)
+```
+
+
+### statistical modeling of the number of INDEL mutations
+
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+cat("*** GLM with a negative binomial distribution ***\n")
+glm.nb.indel <- glm.nb(mutation.count.frame$INDEL.Count ~ mutation.count.frame$Gray)
+print(summary(glm.nb.indel))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+cat("*** GLMM with a negative binomial distribution ***\n")
+glmer.nb.indel <- glmer.nb(INDEL.Count ~ Gray + (1|Family), data=mutation.count.frame)
+print(summary(glmer.nb.indel))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+cat("*** GLM with a poisson distribution ***\n")
+glm.poisson.indel <- glm(mutation.count.frame$INDEL.Count ~ mutation.count.frame$Gray, family = poisson)
+print(summary(glm.poisson.indel))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+cat("*** GLMM with a poisson distribution ***\n")
+glmer.poisson.indel <- glmer(INDEL.Count ~ Gray + (1|Family), family=poisson, data=mutation.count.frame)
+print(summary(glmer.poisson.indel))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+cat("Non-lenear second polynominal model\n")
+nls.2nd.indel <- nls(mutation.count.frame$INDEL.Count ~　a+b*mutation.count.frame$Gray+c*(mutation.count.frame$Gray)^2, data= mutation.count.frame, start=c(a=1, b=1, c=1),trace=T)
+print(summary(nls.2nd.indel))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+AIC(glm.nb.indel, glmer.nb.indel, glm.poisson.indel, glmer.poisson.indel, nls.2nd.indel)
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+overdispertion.test.indel <- dispersiontest(glm.poisson.indel)
+print(overdispertion.test.indel)
+odTest(glm.nb.indel)
+```
+
+### statistical modeling of the number of deletion mutations
+
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+cat("*** GLMM with a negative binomial distribution ***\n")
+glm.nb.deletion <- glm.nb(Deletion.Count ~ Gray, data=mutation.count.frame)
+print(summary(glm.nb.deletion))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+cat("*** GLMM with a negative binomial distribution ***\n")
+glmer.nb.deletion <- glmer.nb(Deletion.Count ~ Gray + (1|Family), data=mutation.count.frame)
+print(summary(glmer.nb.deletion))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+cat("*** GLM with a poisson distribution ***\n")
+glm.poisson.deletion <- glm(Deletion.Count ~ Gray, family = poisson, data=mutation.count.frame)
+print(summary(glm.poisson.deletion))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+cat("*** GLMM with a poisson distribution ***\n")
+glmer.poisson.deletion <- glmer(Deletion.Count ~ Gray + (1|Family), family=poisson, data=mutation.count.frame)
+print(summary(glmer.poisson.deletion))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+cat("Non-lenear second polynominal model\n")
+nls.2nd.deletion <- nls(Deletion.Count ~　a+b*Gray+c*Gray^2, data= mutation.count.frame, start=c(a=1, b=1, c=1),trace=T)
+print(summary(nls.2nd.deletion))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+AIC(glm.nb.deletion, glmer.nb.deletion, glm.poisson.deletion, glmer.poisson.deletion, nls.2nd.deletion)
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+overdispertion.test.deletion <- dispersiontest(glm.poisson.deletion)
+print(overdispertion.test.deletion)
+odTest(glm.nb.deletion)
+```
+
+### statistical modeling of the number of insertion mutations
+
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+cat("*** GLM with a negative binomial distribution ***\n")
+glm.nb.insertion <- glm.nb(Insertion.Count ~ Gray,data= mutation.count.frame)
+print(summary(glm.nb.insertion))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+cat("*** GLMM with a negative binomial distribution ***\n")
+glmer.nb.insertion <- glmer.nb(Insertion.Count ~ Gray + (1|Family), data=mutation.count.frame)
+print(summary(glmer.nb.insertion))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+cat("*** GLM with a poisson distribution ***\n")
+glm.poisson.insertion <- glm(Insertion.Count ~ Gray, family = poisson, data=mutation.count.frame)
+print(summary(glm.poisson.insertion))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+cat("*** GLMM with a poisson distribution ***\n")
+glmer.poisson.insertion <- glmer(Insertion.Count ~ Gray + (1|Family), family=poisson, data=mutation.count.frame)
+print(summary(glmer.poisson.insertion))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+cat("Non-lenear second polynominal model\n")
+nls.2nd.insertion <- nls(Insertion.Count ~　a+b*Gray+c*Gray^2, data= mutation.count.frame, start=c(a=1, b=1, c=1),trace=T)
+print(summary(nls.2nd.insertion))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+AIC(glm.nb.insertion, glmer.nb.insertion, glm.poisson.insertion, glmer.poisson.insertion, nls.2nd.insertion)
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+overdispertion.test.insertion <- dispersiontest(glm.poisson.insertion)
+print(overdispertion.test.insertion)
+odTest(glm.nb.insertion)
+```
+
+### Plotting the relationship between the number of each type of mutaion and radiation
+
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+sbs.indel.color <- "mediumpurple"
+indel.color <- "mediumblue"
+black.color <- "black"
+samon.color <- rgb(1,0.75,0.85)
+
+chairo.color <- rgb(128/255,64/255,0/255)
+aka.color <- rgb(255/255,75/255,0/255)
+total.color <- chairo.color
+
+midori.color <- rgb(3/255,175/255,122/255)
+pink.color <- rgb(255/255,128/255,130/255)
+sbs.color <-pink.color
+deletion.color <- ao.color <- rgb(0/255,90/255,255/255)
+sora.color <- rgb(77/255,196/255,255/255)
+insertion.color <- sora.color
+orange.col <- rgb(246/255,170/255,0/255)
+murasaki.col <- rgb(153/255,0/255,153/255)
+
+gg.plot.total.mutation <- ggplot2::ggplot() +
+	xlab("Radiation dose (Gy/d)") +
+	ylab("No. mutations") +
+	theme(axis.title.x = element_text(size=16), axis.title.y = element_text(size=16),
+		axis.text.x = element_text(size=16),axis.text.y = element_text(size=16)) +
+	geom_count(data=mutation.count.frame,aes(x=Gray, y= Mutation.Count), pch=1, col=total.color) +
+	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= Mutation.Count), method = lm, formula = y ~ exp(glmer.nb.total.mutation@beta[1] + glmer.nb.total.mutation@beta[2]*x), se =FALSE,col=total.color,lwd=0.8) + scale_size_continuous(breaks = seq(1,9,1)) +
+	geom_count(data=mutation.count.frame,aes(x=Gray, y= SBS.Count), pch=2, col=sbs.color) +　scale_size_continuous(breaks = seq(1,9,1)) +
+	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= SBS.Count), method = lm, formula = y ~ exp(glmer.nb.sbs@beta[1] + glmer.nb.sbs@beta[2]*x), se =FALSE,col=sbs.color, lwd=0.6) + scale_size_continuous(breaks = seq(1,9,1)) +
+	geom_count(data=mutation.count.frame,aes(x=Gray, y= Insertion.Count), pch=3, col=insertion.color) +　scale_size_continuous(breaks = seq(1,9,1)) +
+	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= Insertion.Count), method = glm, method.args = list(family = "poisson"), se =FALSE, col=insertion.color,lwd=1,lty="dotted") +
+	geom_count(data=mutation.count.frame,aes(x=Gray, y= Deletion.Count), pch=4, col=deletion.color) +　scale_size_continuous(breaks = seq(1,9,1)) +
+	geom_smooth(data=mutation.count.frame,aes(x=Gray, y= Deletion.Count), method = MASS::glm.nb, se =FALSE, col=deletion.color, lwd=0.6)
+
+plot(gg.plot.total.mutation)
+```
