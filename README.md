@@ -1,21 +1,20 @@
 # Mutation identification in whole genome sequencing data of <i>Arabidopsis thaliana</i>
 Bioinformatics pipeline for idintifying mutations in whole genome sequences of <i>Arabidopsis thaliana</i>   
   
-  
 
 ## Requirement
 ###
-* BEDOPS: the fast, highly scalable and easily-parallelizable genome analysis toolkit (https://bedops.readthedocs.io)
-* bedtools: a powerful toolset for genome arithmetic (https://bedtools.readthedocs.io)
-* bcftools: Tools for manipulating VCF and BCF files (http://samtools.github.io/bcftools/bcftools.html)
-* BioAlcidaeJdk: java-based version of awk for bioinformatics (http://lindenb.github.io/jvarkit/BioAlcidaeJdk.html)
-* BWA: Burrow-Wheeler Aligner (http://bio-bwa.sourceforge.net) 
-* GATK: Genome Analysis Toolkit (https://gatk.broadinstitute.org)
-* samtools: Tools for manipulating NGS data (https://github.com/samtools/samtools)
-* snpEff: Genomic variant annotations and functional effect prediction toolbox (http://snpeff.sourceforge.net)
-* Perl: (https://www.perl.org)  
-* Pindel: A indel calling tool based on the split-read approach(http://gmt.genome.wustl.edu/packages/pindel)
-* vcftools: A set of tools for working with VCF files (https://github.com/vcftools/vcftools)  
+* BEDOPS: the fast, highly scalable and easily-parallelizable genome analysis toolkit https://bedops.readthedocs.io
+* bedtools: a powerful toolset for genome arithmetic https://bedtools.readthedocs.io
+* bcftools: Tools for manipulating VCF and BCF files http://samtools.github.io/bcftools/bcftools.html
+* BioAlcidaeJdk: java-based version of awk for bioinformatics http://lindenb.github.io/jvarkit/BioAlcidaeJdk.html
+* BWA: Burrow-Wheeler Aligner http://bio-bwa.sourceforge.net 
+* GATK: Genome Analysis Toolkit https://gatk.broadinstitute.org
+* samtools: Tools for manipulating NGS data https://github.com/samtools/samtools
+* snpEff: Genomic variant annotations and functional effect prediction toolbox http://snpeff.sourceforge.net
+* Perl: https://www.perl.org
+* Pindel: A indel calling tool based on the split-read approach http://gmt.genome.wustl.edu/packages/pindel
+* vcftools: A set of tools for working with VCF files https://github.com/vcftools/vcftools 
 
 The environment under CentOS 7.5 is tested. The versions of the tools used are documented in a series of shell scripts.
 
@@ -61,6 +60,9 @@ This setting in gatk SelectVariants will select only variants having genotyping 
 * The candidate mutation sites having allele frequencies (AF; proportions of mutant reads at a site) of 25% or less were excluded.
 * The candidate mutation sites with the other neighbor sites within 150bp range in a single sample were disregarded because a high proportion of false positives of neighboring mutation sites are known to be cause by mismapping (Keightley <i>et al</i>. 2014)
 
+
+## Statistical analyses
+* [Statistical modeling of the number of each type of mutation and radiation dose](https://github.com/akihirao/AT_Reseq/R_work/blob/master/Plot.fig2.AT.mutation.vs.dose.md)
 
 ## Note
 This project is currently under development. Thank you!
