@@ -1,0 +1,106 @@
+---
+title: Plot.figS2.INDEL.size.dose
+author: "Akira Hirao"
+date: "`r Sys.Date()`"
+output:
+  md_document:
+    toc: true
+    variant: markdown_github
+  html_document:
+    toc: true
+---
+
+-----
+
+## Statistical modeling of the effect of radiation on size of mutation
+
+### Loading packages
+
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+library(MASS)
+library(glmmML)
+library(lme4)
+library(pscl)
+library(AER)
+library(tidyverse)
+```
+
+### Loading data set
+
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+AT_all_mutations <- read_csv("../M2.mutations.full.list.csv")
+```
+
+### Data preprocessing
+
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+sample.vec <- sort(unique(c(AT_all_mutations$Sample1,AT_all_mutations$Sample2,AT_all_mutations$Sample3)))
+
+AT_all_mutations$Sample1 <- factor(AT_all_mutations$Sample1, levels=sample.vec)
+AT_all_mutations$Sample2 <- factor(AT_all_mutations$Sample2, levels=sample.vec)
+AT_all_mutations$Sample3 <- factor(AT_all_mutations$Sample3, levels=sample.vec)
+
+AT_all_mutations$Type <- factor(AT_all_mutations$Type, levels=c("SBS","Deletion","Insertion"))
+AT_all_mutations$Abs.Length <- abs(AT_all_mutations$Length)
+
+AT_all_sbs <- AT_all_mutations %>% filter(Type=="SBS")
+AT_all_indel <- AT_all_mutations %>% filter(Type!="SBS")
+AT_all_insertion <- AT_all_mutations %>% filter(Type=="Insertion")
+AT_all_deletion <- AT_all_mutations %>% filter(Type=="Deletion")
+
+AT_all_family <- AT_all_mutations %>% filter(Sample2!="NA")
+```
+
+### Plotting histogram of size of mutation
+
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+sora.col <- rgb(77/255,196/255,255/255)
+midori.col <- rgb(3/255,175/255,122/255)
+orange.col <- rgb(246/255,170/255,0/255)
+murasaki.col <- rgb(153/255,0/255,153/255)
+akarui.murasaki.col <- rgb(201/255,172/255,230/255)
+col.parette <- c(sora.col,midori.col,orange.col,murasaki.col)
+
+g.hist <- ggplot(AT_all_indel, aes(x=Length, fill=Treatment)) 
+g.hist <- g.hist + geom_histogram(breaks=seq(-145.5,45.5,by=1), position = "identity",alpha=0.9) + xlab("Size of mutation (bp)") + ylab("Frequency") +facet_grid(Treatment~.) + scale_fill_manual(values = col.parette) 
+
+plot(g.hist)
+```
+
+### Statistical modeling of the effect of radiation on size of mutation
+
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+# non-linear model
+model.nsl.2nd.size <- nls(Abs.Length ~　a+b*Dose+c*Dose^2, data= AT_all_mutations, start=c(a=1, b=1, c=1),trace=T)
+print(summary(model.nsl.2nd.size))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+# generalized linear model with a poisson distribution
+model.glm.poisson.size <- glm(Abs.Length~Dose, family = poisson, data= AT_all_mutations)
+print(summary(model.glm.poisson.size))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+# generalized linear model with a negative binomial distribution
+model.glm.nb.size <- glm.nb(Abs.Length~Dose, data= AT_all_mutations)
+print(summary(model.glm.nb.size))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+# Overdispersion test
+odTest(model.glm.nb.size)
+overdispertion.test.size <- dispersiontest(model.glm.poisson.size)
+print(overdispertion.test.size)
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+# Hurdel model with a poisson distribution 
+model.hurdle.poisson.size <- hurdle(Abs.Length~Dose, dist="poisson", data= AT_all_mutations)
+print(summary(model.hurdle.poisson.size))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+# Hurdel model with a negative binomial distribution 
+model.hurdle.nb.size <- hurdle(Abs.Length~Dose, dist="negbin", data= AT_all_mutations)
+print(summary(model.hurdle.nb.size))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+# AICs of each of models
+AIC(model.nsl.2nd.size, model.glm.poisson.size, model.glm.nb.size, model.hurdle.poisson.size,model.hurdle.nb.size)
+```
