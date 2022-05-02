@@ -265,8 +265,15 @@ print(summary(nls.2nd.total.mutation))
     ## Achieved convergence tolerance: 3.984e-08
 
 ``` r
-model.AICs.total.mutation <- AIC(glm.nb.total.mutation, glmer.nb.total.mutation,glm.poisson.total.mutation, glmer.poisson.total.mutation, nls.2nd.total.mutation)
+AIC(glm.nb.total.mutation, glmer.nb.total.mutation,glm.poisson.total.mutation, glmer.poisson.total.mutation, nls.2nd.total.mutation)
 ```
+
+    ##                              df      AIC
+    ## glm.nb.total.mutation         3 234.6023
+    ## glmer.nb.total.mutation       4 230.7118
+    ## glm.poisson.total.mutation    2 247.0440
+    ## glmer.poisson.total.mutation  3 236.2454
+    ## nls.2nd.total.mutation        4 242.9722
 
 ``` r
 # Overdespersion test: poisson vs negative binomial

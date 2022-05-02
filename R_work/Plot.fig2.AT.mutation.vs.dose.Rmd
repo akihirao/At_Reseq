@@ -129,7 +129,7 @@ nls.2nd.total.mutation <- nls(mutation.count.frame$Mutation.Count ~　a+b*mutati
 print(summary(nls.2nd.total.mutation))
 ```
 ```{r message = FALSE, warning = FALSE, echo = TRUE}
-model.AICs.total.mutation <- AIC(glm.nb.total.mutation, glmer.nb.total.mutation,glm.poisson.total.mutation, glmer.poisson.total.mutation, nls.2nd.total.mutation)
+AIC(glm.nb.total.mutation, glmer.nb.total.mutation,glm.poisson.total.mutation, glmer.poisson.total.mutation, nls.2nd.total.mutation)
 ```
 ```{r message = FALSE, warning = FALSE, echo = TRUE}
 # Overdespersion test: poisson vs negative binomial
