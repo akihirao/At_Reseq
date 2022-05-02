@@ -1,12 +1,17 @@
--   [Loading packages](#loading-packages)
+-   [Statistical modeling of the effect of radiation on the number of
+    each type of
+    mutation](#statistical-modeling-of-the-effect-of-radiation-on-the-number-of-each-type-of-mutation)
+    -   [Loading packages](#loading-packages)
     -   [Loading data set](#loading-data-set)
     -   [Data preprocessing](#data-preprocessing)
-    -   [statistical analyses of the number of each type of
+    -   [Statistical analyses of the number of each type of
         mutation](#statistical-analyses-of-the-number-of-each-type-of-mutation)
 
 ------------------------------------------------------------------------
 
-## Loading packages
+## Statistical modeling of the effect of radiation on the number of each type of mutation
+
+### Loading packages
 
 ``` r
 library(ggplot2)
@@ -90,9 +95,9 @@ mutation.count.frame$Family <- factor(mutation.count.frame$Family, levels=c("A01
 write.csv(mutation.count.frame, "No.mutations.summary.csv",quote=F, row.names=F)
 ```
 
-### statistical analyses of the number of each type of mutation
+### Statistical analyses of the number of each type of mutation
 
-#### statistical modeling of the total number of mutations (SBSs + INDELs)
+#### Statistical modeling of the total number of mutations (SBSs + INDELs)
 
 ``` r
 # GLM with a negative binominal distribution
@@ -290,7 +295,7 @@ odTest(glm.nb.total.mutation)
     ## Critical value of test statistic at the alpha= 0.05 level: 2.7055 
     ## Chi-Square Test Statistic =  14.4418 p-value = 7.228e-05
 
-#### statistical modeling of the number of SBS mutations
+#### Statistical modeling of the number of SBS mutations
 
 ``` r
 # GLM with a negative binomial distribution
@@ -495,7 +500,7 @@ odTest(glm.nb.sbs)
     ## Critical value of test statistic at the alpha= 0.05 level: 2.7055 
     ## Chi-Square Test Statistic =  5.4118 p-value = 0.01
 
-#### statistical modeling of the number of INDEL mutations
+#### Statistical modeling of the number of INDEL mutations
 
 ``` r
 # GLM with a negative binomial distribution
@@ -699,7 +704,7 @@ odTest(glm.nb.indel)
     ## Critical value of test statistic at the alpha= 0.05 level: 2.7055 
     ## Chi-Square Test Statistic =  4.7013 p-value = 0.01507
 
-#### statistical modeling of the number of deletion mutations
+#### Statistical modeling of the number of deletion mutations
 
 ``` r
 # GLMM with a negative binomial distribution
@@ -899,7 +904,7 @@ odTest(glm.nb.deletion)
     ## Critical value of test statistic at the alpha= 0.05 level: 2.7055 
     ## Chi-Square Test Statistic =  6.8381 p-value = 0.004462
 
-#### statistical modeling of the number of insertion mutations
+#### Statistical modeling of the number of insertion mutations
 
 ``` r
 # GLM with a negative binomial distribution

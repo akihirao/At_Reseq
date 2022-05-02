@@ -13,7 +13,9 @@ output:
 
 -----
 
-## Loading packages
+## Statistical modeling of the effect of radiation on the number of each type of mutation
+
+### Loading packages
 
 ```{r message = FALSE, warning = FALSE, echo = TRUE}
 library(ggplot2)
@@ -97,9 +99,9 @@ mutation.count.frame$Family <- factor(mutation.count.frame$Family, levels=c("A01
 write.csv(mutation.count.frame, "No.mutations.summary.csv",quote=F, row.names=F)
 ```
 
-### statistical analyses of the number of each type of mutation
+### Statistical analyses of the number of each type of mutation
 
-#### statistical modeling of the total number of mutations (SBSs + INDELs)
+#### Statistical modeling of the total number of mutations (SBSs + INDELs)
 
 ```{r message = FALSE, warning = FALSE, echo = TRUE}
 # GLM with a negative binominal distribution
@@ -136,7 +138,7 @@ print(overdispertion.test.total.mutation)
 odTest(glm.nb.total.mutation)
 ```
 
-#### statistical modeling of the number of SBS mutations
+#### Statistical modeling of the number of SBS mutations
 
 ```{r message = FALSE, warning = FALSE, echo = TRUE}
 # GLM with a negative binomial distribution
@@ -174,7 +176,7 @@ odTest(glm.nb.sbs)
 ```
 
 
-#### statistical modeling of the number of INDEL mutations
+#### Statistical modeling of the number of INDEL mutations
 
 ```{r message = FALSE, warning = FALSE, echo = TRUE}
 # GLM with a negative binomial distribution
@@ -210,7 +212,7 @@ print(overdispertion.test.indel)
 odTest(glm.nb.indel)
 ```
 
-#### statistical modeling of the number of deletion mutations
+#### Statistical modeling of the number of deletion mutations
 
 ```{r message = FALSE, warning = FALSE, echo = TRUE}
 # GLMM with a negative binomial distribution
@@ -246,7 +248,7 @@ print(overdispertion.test.deletion)
 odTest(glm.nb.deletion)
 ```
 
-#### statistical modeling of the number of insertion mutations
+#### Statistical modeling of the number of insertion mutations
 
 ```{r message = FALSE, warning = FALSE, echo = TRUE}
 # GLM with a negative binomial distribution
