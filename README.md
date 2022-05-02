@@ -26,7 +26,7 @@ TAIR10 genomic sequences were downloaded from the TAIR FTP site. The whole-genom
 Variant call procedure was adapted from the germline short variant discovery workflow in GATK.
 
 <p align="left">
-  <img src="https://github.com/akihirao/At_Reseq/blob/master/images/AtReseq.workflow.pindel.jpeg"/>
+  <img src="https://github.com/akihirao/At_Reseq/blob/main/images/AtReseq.workflow.pindel.jpeg"/>
 </p>
 
 
