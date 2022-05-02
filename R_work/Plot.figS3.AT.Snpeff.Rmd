@@ -1,0 +1,375 @@
+---
+title: Plot.figS3.AT.Snpeff
+author: "Akira Hirao"
+date: "`r Sys.Date()`"
+output:
+  md_document:
+    toc: true
+    variant: markdown_github
+  html_document:
+    toc: true
+---
+
+-----
+
+## Statistical modeling of the effect of radiation on gene function
+
+### Loading packages
+
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+library(ggplot2)
+library(stringr)
+library(MASS)
+library(glmmML)
+library(lme4)
+library(tidyverse)
+library(nlstools)
+library(ggforce)
+library(grid)
+library(AER)
+library(pscl)
+```
+
+### Loading data set
+
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+AT.all.mutations.annotation <- read_csv("../M2.mutations.full.list.annotation.csv")
+
+sample.vec <- c(sort(unique(AT.all.mutations.annotation$Sample1)))
+AT.all.mutations.annotation$Sample1 <- factor(AT.all.mutations.annotation$Sample1, levels=sample.vec)
+AT.all.mutations.annotation$Sample2 <- factor(AT.all.mutations.annotation$Sample2, levels=sample.vec)
+AT.all.mutations.annotation$Sample3 <- factor(AT.all.mutations.annotation$Sample3, levels=sample.vec)
+
+AT.all.family <- subset(AT.all.mutations.annotation, AT.all.mutations.annotation$Sample2!="NA")
+
+AT.all.sbs <- AT.all.mutations.annotation %>% filter(Type=="SBS")
+AT.all.indel <- AT.all.mutations.annotation %>% filter(Type!="SBS")
+AT.all.insertion <- AT.all.mutations.annotation %>% filter(Type=="Insertion")
+AT.all.deletion <- AT.all.mutations.annotation %>% filter(Type=="Deletion")
+
+AT.all.HIGH <- AT.all.mutations.annotation %>% filter(Annotation_impact=="HIGH")
+AT.all.MODERATE <- AT.all.mutations.annotation %>% filter(Annotation_impact=="MODERATE")
+AT.all.LOW <- AT.all.mutations.annotation %>% filter(Annotation_impact=="LOW")
+AT.all.MODIFIER <- AT.all.mutations.annotation %>% filter(Annotation_impact=="MODIFIER")
+
+No.mutations.per.sample1 <- tapply(AT.all.mutations.annotation$Chr, AT.all.mutations.annotation$Sample1, length)
+No.mutations.per.sample2 <- tapply(AT.all.mutations.annotation$Chr, AT.all.mutations.annotation$Sample2, length)
+No.mutations.per.sample3 <- tapply(AT.all.mutations.annotation$Chr, AT.all.mutations.annotation$Sample3, length)
+No.mutations.per.sample1[is.na(No.mutations.per.sample1)] <- 0
+No.mutations.per.sample2[is.na(No.mutations.per.sample2)] <- 0
+No.mutations.per.sample3[is.na(No.mutations.per.sample3)] <- 0
+No.mutations.per.sample <- No.mutations.per.sample1 + No.mutations.per.sample2 + No.mutations.per.sample3
+
+No.family.mutations.per.sample1 <- tapply(AT.all.family$Chr,AT.all.family$Sample1, length)
+No.family.mutations.per.sample2 <- tapply(AT.all.family$Chr,AT.all.family$Sample2, length)
+No.family.mutations.per.sample3 <- tapply(AT.all.family$Chr,AT.all.family$Sample3, length)
+No.family.mutations.per.sample1[is.na(No.family.mutations.per.sample1)] <- 0
+No.family.mutations.per.sample2[is.na(No.family.mutations.per.sample2)] <- 0
+No.family.mutations.per.sample3[is.na(No.family.mutations.per.sample3)] <- 0
+No.fammily.mutations.per.sample <- No.family.mutations.per.sample1 + No.family.mutations.per.sample2 + No.family.mutations.per.sample3
+
+No.homo.mutations.per.sample1 <- tapply(AT.all.mutations.annotation$Chr[AT.all.mutations.annotation$Zygosity1=="homo"], AT.all.mutations.annotation$Sample1[AT.all.mutations.annotation$Zygosity1=="homo"], length)
+No.homo.mutations.per.sample2 <- tapply(AT.all.mutations.annotation$Chr[AT.all.mutations.annotation$Zygosity2=="homo"], AT.all.mutations.annotation$Sample2[AT.all.mutations.annotation$Zygosity2=="homo"], length)
+No.homo.mutations.per.sample3 <- tapply(AT.all.mutations.annotation$Chr[AT.all.mutations.annotation$Zygosity3=="homo"], AT.all.mutations.annotation$Sample3[AT.all.mutations.annotation$Zygosity3=="homo"], length)
+No.homo.mutations.per.sample1[is.na(No.homo.mutations.per.sample1)] <- 0
+No.homo.mutations.per.sample2[is.na(No.homo.mutations.per.sample2)] <- 0
+No.homo.mutations.per.sample3[is.na(No.homo.mutations.per.sample3)] <- 0
+No.homo.mutations.per.sample <- No.homo.mutations.per.sample1 + No.homo.mutations.per.sample2 + No.homo.mutations.per.sample3
+
+No.hetero.mutations.per.sample1 <- tapply(AT.all.mutations.annotation$Chr[AT.all.mutations.annotation$Zygosity1=="hetero"], AT.all.mutations.annotation$Sample1[AT.all.mutations.annotation$Zygosity1=="hetero"], length)
+No.hetero.mutations.per.sample2 <- tapply(AT.all.mutations.annotation$Chr[AT.all.mutations.annotation$Zygosity2=="hetero"], AT.all.mutations.annotation$Sample2[AT.all.mutations.annotation$Zygosity2=="hetero"], length)
+No.hetero.mutations.per.sample3 <- tapply(AT.all.mutations.annotation$Chr[AT.all.mutations.annotation$Zygosity3=="hetero"], AT.all.mutations.annotation$Sample3[AT.all.mutations.annotation$Zygosity3=="hetero"], length)
+No.hetero.mutations.per.sample1[is.na(No.hetero.mutations.per.sample1)] <- 0
+No.hetero.mutations.per.sample2[is.na(No.hetero.mutations.per.sample2)] <- 0
+No.hetero.mutations.per.sample3[is.na(No.hetero.mutations.per.sample3)] <- 0
+No.hetero.mutations.per.sample <- No.hetero.mutations.per.sample1 + No.hetero.mutations.per.sample2 + No.hetero.mutations.per.sample3
+
+No.sbs.per.sample1 <- tapply(AT.all.sbs$Chr, AT.all.sbs$Sample1, length)
+No.sbs.per.sample2 <- tapply(AT.all.sbs$Chr, AT.all.sbs$Sample2, length)
+No.sbs.per.sample3 <- tapply(AT.all.sbs$Chr, AT.all.sbs$Sample3, length)
+No.sbs.per.sample1[is.na(No.sbs.per.sample1)] <- 0
+No.sbs.per.sample2[is.na(No.sbs.per.sample2)] <- 0
+No.sbs.per.sample3[is.na(No.sbs.per.sample3)] <- 0
+No.sbs.per.sample <- No.sbs.per.sample1 + No.sbs.per.sample2 + No.sbs.per.sample3
+
+No.indel.per.sample1 <- tapply(AT.all.indel$Chr, AT.all.indel$Sample1, length)
+No.indel.per.sample2 <- tapply(AT.all.indel$Chr, AT.all.indel$Sample2, length)
+No.indel.per.sample3 <- tapply(AT.all.indel$Chr, AT.all.indel$Sample3, length)
+No.indel.per.sample1[is.na(No.indel.per.sample1)] <- 0
+No.indel.per.sample2[is.na(No.indel.per.sample2)] <- 0
+No.indel.per.sample3[is.na(No.indel.per.sample3)] <- 0
+No.indel.per.sample <- No.indel.per.sample1 + No.indel.per.sample2 + No.indel.per.sample3
+
+No.insertion.per.sample1 <- tapply(AT.all.insertion$Chr, AT.all.insertion$Sample1, length)
+No.insertion.per.sample2 <- tapply(AT.all.insertion$Chr, AT.all.insertion$Sample2, length)
+No.insertion.per.sample3 <- tapply(AT.all.insertion$Chr, AT.all.insertion$Sample3, length)
+No.insertion.per.sample1[is.na(No.insertion.per.sample1)] <- 0
+No.insertion.per.sample2[is.na(No.insertion.per.sample2)] <- 0
+No.insertion.per.sample3[is.na(No.insertion.per.sample3)] <- 0
+No.insertion.per.sample <- No.insertion.per.sample1 + No.insertion.per.sample2 + No.insertion.per.sample3
+
+No.deletion.per.sample1 <- tapply(AT.all.deletion$Chr, AT.all.deletion$Sample1, length)
+No.deletion.per.sample2 <- tapply(AT.all.deletion$Chr, AT.all.deletion$Sample2, length)
+No.deletion.per.sample3 <- tapply(AT.all.deletion$Chr, AT.all.deletion$Sample3, length)
+No.deletion.per.sample1[is.na(No.deletion.per.sample1)] <- 0
+No.deletion.per.sample2[is.na(No.deletion.per.sample2)] <- 0
+No.deletion.per.sample3[is.na(No.deletion.per.sample3)] <- 0
+No.deletion.per.sample <- No.deletion.per.sample1 + No.deletion.per.sample2 + No.deletion.per.sample3
+
+No.HIGH.per.sample1 <- tapply(AT.all.HIGH$Chr, AT.all.HIGH$Sample1, length)
+No.HIGH.per.sample2 <- tapply(AT.all.HIGH$Chr, AT.all.HIGH$Sample2, length)
+No.HIGH.per.sample3 <- tapply(AT.all.HIGH$Chr, AT.all.HIGH$Sample3, length)
+No.HIGH.per.sample1[is.na(No.HIGH.per.sample1)] <- 0
+No.HIGH.per.sample2[is.na(No.HIGH.per.sample2)] <- 0
+No.HIGH.per.sample3[is.na(No.HIGH.per.sample3)] <- 0
+No.HIGH.per.sample <- No.HIGH.per.sample1 + No.HIGH.per.sample2 + No.HIGH.per.sample3
+
+No.MODERATE.per.sample1 <- tapply(AT.all.MODERATE$Chr, AT.all.MODERATE$Sample1, length)
+No.MODERATE.per.sample2 <- tapply(AT.all.MODERATE$Chr, AT.all.MODERATE$Sample2, length)
+No.MODERATE.per.sample3 <- tapply(AT.all.MODERATE$Chr, AT.all.MODERATE$Sample3, length)
+No.MODERATE.per.sample1[is.na(No.MODERATE.per.sample1)] <- 0
+No.MODERATE.per.sample2[is.na(No.MODERATE.per.sample2)] <- 0
+No.MODERATE.per.sample3[is.na(No.MODERATE.per.sample3)] <- 0
+No.MODERATE.per.sample <- No.MODERATE.per.sample1 + No.MODERATE.per.sample2 + No.MODERATE.per.sample3
+
+No.LOW.per.sample1 <- tapply(AT.all.LOW$Chr, AT.all.LOW$Sample1, length)
+No.LOW.per.sample2 <- tapply(AT.all.LOW$Chr, AT.all.LOW$Sample2, length)
+No.LOW.per.sample3 <- tapply(AT.all.LOW$Chr, AT.all.LOW$Sample3, length)
+No.LOW.per.sample1[is.na(No.LOW.per.sample1)] <- 0
+No.LOW.per.sample2[is.na(No.LOW.per.sample2)] <- 0
+No.LOW.per.sample3[is.na(No.LOW.per.sample3)] <- 0
+No.LOW.per.sample <- No.LOW.per.sample1 + No.LOW.per.sample2 + No.LOW.per.sample3
+
+No.MODIFIER.per.sample1 <- tapply(AT.all.MODIFIER$Chr, AT.all.MODIFIER$Sample1, length)
+No.MODIFIER.per.sample2 <- tapply(AT.all.MODIFIER$Chr, AT.all.MODIFIER$Sample2, length)
+No.MODIFIER.per.sample3 <- tapply(AT.all.MODIFIER$Chr, AT.all.MODIFIER$Sample3, length)
+No.MODIFIER.per.sample1[is.na(No.MODIFIER.per.sample1)] <- 0
+No.MODIFIER.per.sample2[is.na(No.MODIFIER.per.sample2)] <- 0
+No.MODIFIER.per.sample3[is.na(No.MODIFIER.per.sample3)] <- 0
+No.MODIFIER.per.sample <- No.MODIFIER.per.sample1 + No.MODIFIER.per.sample2 + No.MODIFIER.per.sample3
+
+treat <- c(rep("Control",length=9),rep("Low",length=9),rep("Middle",length=9),rep("High",length=9))
+gray <- c(rep(0,9),rep(0.4,9),rep(1.4,9),rep(2.0,9))
+Group <- c(rep("Group1",18),rep("Group2",18))
+Group <- factor(Group, levels=c("Group1", "Group2"))
+Accumurate.gray <- gray*60
+Accumurate.gray.revised <- c(rep(0,9),rep(23,9),rep(80,9),rep(114,9))
+family <-c(rep("A01",3),rep("A02",3),rep("A03",3),rep("A11",3),rep("A12",3),rep("A13",3),rep("A21",3),rep("A22",3),rep("A23",3),rep("A31",3),rep("A32",3),rep("A33",3))
+family <- factor(family, levels=c("A01","A02","A03","A11","A12","A13","A21","A22","A23","A31","A32","A33"))
+
+mutation.annotation.count.frame <- data.frame(SampleID = sample.vec, Family = family,
+	Treat = treat, Gray = gray, TotalGray = Accumurate.gray,
+	Mutation.Count =  No.mutations.per.sample,
+	Mutation.family.Count = No.fammily.mutations.per.sample,
+	Mutation.homo.Count =  No.homo.mutations.per.sample,	
+	Mutation.hetero.Count =  No.hetero.mutations.per.sample,	
+	SBS.Count = No.sbs.per.sample,
+	INDEL.Count = No.indel.per.sample,
+	Insertion.Count = No.insertion.per.sample,
+	Deletion.Count = No.deletion.per.sample,
+	HIGH.Count = No.HIGH.per.sample,
+	MODERATE.Count = No.MODERATE.per.sample,
+	LOW.Count = No.LOW.per.sample,
+	MODIFIER.Count = No.MODIFIER.per.sample,
+	kakudai.group = Group
+)
+
+write.csv(mutation.annotation.count.frame, "No.mutations.annotation.summary.csv",quote=F, row.names=F)
+```
+
+### Statistical modeling of the effect of radiation on gene
+#### HIGH impact
+
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+## generalized linear model with a poisson distribution
+model.glm.poisson.HIGH <- glm(mutation.annotation.count.frame$HIGH.Count ~ mutation.annotation.count.frame$Gray, family = poisson)
+print(summary(model.glm.poisson.HIGH))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+## generalized linear mixed model with a poisson distribution
+model.glmer.poisson.HIGH <- glmer(HIGH.Count ~ Gray + (1|Family), family=poisson, data=mutation.annotation.count.frame)
+print(summary(model.glmer.poisson.HIGH))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+## generalized linear model with a negative binomial distribution
+model.glm.nb.HIGH <- glm.nb(mutation.annotation.count.frame$HIGH.Count ~ mutation.annotation.count.frame$Gray)
+print(summary(model.glm.nb.HIGH))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+## generalized linear mixed model with a negative binomial distribution
+model.glmer.nb.HIGH <- glmer.nb(HIGH.Count ~ Gray + (1|Family), data=mutation.annotation.count.frame)
+print(summary(model.glmer.nb.HIGH))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+## non-linear model
+model.nls.2nd.HIGH <- nls(mutation.annotation.count.frame$HIGH.Count ~　a+b*mutation.annotation.count.frame$Gray+c*(mutation.annotation.count.frame$Gray)^2, data= mutation.annotation.count.frame, start=c(a=1, b=1, c=1),trace=T)
+print(summary(model.nls.2nd.HIGH))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+## Overdispersion test
+odTest(model.glm.nb.HIGH)
+overdispertion.HIGH <- dispersiontest(model.glm.poisson.HIGH)
+print(overdispertion.HIGH)
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+AIC(model.glm.poisson.HIGH,model.glmer.poisson.HIGH,model.glm.nb.HIGH,model.glmer.nb.HIGH, model.nls.2nd.HIGH)
+```
+
+#### Moderate impact
+
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+## generalized linear model with a poisson distribution
+model.glm.poisson.MODERATE <- glm(mutation.annotation.count.frame$MODERATE.Count ~ mutation.annotation.count.frame$Gray, family = poisson)
+print(summary(model.glm.poisson.MODERATE))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+## generalized linear mixed model with a poisson distribution
+model.glmer.poisson.MODERATE <- glmer(MODERATE.Count ~ Gray + (1|Family), family=poisson, data=mutation.annotation.count.frame)
+print(summary(model.glmer.poisson.MODERATE))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+## generalized linear model with a negative binomial distribution
+model.glm.nb.MODERATE <- glm.nb(mutation.annotation.count.frame$MODERATE.Count ~ mutation.annotation.count.frame$Gray)
+print(summary(model.glm.nb.MODERATE))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+## generalized linear mixed model with a negative binomial distribution
+model.glmer.nb.MODERATE <- glmer.nb(MODERATE.Count ~ Gray + (1|Family), data=mutation.annotation.count.frame)
+print(summary(model.glmer.nb.MODERATE))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+## non-linear model
+model.nls.2nd.MODERATE <- nls(mutation.annotation.count.frame$MODERATE.Count ~　a+b*mutation.annotation.count.frame$Gray+c*(mutation.annotation.count.frame$Gray)^2, data= mutation.annotation.count.frame, start=c(a=1, b=1, c=1),trace=T)
+print(summary(model.nls.2nd.MODERATE))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+## Overdispersion test
+odTest(model.glm.nb.MODERATE)
+overdispertion.MODERATE <- dispersiontest(model.glm.poisson.MODERATE)
+print(overdispertion.MODERATE)
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+AIC(model.glm.poisson.MODERATE,model.glmer.poisson.MODERATE,model.glm.nb.MODERATE,model.glmer.nb.MODERATE, model.nls.2nd.MODERATE)
+```
+
+#### Low impact
+
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+## generalized linear model with a poisson distribution
+model.glm.poisson.LOW <- glm(mutation.annotation.count.frame$LOW.Count ~ mutation.annotation.count.frame$Gray, family = poisson)
+print(summary(model.glm.poisson.LOW))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+## generalized linear mixed model with a poisson distribution
+model.glmer.poisson.LOW <- glmer(LOW.Count ~ Gray + (1|Family), family=poisson, data=mutation.annotation.count.frame)
+print(summary(model.glmer.poisson.LOW))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+## generalized linear model with a negative binomial distribution
+model.glm.nb.LOW <- glm.nb(mutation.annotation.count.frame$LOW.Count ~ mutation.annotation.count.frame$Gray)
+print(summary(model.glm.nb.LOW))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+## generalized linear mixed model with a negative binomial distribution
+model.glmer.nb.LOW <- glmer.nb(LOW.Count ~ Gray + (1|Family), data=mutation.annotation.count.frame)
+print(summary(model.glmer.nb.LOW))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+## non-linear model
+model.nls.2nd.LOW <- nls(mutation.annotation.count.frame$LOW.Count ~　a+b*mutation.annotation.count.frame$Gray+c*(mutation.annotation.count.frame$Gray)^2, data= mutation.annotation.count.frame, start=c(a=1, b=1, c=1),trace=T)
+print(summary(model.nls.2nd.LOW))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+## Overdispersion test
+odTest(model.glm.nb.LOW)
+overdispertion.LOW <- dispersiontest(model.glm.poisson.LOW)
+print(overdispertion.LOW)
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+AIC(model.glm.poisson.LOW,model.glmer.poisson.LOW,model.glm.nb.LOW,model.glmer.nb.LOW, model.nls.2nd.LOW)
+```
+
+#### Modifier impact
+
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+## generalized linear model with a poisson distribution
+model.glm.poisson.MODIFIER <- glm(mutation.annotation.count.frame$MODIFIER.Count ~ mutation.annotation.count.frame$Gray, family = poisson)
+print(summary(model.glm.poisson.MODIFIER))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+## generalized linear mixed model with a poisson distribution
+model.glmer.poisson.MODIFIER <- glmer(MODIFIER.Count ~ Gray + (1|Family), family=poisson, data=mutation.annotation.count.frame)
+print(summary(model.glmer.poisson.MODIFIER))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+## generalized linear model with a negative binomial distribution
+model.glm.nb.MODIFIER <- glm.nb(mutation.annotation.count.frame$MODIFIER.Count ~ mutation.annotation.count.frame$Gray)
+print(summary(model.glm.nb.MODIFIER))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+## generalized linear mixed model with a negative binomial distribution
+model.glmer.nb.MODIFIER <- glmer.nb(MODIFIER.Count ~ Gray + (1|Family), data=mutation.annotation.count.frame)
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+## non-linear model
+model.nls.2nd.MODIFIER <- nls(mutation.annotation.count.frame$MODIFIER.Count ~　a+b*mutation.annotation.count.frame$Gray+c*(mutation.annotation.count.frame$Gray)^2, data= mutation.annotation.count.frame, start=c(a=1, b=1, c=1),trace=T)
+print(summary(model.nls.2nd.MODIFIER))
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+## Overdispersion test
+odTest(model.glm.nb.MODIFIER)
+overdispertion.MODIFIER <- dispersiontest(model.glm.poisson.MODIFIER)
+print(overdispertion.MODIFIER)
+```
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+AIC(model.glm.poisson.MODIFIER,model.glmer.poisson.MODIFIER,model.glm.nb.MODIFIER,model.glmer.nb.MODIFIER, model.nls.2nd.MODIFIER)
+```
+
+### Plotting impact of mutations on gene function 
+
+```{r message = FALSE, warning = FALSE, echo = TRUE}
+snp.indel.color <- "mediumpurple"
+snp.color <- "deeppink3"
+indel.color <- "mediumblue"
+black.color <- "black"
+samon.color <- rgb(1,0.75,0.85)
+
+#grid.newpage() #空の画面を作る
+#pushViewport(viewport(layout=grid.layout(2, 2))) #画面を区切る（今回は2行2列の4分割）
+
+gg.plot.high <- ggplot2::ggplot() + 
+	xlab("Radiation dose (Gy/d)") + 
+	ylab("No. mutations") +
+	theme(axis.title.x = element_text(size=14), axis.title.y = element_text(size=14), 
+		axis.text.x = element_text(size=14),axis.text.y = element_text(size=14)) +
+	geom_count(data=mutation.annotation.count.frame,aes(x=Gray, y= HIGH.Count), pch=16) +　scale_size_continuous(breaks = seq(1,9,1))
+gg.plot.high <- gg.plot.high + geom_smooth(data=mutation.annotation.count.frame,aes(x=Gray, y= HIGH.Count), method = "glm", method.args = list(family = poisson), se =FALSE, col="black", lwt= 0.5) + ggtitle("a) High-impact mutations")
+
+gg.plot.moderate <- ggplot2::ggplot() + 
+	xlab("Radiation dose (Gy/d)") + 
+	ylab("No. mutations") +
+	theme(axis.title.x = element_text(size=14), axis.title.y = element_text(size=14), 
+		axis.text.x = element_text(size=14),axis.text.y = element_text(size=14)) +
+	geom_count(data=mutation.annotation.count.frame,aes(x=Gray, y= MODERATE.Count), pch=16) +　scale_size_continuous(breaks = seq(1,9,1))
+gg.plot.moderate <- gg.plot.moderate +
+	geom_smooth(data=mutation.annotation.count.frame,aes(x=Gray, y= MODERATE.Count), method = "glm", method.args = list(family = poisson), se =FALSE, col="black", lwt= 0.5) + ggtitle("b) Moderate-impact mutations")
+
+gg.plot.low <- ggplot2::ggplot() + 
+	xlab("Radiation dose (Gy/d)") + 
+	ylab("No. mutations") +
+	theme(axis.title.x = element_text(size=14), axis.title.y = element_text(size=14), 
+		axis.text.x = element_text(size=14),axis.text.y = element_text(size=14)) +
+	geom_count(data=mutation.annotation.count.frame,aes(x=Gray, y= LOW.Count), pch=16) +　scale_size_continuous(breaks = seq(1,9,1))
+gg.plot.low <- gg.plot.low +
+	geom_smooth(data=mutation.annotation.count.frame,aes(x=Gray, y= LOW.Count), method = "glm", method.args = list(family = poisson), se =FALSE, col="black", lwt= 0.5) + ggtitle("c) Low-impact mutations")
+
+gg.plot.modifier <- ggplot2::ggplot() + 
+	xlab("Radiation dose (Gy/d)") + 
+	ylab("No. mutations") +
+	theme(axis.title.x = element_text(size=14), axis.title.y = element_text(size=14), 
+		axis.text.x = element_text(size=14),axis.text.y = element_text(size=14)) +
+	geom_count(data=mutation.annotation.count.frame,aes(x=Gray, y= MODIFIER.Count), pch=16) +　scale_size_continuous(breaks = seq(1,9,1))
+gg.plot.modifier <- gg.plot.modifier + geom_smooth(data=mutation.annotation.count.frame,aes(x=Gray, y= MODIFIER.Count), method = MASS::glm.nb, se =FALSE, col="black", lwt= 0.5) + ggtitle("d) Modifier-impact mutations")
+
+gridExtra::grid.arrange(gg.plot.high,gg.plot.moderate,gg.plot.low,gg.plot.modifier,nrow=2,ncol=2)
+```
