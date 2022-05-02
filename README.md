@@ -62,7 +62,8 @@ This setting in gatk SelectVariants will select only variants having genotyping 
 
 
 ## R codes for Statistical analyses
-* [Statistical modeling of the effect of radiation on the number of each type of mutation](https://github.com/akihirao/At_Reseq/blob/main/R_work/Plot.fig2.AT.mutation.vs.dose.md)
+* [Statistical modeling of the effect of radiation on the number of each type of mutation & plotting fig. 2](https://github.com/akihirao/At_Reseq/blob/main/R_work/Plot.fig2.AT.mutation.vs.dose.md)
+* [Statistical test for the ratio of heterozygous/homozygous mutations & plotting fig.3](https://github.com/akihirao/At_Reseq/blob/main/R_work/Plot.fig3.AT.homo2hetero.md)
 
 ## Note
 This project is currently under development. Thank you!

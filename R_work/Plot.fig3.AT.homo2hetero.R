@@ -103,11 +103,11 @@ Accumurate.gray.revised <- c(rep(0,length=9),rep(23,length=9),rep(80,length=9),r
 family <-c(rep("A01",length=3),rep("A02",length=3),rep("A03",length=3),rep("A11",length=3),rep("A12",length=3),rep("A13",length=3),rep("A21",length=3),rep("A22",length=3),rep("A23",length=3),rep("A31",length=3),rep("A32",length=3),rep("A33",length=3))
 family <- factor(family, levels=c("A01","A02","A03","A11","A12","A13","A21","A22","A23","A31","A32","A33"))
 
-mutation.count.frame <- data.frame(SampleID = sample.vec, Family = family,
+mutation_count_frame <- data.frame(SampleID = sample.vec, Family = family,
 	Treat = treat, Gray = gray, TotalGray = Accumurate.gray,
 	Mutation.Count =  No.mutations.per.sample,
 	Mutation.family.Count = No.family.mutations.per.sample,
-	Mutation.homo.Count =  No.homo.mutations.per.sample,	
+	Mutation.homo.Count =  No.homo.mutations.per.sample,
 	Mutation.hetero.Count =  No.hetero.mutations.per.sample,
 	HomoHeteroRatio=No.homo.mutations.per.sample/No.hetero.mutations.per.sample,
 	SBS.Count = No.sbs.per.sample,
@@ -116,20 +116,20 @@ mutation.count.frame <- data.frame(SampleID = sample.vec, Family = family,
 	Deletion.Count = No.deletion.per.sample,
 	kakudai.group = Group
 )
-mutation.count.frame$Treat <- factor(mutation.count.frame$Treat, levels=Treat.vec)
+mutation_count_frame$Treat <- factor(mutation_count_frame$Treat, levels=Treat.vec)
 
 #===========================
 
 
-HomoHeteroRatio.treat.mean <- tapply(mutation.count.frame$HomoHeteroRatio, mutation.count.frame$Treat,mean)
-mutation.total.mean <- tapply(mutation.count.frame$Mutation.Count, mutation.count.frame$Treat,mean)
-mutation.total.sd <- tapply(mutation.count.frame$Mutation.Count, mutation.count.frame$Treat,sd)
-mutation.homo.sum <- tapply(mutation.count.frame$Mutation.homo.Count, mutation.count.frame$Treat,sum)
-mutation.homo.mean <- tapply(mutation.count.frame$Mutation.homo.Count, mutation.count.frame$Treat,mean)
-mutation.homo.sd <- tapply(mutation.count.frame$Mutation.homo.Count, mutation.count.frame$Treat,sd)
-mutation.hetero.sum <- tapply(mutation.count.frame$Mutation.hetero.Count, mutation.count.frame$Treat,sum)
-mutation.hetero.mean <- tapply(mutation.count.frame$Mutation.hetero.Count, mutation.count.frame$Treat,mean)
-mutation.hetero.sd <- tapply(mutation.count.frame$Mutation.hetero.Count, mutation.count.frame$Treat,sd)
+HomoHeteroRatio.treat.mean <- tapply(mutation_count_frame$HomoHeteroRatio, mutation_count_frame$Treat,mean)
+mutation.total.mean <- tapply(mutation_count_frame$Mutation.Count, mutation_count_frame$Treat,mean)
+mutation.total.sd <- tapply(mutation_count_frame$Mutation.Count, mutation_count_frame$Treat,sd)
+mutation.homo.sum <- tapply(mutation_count_frame$Mutation.homo.Count, mutation_count_frame$Treat,sum)
+mutation.homo.mean <- tapply(mutation_count_frame$Mutation.homo.Count, mutation_count_frame$Treat,mean)
+mutation.homo.sd <- tapply(mutation_count_frame$Mutation.homo.Count, mutation_count_frame$Treat,sd)
+mutation.hetero.sum <- tapply(mutation_count_frame$Mutation.hetero.Count, mutation_count_frame$Treat,sum)
+mutation.hetero.mean <- tapply(mutation_count_frame$Mutation.hetero.Count, mutation_count_frame$Treat,mean)
+mutation.hetero.sd <- tapply(mutation_count_frame$Mutation.hetero.Count, mutation_count_frame$Treat,sd)
 
 kai.square.test.homo.hetero.control <- chisq.test(x=c(mutation.homo.sum[1],mutation.hetero.sum[1],p=c(1/3,2/3)))
 print(kai.square.test.homo.hetero.control)
@@ -166,34 +166,34 @@ murasaki.col <- rgb(153/255,0/255,153/255)
 col.parette <- c(sora.col,midori.col,orange.col,murasaki.col)
 
 g <- ggplot(mutation.treat.mean.info, aes(x = Zygosity, y = Mutation.mean, fill = Treatment)) +
-	theme(axis.title.x = element_text(size=18), axis.title.y = element_text(size=18), 
-		axis.text.x = element_text(size=16),axis.text.y = element_text(size=16))	
+	theme(axis.title.x = element_text(size=18), axis.title.y = element_text(size=18),
+		axis.text.x = element_text(size=16),axis.text.y = element_text(size=16))
 g <- g + geom_bar(stat = "identity", position ="dodge") + geom_errorbar(aes(ymin = Mutation.mean - Mutation.sd, ymax = Mutation.mean + Mutation.sd, width=0.3), position = position_dodge(width = 0.9)) + ylab("Frequency") + scale_fill_manual(values = col.parette)
 
 plot(g)
 
 
 
-kruskal.test.homo.out <- kruskal.test(mutation.count.frame$Mutation.homo.Count~mutation.count.frame$Treat)
+kruskal.test.homo.out <- kruskal.test(mutation_count_frame$Mutation.homo.Count~mutation_count_frame$Treat)
 print(kruskal.test.homo.out)
-pairwise.wilcox.test.homo <- pairwise.wilcox.test(mutation.count.frame$Mutation.homo.Count,mutation.count.frame$Treat,exact=F)
+pairwise.wilcox.test.homo <- pairwise.wilcox.test(mutation_count_frame$Mutation.homo.Count,mutation_count_frame$Treat,exact=F)
 print(pairwise.wilcox.test.homo)
 
-kruskal.test.hetero.out <- kruskal.test(mutation.count.frame$Mutation.hetero.Coun~mutation.count.frame$Treat)
+kruskal.test.hetero.out <- kruskal.test(mutation_count_frame$Mutation.hetero.Coun~mutation_count_frame$Treat)
 print(kruskal.test.hetero.out)
-pairwise.wilcox.test.hetero <- pairwise.wilcox.test(mutation.count.frame$Mutation.hetero.Coun,mutation.count.frame$Treat,exact=F)
+pairwise.wilcox.test.hetero <- pairwise.wilcox.test(mutation_count_frame$Mutation.hetero.Coun,mutation_count_frame$Treat,exact=F)
 print(pairwise.wilcox.test.hetero)
 
 
 
-No.sample <- length(mutation.count.frame$Sample)
+No.sample <- length(mutation_count_frame$Sample)
 binom.test.p <- numeric(No.sample)
 binom.test.CI.lower <- numeric(No.sample)
 binom.test.CI.upper <- numeric(No.sample)
 
 for(i in 1:No.sample){
-	target.hetero.count <- mutation.count.frame$Mutation.hetero.Count[i]
-	target.homo.count <- mutation.count.frame$Mutation.homo.Count[i]
+	target.hetero.count <- mutation_count_frame$Mutation.hetero.Count[i]
+	target.homo.count <- mutation_count_frame$Mutation.homo.Count[i]
 	binom.test.out <- binom.test(target.hetero.count, target.hetero.count+target.homo.count, 2/3, alternative="greater")
 	binom.test.p[i] <- binom.test.out[3]
 	binom.test.CI.lower[i] <- binom.test.out[[4]][1]
@@ -205,7 +205,7 @@ hetero.homo.ratio.out.frame <- data.frame(
 	SampleID = sample.vec, Family = family,
 	Treat = treat, Gray = gray,
 	Mutation.Count =  No.mutations.per.sample,
-	Mutation.homo.Count =  No.homo.mutations.per.sample,	
+	Mutation.homo.Count =  No.homo.mutations.per.sample,
 	Mutation.hetero.Count =  No.hetero.mutations.per.sample,
 	Proportion.hetero=No.hetero.mutations.per.sample/No.mutations.per.sample,
 	Binom.test.P=binom.test.p.vec,
