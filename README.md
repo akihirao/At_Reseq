@@ -40,10 +40,10 @@ Pipe.03.BaseRecalibrator.sh
 ...
 Pipe.14.Annotation.sh
 ```
-A full list of all identified mutations is output to the current folder as "M2.mutations.full.list.csv"
+A list of all mutations identified is provided as [M2.mutations.full.list.csv](https://github.com/akihirao/At_Reseq/blob/main/M2.mutations.full.list.csv)
 
 ## Filtering parameters
-The called raw variants by gatk VariantFiltration in Pipe10   
+The called raw variants by gatk VariantFiltration in Pipe 10   
 
 ###
 * Common for filtering out: Depth ＜ 10x, Depth > 200x, GenotypeQuality < 20 
@@ -51,7 +51,7 @@ The called raw variants by gatk VariantFiltration in Pipe10
 * INDELs for flitering out: QualByDepth < 2.0, FisherStrand > 200.0, RMSMappingQuality < 20.0, StrandOddsRatio > 10.0, and ExcessHet > 13.0    
   
 
-The mutation identification in Pipe11
+The mutation identification in Pipe 11
 
 * --mendelian-violation-qual-threshold: 30  
 This setting in gatk SelectVariants will select only variants that correspond to a mendelian violation as determined on the basis of family structure as <i>P</i> < 0.01.
@@ -61,7 +61,7 @@ This setting in gatk SelectVariants will select only variants having genotyping 
 * The candidate mutation sites with the other neighbor sites within 150bp range in a single sample were disregarded because a high proportion of false positives of neighboring mutation sites are known to be cause by mismapping (Keightley <i>et al</i>. 2014)
 
 
-## Statistical analyses
+## R codes for Statistical analyses
 * [Statistical modeling of the effect of radiation on the number of each type of mutation](https://github.com/akihirao/At_Reseq/blob/main/R_work/Plot.fig2.AT.mutation.vs.dose.md)
 
 ## Note
