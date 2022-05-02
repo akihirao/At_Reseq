@@ -34,7 +34,11 @@ library(pscl)
 
 ```{r message = FALSE, warning = FALSE, echo = TRUE}
 AT.all.mutations.annotation <- read_csv("../M2.mutations.full.list.annotation.csv")
+```
 
+### Data preprocessing
+
+```{r message = FALSE, warning = FALSE, echo = TRUE}
 sample.vec <- c(sort(unique(AT.all.mutations.annotation$Sample1)))
 AT.all.mutations.annotation$Sample1 <- factor(AT.all.mutations.annotation$Sample1, levels=sample.vec)
 AT.all.mutations.annotation$Sample2 <- factor(AT.all.mutations.annotation$Sample2, levels=sample.vec)
