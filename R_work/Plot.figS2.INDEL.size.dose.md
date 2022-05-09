@@ -3,8 +3,8 @@
     -   [Loading packages](#loading-packages)
     -   [Loading data set](#loading-data-set)
     -   [Data preprocessing](#data-preprocessing)
-    -   [Plotting histogram of size of
-        mutation](#plotting-histogram-of-size-of-mutation)
+    -   [Plotting indel-size
+        distribution](#plotting-indel-size-distribution)
     -   [Statistical modeling of the effect of radiation on size of
         mutation](#statistical-modeling-of-the-effect-of-radiation-on-size-of-mutation-1)
 
@@ -49,7 +49,7 @@ AT_all_deletion <- AT_all_mutations %>% filter(Type=="Deletion")
 AT_all_family <- AT_all_mutations %>% filter(Sample2!="NA")
 ```
 
-### Plotting histogram of size of mutation
+### Plotting indel-size distribution
 
 ``` r
 sora.col <- rgb(77/255,196/255,255/255)
@@ -60,7 +60,7 @@ akarui.murasaki.col <- rgb(201/255,172/255,230/255)
 col.parette <- c(sora.col,midori.col,orange.col,murasaki.col)
 
 g.hist <- ggplot(AT_all_indel, aes(x=Length, fill=Treatment)) 
-g.hist <- g.hist + geom_histogram(breaks=seq(-145.5,45.5,by=1), position = "identity",alpha=0.9) + xlab("Size of mutation (bp)") + ylab("Frequency") +facet_grid(Treatment~.) + scale_fill_manual(values = col.parette) 
+g.hist <- g.hist + geom_histogram(breaks=seq(-145.5,45.5,by=1), position = "identity",alpha=0.9) + xlab("INDEL size (bp)") + ylab("Frequency") +facet_grid(Treatment~.) + scale_fill_manual(values = col.parette) 
 
 plot(g.hist)
 ```
