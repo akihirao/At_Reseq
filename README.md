@@ -68,5 +68,5 @@ This setting in gatk SelectVariants will select only variants having genotyping 
 * [Statistical modeling of the effect of radiation on gene function $ plotting fig.S3](https://github.com/akihirao/At_Reseq/blob/main/R_work/Plot.figS3.AT.Snpeff.md)
 
 ## Reference
-Hirao AS, Watanabe Y, Hasegawa Y, Takagi T, Ueno S, Kaneko S (accepted) Mutational effects of chronic gamma radiation throughout the life cycle of <i>Arabidopsis thaliana</i>: insight into radiosensitivity in the reproductive stage. Science of the Total Environment.
+Hirao AS, Watanabe Y, Hasegawa Y, Takagi T, Ueno S, Kaneko S (2022) Mutational effects of chronic gamma radiation throughout the life cycle of <i>Arabidopsis thaliana</i>: insight into radiosensitivity in the reproductive stage. Science of the Total Environment. https://doi.org/10.1016/j.scitotenv.2022.156224
 
