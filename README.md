@@ -1,5 +1,5 @@
 # Mutation identification in whole genome sequencing data of <i>Arabidopsis thaliana</i>
-Bioinformatics pipeline for idintifying mutations in whole genome sequences of <i>Arabidopsis thaliana</i>   
+Bioinformatics pipeline for identifying mutations in whole genome sequences of <i>Arabidopsis thaliana</i>   
   
 
 ## Requirement
